@@ -16,7 +16,7 @@ conan_cmake_install(
     CONANFILE
         conanfile.txt
     PATH_OR_REFERENCE
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_SOURCE_DIR}
     BUILD
         missing
     SETTINGS
