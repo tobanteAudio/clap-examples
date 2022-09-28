@@ -26,16 +26,16 @@ bool Plugin::setParent(const clap_window *parentWindow)
 }
 
 void getNativeWindowPosition(void *native_display, void *native_window,
-  int *x, int *y, int *w, int *h)
+  int&x, int&y, int&w, int&h)
 {
   NSView *vw = (NSView*)native_window;
   NSRect vr = [vw convertRect:[vw bounds] toView:nil];
   NSRect wr = [[vw window] convertRectToScreen:vr];
   wr.origin.y = CGDisplayBounds(CGMainDisplayID()).size.height-(wr.origin.y+wr.size.height);
-  *x = wr.origin.x;
-  *y = wr.origin.y;
-  *w = wr.size.width;
-  *h = wr.size.height;
+  x = wr.origin.x;
+  y = wr.origin.y;
+  w = wr.size.width;
+  h = wr.size.height;
 }
 
 void setNativeParent(void *native_display, void *native_window, GLFWwindow *glfw_win)
