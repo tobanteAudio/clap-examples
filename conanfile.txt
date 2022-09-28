@@ -1,6 +1,4 @@
 [requires]
-glfw/3.3.6
-glew/2.2.0
 imgui/cci.20220621+1.88.docking
 
 [generators]
@@ -12,6 +10,8 @@ glew:shared=False
 [imports]
 ./res/bindings, imgui_impl_glfw.h -> ./bindings
 ./res/bindings, imgui_impl_glfw.cpp -> ./bindings
+./res/bindings, imgui_impl_sdl.h -> ./bindings
+./res/bindings, imgui_impl_sdl.cpp -> ./bindings
 ./res/bindings, imgui_impl_opengl3.h -> ./bindings
 ./res/bindings, imgui_impl_opengl3.cpp -> ./bindings
 ./res/bindings, imgui_impl_opengl3_loader.h -> ./bindings

@@ -27,9 +27,15 @@ FetchContent_Declare(clap GIT_REPOSITORY "https://github.com/free-audio/clap" GI
 FetchContent_MakeAvailable(clap)
 
 find_package(imgui CONFIG)
-find_package(glfw3 CONFIG)
-find_package(glew CONFIG)
 
-add_subdirectory(src/app)
-add_subdirectory(src/plugin-minimal)
-add_subdirectory(src/plugin-imgui)
+if(EMSCRIPTEN)
+    add_subdirectory(src/app-emscripten)
+else()
+    find_package(glfw3 CONFIG)
+    find_package(glew CONFIG)
+
+    add_subdirectory(src/app)
+    add_subdirectory(src/plugin-minimal)
+    add_subdirectory(src/plugin-imgui)
+endif()
+

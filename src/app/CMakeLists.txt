@@ -27,4 +27,4 @@ add_custom_command(TARGET app-glfw-imgui
 
 target_include_directories(app-glfw-imgui PRIVATE ${CMAKE_BINARY_DIR})
 target_compile_definitions(app-glfw-imgui PRIVATE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
-target_link_libraries(app-glfw-imgui PRIVATE imgui::imgui GLEW::glew_s glfw::glfw clap-core)
+target_link_libraries(app-glfw-imgui PRIVATE imgui::imgui GLEW::glew_s glfw::glfw)
