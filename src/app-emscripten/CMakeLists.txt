@@ -12,7 +12,7 @@ add_executable(app-glfw-imgui-emscripten
 
 target_include_directories(app-glfw-imgui-emscripten PRIVATE ${CMAKE_BINARY_DIR})
 target_compile_definitions(app-glfw-imgui-emscripten PRIVATE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
-target_link_libraries(app-glfw-imgui-emscripten PRIVATE imgui::imgui GLEW::glew_s)
+target_link_libraries(app-glfw-imgui-emscripten PRIVATE imgui::imgui)
 
 target_compile_options(app-glfw-imgui-emscripten
     INTERFACE
