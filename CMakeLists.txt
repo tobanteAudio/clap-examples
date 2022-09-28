@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(imgui-glfw-example CXX)
+project(imgui-glfw-example C CXX)
 
 find_program(CCACHE ccache)
 if(CCACHE)
@@ -20,103 +20,16 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
-
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-file(
-    DOWNLOAD
-        "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"
-        "${CMAKE_BINARY_DIR}/conan.cmake"
-    TLS_VERIFY
-        ON
-)
-endif()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-conan_add_remote(NAME conancenter INDEX 0 URL https://center.conan.io)
-conan_cmake_autodetect(settings)
-conan_cmake_install(
-    CONANFILE
-        conanfile.txt
-    PATH_OR_REFERENCE
-        ${CMAKE_CURRENT_SOURCE_DIR}
-    BUILD
-        missing
-    SETTINGS
-        ${settings}
-)
-
-find_package(imgui CONFIG)
-find_package(glfw3 CONFIG)
-find_package(glew CONFIG)
+include(${CMAKE_SOURCE_DIR}/cmake/ta_conan.cmake)
 
 include(FetchContent)
 FetchContent_Declare(clap GIT_REPOSITORY "https://github.com/free-audio/clap" GIT_TAG "1.1.1")
 FetchContent_MakeAvailable(clap)
 
+find_package(imgui CONFIG)
+find_package(glfw3 CONFIG)
+find_package(glew CONFIG)
+
 add_subdirectory(src/app)
-
-add_library(clap-plugin-template MODULE src/plugin/main.cpp)
-target_link_libraries(clap-plugin-template PRIVATE clap-core)
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    target_link_options(clap-plugin-template PRIVATE /EXPORT:clap_entry)
-    set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    target_link_options(clap-plugin-template
-        PRIVATE
-            -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/symbols.txt
-    )
-
-    set_target_properties(clap-plugin-template
-        PROPERTIES
-            BUNDLE True
-            BUNDLE_EXTENSION clap
-            MACOSX_BUNDLE_GUI_IDENTIFIER com.my_company.clap-plugin-template
-            MACOSX_BUNDLE_BUNDLE_NAME clap-plugin-template
-            MACOSX_BUNDLE_BUNDLE_VERSION "1"
-            MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
-            MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/plugins.plist.in
-    )
-endif()
-
-
-add_library(clap-plugin-imgui
-    MODULE
-        src/plugin-imgui/gain.cpp
-        src/plugin-imgui/gui.cpp
-        src/plugin-imgui/imgui_base.cpp
-        src/plugin-imgui/imgui_win32.cpp
-        src/plugin-imgui/main.cpp
-        src/plugin-imgui/plugin.cpp
-
-        bindings/imgui_impl_glfw.cpp
-        bindings/imgui_impl_opengl3.cpp
-        bindings/imgui_impl_glfw.h
-        bindings/imgui_impl_opengl3.h
-)
-target_include_directories(clap-plugin-imgui PRIVATE ${CMAKE_BINARY_DIR})
-# target_compile_definitions(clap-plugin-imgui PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
-target_link_libraries(clap-plugin-imgui PRIVATE clap-core imgui::imgui GLEW::glew_s glfw::glfw)
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    target_link_options(clap-plugin-imgui PRIVATE /EXPORT:clap_entry)
-    set_target_properties(clap-plugin-imgui PROPERTIES SUFFIX ".clap" PREFIX "")
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    target_sources(clap-plugin-imgui PRIVATE src/plugin-imgui/imgui_mac.mm)
-    target_link_options(clap-plugin-imgui
-        PRIVATE
-            -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/symbols.txt
-    )
-
-    set_target_properties(clap-plugin-imgui
-        PROPERTIES
-            BUNDLE True
-            BUNDLE_EXTENSION clap
-            MACOSX_BUNDLE_GUI_IDENTIFIER com.my_company.clap-plugin-imgui
-            MACOSX_BUNDLE_BUNDLE_NAME clap-plugin-imgui
-            MACOSX_BUNDLE_BUNDLE_VERSION "1"
-            MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
-            MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/plugins.plist.in
-    )
-endif()
+add_subdirectory(src/plugin-minimal)
+add_subdirectory(src/plugin-imgui)
