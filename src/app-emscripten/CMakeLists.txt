@@ -15,12 +15,12 @@ target_compile_definitions(app-glfw-imgui-emscripten PRIVATE IMGUI_DISABLE_OBSOL
 target_link_libraries(app-glfw-imgui-emscripten PRIVATE imgui::imgui)
 
 target_compile_options(app-glfw-imgui-emscripten
-    INTERFACE
+    PRIVATE
         "SHELL:-s USE_SDL=2"
         "SHELL:-s DISABLE_EXCEPTION_CATCHING=0"
 )
 target_link_options(app-glfw-imgui-emscripten
-    INTERFACE
+    PRIVATE
         "SHELL:-s USE_SDL=2"
         "SHELL:-s DISABLE_EXCEPTION_CATCHING=0"
         "SHELL:-s WASM=1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=0 -s ASSERTIONS=1"
