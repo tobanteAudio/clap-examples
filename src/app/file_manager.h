@@ -5,7 +5,6 @@
 #include <sstream>
 #include <string>
 
-
 class FileManager
 {
 public:

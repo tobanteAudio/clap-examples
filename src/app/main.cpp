@@ -9,7 +9,6 @@
 #include "opengl_shader.h"
 #include <GL/glew.h>  // Initialize with glewInit()
 
-
 // Include glfw3.h after our OpenGL definitions
 #include <GLFW/glfw3.h>
 
