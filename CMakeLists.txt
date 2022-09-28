@@ -79,27 +79,34 @@ target_include_directories(imgui-glfw-example PRIVATE ${CMAKE_BINARY_DIR})
 target_compile_definitions(imgui-glfw-example PRIVATE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
 target_link_libraries(imgui-glfw-example PRIVATE imgui::imgui GLEW::glew_s glfw::glfw clap-core)
 
-
 add_library(clap-plugin-template MODULE src/plugin/main.cpp)
 target_link_libraries(clap-plugin-template PRIVATE clap-core)
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    target_link_libraries(clap-plugin-template PRIVATE -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/src/linux-my_plug.version)
-    target_link_libraries(clap-plugin-template PRIVATE -Wl,-z,defs)
-    set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    target_link_options(clap-plugin-template PRIVATE -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/src/macos-symbols.txt)
-
-    set_target_properties(clap-plugin-template PROPERTIES
-                BUNDLE True
-                BUNDLE_EXTENSION clap
-                MACOSX_BUNDLE_GUI_IDENTIFIER com.my_company.my_plug
-                MACOSX_BUNDLE_BUNDLE_NAME my_plug
-                MACOSX_BUNDLE_BUNDLE_VERSION "1"
-                MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
-                MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/plugins.plist.in
-                )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_options(clap-plugin-template PRIVATE /EXPORT:clap_entry)
     set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
+endif()
+
+
+add_library(clap-plugin-imgui
+    MODULE
+        src/plugin-imgui/gain.cpp
+        src/plugin-imgui/gui.cpp
+        src/plugin-imgui/imgui_base.cpp
+        src/plugin-imgui/imgui_win32.cpp
+        src/plugin-imgui/main.cpp
+        src/plugin-imgui/plugin.cpp
+
+        bindings/imgui_impl_glfw.cpp
+        bindings/imgui_impl_opengl3.cpp
+        bindings/imgui_impl_glfw.h
+        bindings/imgui_impl_opengl3.h
+)
+target_include_directories(clap-plugin-imgui PRIVATE ${CMAKE_BINARY_DIR})
+# target_compile_definitions(clap-plugin-imgui PRIVATE GLFW_EXPOSE_NATIVE_WIN32)
+target_link_libraries(clap-plugin-imgui PRIVATE clap-core imgui::imgui GLEW::glew_s glfw::glfw)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_options(clap-plugin-imgui PRIVATE /EXPORT:clap_entry)
+    set_target_properties(clap-plugin-imgui PROPERTIES SUFFIX ".clap" PREFIX "")
 endif()
