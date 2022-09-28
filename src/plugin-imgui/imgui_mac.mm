@@ -8,6 +8,7 @@
 
 #include "main.h"
 
+#define GLFW_EXPOSE_NATIVE_COCOA
 #include <glfw/glfw3.h>
 #include <glfw/glfw3native.h>
 
