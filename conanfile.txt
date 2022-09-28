@@ -1,7 +1,8 @@
 [requires]
-imgui/cci.20220621+1.88.docking
+cairo/1.17.4
 glfw/3.3.6
 glew/2.2.0
+imgui/cci.20220621+1.88.docking
 
 [generators]
 cmake_find_package_multi
