@@ -1,5 +1,4 @@
-#ifndef opengl_shader_hpp
-#define opengl_shader_hpp
+#pragma once
 
 #include <string>
 #include <vector>
@@ -26,5 +25,3 @@ private:
     std::string vertex_code_;
     std::string fragment_code_;
 };
-
-#endif /* opengl_shader_hpp */
