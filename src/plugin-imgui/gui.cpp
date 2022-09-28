@@ -18,8 +18,9 @@ bool Plugin::getSize(uint32_t* width, uint32_t* height)
     if (m_w > 0 && m_h > 0) {
         *width  = m_w;
         *height = m_h;
-    } else
+    } else {
         getPreferredSize(width, height);
+    }
     return true;
 }
 

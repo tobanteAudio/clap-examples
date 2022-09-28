@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <windows.h>
-#include <windowsx.h>
 
 #include "main.h"
 
@@ -34,7 +33,7 @@ void getNativeWindowPosition(
 )
 {
     RECT wr;
-    GetWindowRect((HWND)window, &wr);
+    ::GetWindowRect((HWND)window, &wr);
     x = wr.left;
     y = wr.top;
     w = wr.right - wr.left;
@@ -65,8 +64,8 @@ unsigned int timer_id;
 
 void CALLBACK timerCallback(HWND hwnd, UINT a, UINT_PTR b, DWORD c)
 {
-    extern void imguiOnTimer();
-    imguiOnTimer();
+    extern void imguiTimerCallback();
+    imguiTimerCallback();
 }
 
 bool createTimer(unsigned int ms)

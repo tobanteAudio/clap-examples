@@ -7,7 +7,6 @@
 #include "main.h"
 #include <GLFW/glfw3.h>
 
-
 // always in screen coordinates
 void getNativeWindowPosition(
     void* display,
@@ -23,7 +22,7 @@ bool createTimer(unsigned int ms);
 void destroyTimer();
 unsigned int getTickCount();
 
-extern clap_host const* g_clap_host;
+// extern clap_host const* clapHost;
 
 #define TIMER_MS 30
 GLFWwindow* backend_wnd;
@@ -117,7 +116,7 @@ void imguiTeardown()
     glfwTerminate();
 }
 
-void imguiOnTimer()
+void imguiTimerCallback()
 {
     if (want_teardown > 0) {
         if (getTickCount() > want_teardown) imguiTeardown();
@@ -133,15 +132,15 @@ static void glfw_error_callback(int error, char const* description)
 
 bool imguiAttach(Plugin* plugin, void* display, void* window)
 {
-    if (!plugin || !window) return false;
-    if (plugin->m_ui_ctx) return true;
+    if (!plugin || !window) { return false; }
+    if (plugin->m_ui_ctx) { return true; }
 
     want_teardown = 0;
     if (!backend_wnd) {
-        if (!createTimer(TIMER_MS)) return false;
+        if (!createTimer(TIMER_MS)) { return false; }
 
         glfwSetErrorCallback(glfw_error_callback);
-        if (!glfwInit()) return false;
+        if (!glfwInit()) { return false; }
 
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
@@ -151,7 +150,7 @@ bool imguiAttach(Plugin* plugin, void* display, void* window)
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         // invisible top level window
         backend_wnd = glfwCreateWindow(1, 1, "ImGui Backend", NULL, NULL);
-        if (!backend_wnd) return false;
+        if (!backend_wnd) { return false; }
 
         glfwMakeContextCurrent(backend_wnd);
         glfwSwapInterval(1);
@@ -214,9 +213,9 @@ bool Plugin::destroyUI(bool is_plugin_destroy)
     return true;
 }
 
-void on_timer(clap_plugin const* plugin, unsigned int timer_id)
+void timerCallback(clap_plugin const* plugin, unsigned int timer_id)
 {
-    imguiOnTimer();
+    imguiTimerCallback();
 }
 
-clap_plugin_timer_support gui__timer_support = {on_timer};
+auto guiTimerSupport = clap_plugin_timer_support_t{timerCallback};

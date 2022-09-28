@@ -6,8 +6,8 @@
 
 #include "main.h"
 
-clap_host const* g_clap_host;
-extern clap_plugin_timer_support gui__timer_support;
+// clap_host const* clapHost;
+extern clap_plugin_timer_support guiTimerSupport;
 
 static auto asPlugin(clap_plugin const* plugin)
 {
@@ -49,8 +49,8 @@ process(clap_plugin const* plugin, clap_process const* process)
 
 void const* get_extension(clap_plugin const* plugin, char const* id)
 {
-    if (!strcmp(id, CLAP_EXT_GUI)) return &asPlugin(plugin)->m_clap_plugin_gui;
-    if (!strcmp(id, CLAP_EXT_TIMER_SUPPORT)) return &gui__timer_support;
+    if (!strcmp(id, CLAP_EXT_GUI)) return &asPlugin(plugin)->clapGuiHandle;
+    if (!strcmp(id, CLAP_EXT_TIMER_SUPPORT)) return &guiTimerSupport;
     return asPlugin(plugin)->getExtension(id);
 }
 
@@ -179,40 +179,40 @@ Plugin::Plugin(clap_plugin_descriptor const* descriptor, clap_host const* host)
     m_h      = 0;
     m_ui_ctx = NULL;
 
-    g_clap_host = host;
+    // clapHost = host;
 
-    m_clap_plugin.desc             = descriptor;
-    m_clap_plugin.plugin_data      = this;
-    m_clap_plugin.init             = plugin::init;
-    m_clap_plugin.destroy          = plugin::destroy;
-    m_clap_plugin.activate         = plugin::activate;
-    m_clap_plugin.deactivate       = plugin::deactivate;
-    m_clap_plugin.start_processing = plugin::start_processing;
-    m_clap_plugin.stop_processing  = plugin::stop_processing;
-    m_clap_plugin.process          = plugin::process;
-    m_clap_plugin.get_extension    = plugin::get_extension;
-    m_clap_plugin.on_main_thread   = plugin::on_main_thread;
+    clapPluginHandle.desc             = descriptor;
+    clapPluginHandle.plugin_data      = this;
+    clapPluginHandle.init             = plugin::init;
+    clapPluginHandle.destroy          = plugin::destroy;
+    clapPluginHandle.activate         = plugin::activate;
+    clapPluginHandle.deactivate       = plugin::deactivate;
+    clapPluginHandle.start_processing = plugin::start_processing;
+    clapPluginHandle.stop_processing  = plugin::stop_processing;
+    clapPluginHandle.process          = plugin::process;
+    clapPluginHandle.get_extension    = plugin::get_extension;
+    clapPluginHandle.on_main_thread   = plugin::on_main_thread;
 
-    m_clap_plugin_gui.is_api_supported = gui::is_api_supported;
-    m_clap_plugin_gui.create           = gui::create;
-    m_clap_plugin_gui.destroy          = gui::destroy;
-    m_clap_plugin_gui.set_scale        = gui::set_scale;
-    m_clap_plugin_gui.get_size         = gui::get_size;
-    m_clap_plugin_gui.can_resize       = gui::can_resize;
-    m_clap_plugin_gui.adjust_size      = gui::adjust_size;
-    m_clap_plugin_gui.set_size         = gui::set_size;
-    m_clap_plugin_gui.set_parent       = gui::set_parent;
-    m_clap_plugin_gui.set_transient    = gui::set_transient;
-    m_clap_plugin_gui.suggest_title    = gui::suggest_title;
-    m_clap_plugin_gui.show             = gui::show;
-    m_clap_plugin_gui.hide             = gui::hide;
+    clapGuiHandle.is_api_supported = gui::is_api_supported;
+    clapGuiHandle.create           = gui::create;
+    clapGuiHandle.destroy          = gui::destroy;
+    clapGuiHandle.set_scale        = gui::set_scale;
+    clapGuiHandle.get_size         = gui::get_size;
+    clapGuiHandle.can_resize       = gui::can_resize;
+    clapGuiHandle.adjust_size      = gui::adjust_size;
+    clapGuiHandle.set_size         = gui::set_size;
+    clapGuiHandle.set_parent       = gui::set_parent;
+    clapGuiHandle.set_transient    = gui::set_transient;
+    clapGuiHandle.suggest_title    = gui::suggest_title;
+    clapGuiHandle.show             = gui::show;
+    clapGuiHandle.hide             = gui::hide;
 
-    m_clap_plugin_params.count         = params::count;
-    m_clap_plugin_params.get_info      = params::get_info;
-    m_clap_plugin_params.get_value     = params::get_value;
-    m_clap_plugin_params.value_to_text = params::value_to_text;
-    m_clap_plugin_params.text_to_value = params::text_to_value;
-    m_clap_plugin_params.flush         = params::flush;
+    clapParameterHandle.count         = params::count;
+    clapParameterHandle.get_info      = params::get_info;
+    clapParameterHandle.get_value     = params::get_value;
+    clapParameterHandle.value_to_text = params::value_to_text;
+    clapParameterHandle.text_to_value = params::text_to_value;
+    clapParameterHandle.flush         = params::flush;
 }
 
 Plugin::~Plugin() { destroyUI(true); }

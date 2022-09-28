@@ -7,11 +7,11 @@
 
 struct Plugin
 {
-    clap_plugin m_clap_plugin;
-    clap_plugin_params m_clap_plugin_params;
+    clap_plugin clapPluginHandle;
+    clap_plugin_params clapParameterHandle;
     int m_w, m_h;
 
-    clap_plugin_gui m_clap_plugin_gui;
+    clap_plugin_gui clapGuiHandle;
     void* m_ui_ctx;
 
     Plugin(clap_plugin_descriptor const* descriptor, clap_host const* host);
@@ -23,7 +23,7 @@ struct Plugin
     virtual void deactivate()                                        = 0;
     virtual bool startProcessing()                                   = 0;
     virtual void stopProcessing()                                    = 0;
-    virtual clap_process_status process(clap_process const* process) = 0;
+    virtual clap_process_status process(clap_process const* ctx)     = 0;
     virtual void const* getExtension(char const* id)                 = 0;
     virtual void onMainThread()                                      = 0;
     virtual void draw()                                              = 0;

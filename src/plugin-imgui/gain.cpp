@@ -304,11 +304,10 @@ struct Example_0 : public Plugin
         if (!in) return;
 
         for (int i = 0; i < in->size(in); ++i) {
-            clap_event_header const* evt = in->get(in, i);
+            auto const* evt = in->get(in, i);
             if (!evt || evt->space_id != CLAP_CORE_EVENT_SPACE_ID) continue;
             if (evt->type == CLAP_EVENT_PARAM_VALUE) {
-                clap_event_param_value const* pevt
-                    = (clap_event_param_value const*)evt;
+                auto const* pevt = (clap_event_param_value const*)evt;
                 if (pevt->param_id < 0 || pevt->param_id >= NUM_PARAMS)
                     continue;  // assert
 

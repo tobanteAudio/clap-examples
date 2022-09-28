@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <string_view>
+
 #if defined _WIN32
 #include <windows.h>
 HINSTANCE g_hinst;
@@ -12,7 +14,7 @@ HINSTANCE g_hinst;
 namespace factory {
 auto getPluginCount(clap_plugin_factory const* factory) -> uint32_t
 {
-    return 2;
+    return 1;
 }
 
 auto getPluginDescriptor(clap_plugin_factory const* factory, uint32_t index)
@@ -31,7 +33,7 @@ auto createPlugin(
     Plugin* plugin = NULL;
     if (!strcmp(getGainPluginDescriptor()->id, pluginID))
         plugin = createGainPlugin(host);
-    if (plugin) return &plugin->m_clap_plugin;
+    if (plugin) return &plugin->clapPluginHandle;
     return NULL;
 }
 
@@ -48,13 +50,14 @@ auto init(char const* path) -> bool { return true; }
 
 auto deinit() -> void {}
 
-auto getFactory(char const* factoryID) -> void const*
+auto getFactory(char const* id) -> void const*
 {
-    return factoryID && !strcmp(factoryID, CLAP_PLUGIN_FACTORY_ID)
-             ? &plugin_factory
-             : nullptr;
+    auto const factoryID = std::string_view{CLAP_PLUGIN_FACTORY_ID};
+    if (id == nullptr) { return nullptr; }
+    if (std::string_view{id} == factoryID) { return &plugin_factory; }
+    return nullptr;
 }
-};  // namespace entry
+}  // namespace entry
 
 extern "C" {
 CLAP_EXPORT const clap_plugin_entry clap_entry = {
