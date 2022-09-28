@@ -88,6 +88,22 @@ target_link_libraries(clap-plugin-template PRIVATE clap-core)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_options(clap-plugin-template PRIVATE /EXPORT:clap_entry)
     set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_options(clap-plugin-template
+        PRIVATE
+            -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/symbols.txt
+    )
+
+    set_target_properties(clap-plugin-template
+        PROPERTIES
+            BUNDLE True
+            BUNDLE_EXTENSION clap
+            MACOSX_BUNDLE_GUI_IDENTIFIER com.my_company.clap-plugin-template
+            MACOSX_BUNDLE_BUNDLE_NAME clap-plugin-template
+            MACOSX_BUNDLE_BUNDLE_VERSION "1"
+            MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
+            MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/plugins.plist.in
+    )
 endif()
 
 
@@ -112,4 +128,21 @@ target_link_libraries(clap-plugin-imgui PRIVATE clap-core imgui::imgui GLEW::gle
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_options(clap-plugin-imgui PRIVATE /EXPORT:clap_entry)
     set_target_properties(clap-plugin-imgui PROPERTIES SUFFIX ".clap" PREFIX "")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_sources(clap-plugin-imgui PRIVATE src/plugin-imgui/imgui_mac.mm)
+    target_link_options(clap-plugin-imgui
+        PRIVATE
+            -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/symbols.txt
+    )
+
+    set_target_properties(clap-plugin-imgui
+        PROPERTIES
+            BUNDLE True
+            BUNDLE_EXTENSION clap
+            MACOSX_BUNDLE_GUI_IDENTIFIER com.my_company.clap-plugin-imgui
+            MACOSX_BUNDLE_BUNDLE_NAME clap-plugin-imgui
+            MACOSX_BUNDLE_BUNDLE_VERSION "1"
+            MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
+            MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/plugins.plist.in
+    )
 endif()
