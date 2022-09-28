@@ -33,3 +33,8 @@ class ClapExamples(ConanFile):
         else:
             self.copy("imgui_impl_sdl.h", dst=dest, src=src)
             self.copy("imgui_impl_sdl.cpp", dst=dest, src=src)
+
+    def build(self):
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
