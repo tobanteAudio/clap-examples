@@ -24,14 +24,14 @@ auto getPluginDescriptor(clap_plugin_factory const* factory, uint32_t index)
     return NULL;
 }
 
-auto createPlugin(
+auto create(
     clap_plugin_factory const* factory,
     clap_host const* host,
-    char const* pluginID
+    char const* id
 ) -> clap_plugin const*
 {
     Plugin* plugin = NULL;
-    if (!strcmp(getGainPluginDescriptor()->id, pluginID))
+    if (!strcmp(getGainPluginDescriptor()->id, id))
         plugin = createGainPlugin(host);
     if (plugin) return &plugin->clapPluginHandle;
     return NULL;
@@ -42,7 +42,7 @@ auto createPlugin(
 clap_plugin_factory plugin_factory = {
     factory::getPluginCount,
     factory::getPluginDescriptor,
-    factory::createPlugin,
+    factory::create,
 };
 
 namespace entry {

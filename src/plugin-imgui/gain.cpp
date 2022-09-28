@@ -228,17 +228,17 @@ struct Example_0 : public Plugin
 
     uint32_t numParameter() { return NUM_PARAMS; }
 
-    bool getParameterInfo(uint32_t param_index, clap_param_info_t* param_info)
+    bool getParameterInfo(uint32_t index, clap_param_info_t* info)
     {
-        if (param_index < 0 || param_index >= NUM_PARAMS) return false;
-        *param_info = _param_info[param_index];
+        if (index < 0 || index >= NUM_PARAMS) { return false; }
+        *info = _param_info[index];
         return true;
     }
 
     bool getParameterValue(clap_id param_id, double* value)
     {
-        if (!value) return false;
-        if (param_id < 0 || param_id >= NUM_PARAMS) return false;
+        if (!value) { return false; }
+        if (param_id < 0 || param_id >= NUM_PARAMS) { return false; }
 
         if (param_id == PARAM_VOLUME) {
             if (m_param_values[PARAM_VOLUME] <= 0.0)
