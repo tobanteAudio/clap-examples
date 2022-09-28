@@ -54,33 +54,7 @@ include(FetchContent)
 FetchContent_Declare(clap GIT_REPOSITORY "https://github.com/free-audio/clap" GIT_TAG "1.1.1")
 FetchContent_MakeAvailable(clap)
 
-add_executable(imgui-glfw-example
-    src/app/main.cpp
-    src/app/opengl_shader.cpp
-    src/app/file_manager.cpp
-    src/app/opengl_shader.h
-    src/app/file_manager.h
-
-    bindings/imgui_impl_glfw.cpp
-    bindings/imgui_impl_opengl3.cpp
-    bindings/imgui_impl_glfw.h
-    bindings/imgui_impl_opengl3.h
-
-    assets/simple-shader.vs
-    assets/simple-shader.fs
-)
-
-add_custom_command(TARGET imgui-glfw-example
-    POST_BUILD
-    COMMAND
-        ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/assets/simple-shader.vs $<TARGET_FILE_DIR:imgui-glfw-example>
-    COMMAND
-        ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/assets/simple-shader.fs $<TARGET_FILE_DIR:imgui-glfw-example>
-)
-
-target_include_directories(imgui-glfw-example PRIVATE ${CMAKE_BINARY_DIR})
-target_compile_definitions(imgui-glfw-example PRIVATE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
-target_link_libraries(imgui-glfw-example PRIVATE imgui::imgui GLEW::glew_s glfw::glfw clap-core)
+add_subdirectory(src/app)
 
 add_library(clap-plugin-template MODULE src/plugin/main.cpp)
 target_link_libraries(clap-plugin-template PRIVATE clap-core)
