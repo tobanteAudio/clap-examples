@@ -24,12 +24,13 @@ class ClapExamples(ConanFile):
         src = "res/bindings"
         dest = "bindings"
 
+        self.copy("imgui_impl_opengl3.h", dst=dest, src=src)
+        self.copy("imgui_impl_opengl3.cpp", dst=dest, src=src)
+        self.copy("imgui_impl_opengl3_loader.h", dst=dest, src=src)
+
         if self.settings.os != "Emscripten":
             self.copy("imgui_impl_glfw.h", dst=dest, src=src)
             self.copy("imgui_impl_glfw.cpp", dst=dest, src=src)
-            self.copy("imgui_impl_opengl3.h", dst=dest, src=src)
-            self.copy("imgui_impl_opengl3.cpp", dst=dest, src=src)
-            self.copy("imgui_impl_opengl3_loader.h", dst=dest, src=src)
         else:
             self.copy("imgui_impl_sdl.h", dst=dest, src=src)
             self.copy("imgui_impl_sdl.cpp", dst=dest, src=src)
