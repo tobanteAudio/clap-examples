@@ -41,27 +41,26 @@ struct Example_0 : public Plugin {
 
   ~Example_0() {}
 
-  bool plugin_impl__init() { return true; }
+  bool init() { return true; }
 
-  bool plugin_impl__activate(double sample_rate, uint32_t min_frames_count,
-                             uint32_t max_frames_count) {
+  bool activate(double sample_rate, uint32_t min_frames_count,
+                uint32_t max_frames_count) {
     m_srate = (int)sample_rate;
     m_peak_in[0] = m_peak_in[1] = m_peak_out[0] = m_peak_out[1] = 0.0;
     return true;
   }
 
-  void plugin_impl__deactivate() {}
+  void deactivate() {}
 
-  bool plugin_impl__start_processing() { return true; }
+  bool startProcessing() { return true; }
 
-  void plugin_impl__stop_processing() {}
+  void stopProcessing() {}
 
   template <class T>
-  clap_process_status
-  _plugin_impl__process(const clap_process *process, int num_channels,
-                        int start_frame, int end_frame,
-                        double *start_param_values, double *end_param_values,
-                        T **in, T **out) {
+  clap_process_status _process(const clap_process *process, int num_channels,
+                               int start_frame, int end_frame,
+                               double *start_param_values,
+                               double *end_param_values, T **in, T **out) {
     if (!in || !out)
       return CLAP_PROCESS_ERROR;
 
@@ -102,9 +101,9 @@ struct Example_0 : public Plugin {
     return CLAP_PROCESS_CONTINUE;
   }
 
-  clap_process_status plugin_impl__process(const clap_process *process) {
+  clap_process_status process(const clap_process *ctx) {
     const double decay =
-        pow(0.5, (double)process->frames_count / (double)m_srate / 0.125);
+        pow(0.5, (double)ctx->frames_count / (double)m_srate / 0.125);
     for (int c = 0; c < 2; ++c) {
       m_peak_in[c] *= decay;
       m_peak_out[c] *= decay;
@@ -120,24 +119,21 @@ struct Example_0 : public Plugin {
     }
 
     clap_process_status s = -1;
-    if (process && process->audio_inputs_count == 1 &&
-        process->audio_inputs[0].channel_count == 2 &&
-        process->audio_outputs_count == 1 &&
-        process->audio_outputs[0].channel_count == 2) {
+    if (ctx && ctx->audio_inputs_count == 1 &&
+        ctx->audio_inputs[0].channel_count == 2 &&
+        ctx->audio_outputs_count == 1 &&
+        ctx->audio_outputs[0].channel_count == 2) {
       // handling incoming parameter changes and slicing the process call
       // on the time axis would happen here.
 
-      if (process->audio_inputs[0].data32 && process->audio_outputs[0].data32) {
-        s = _plugin_impl__process(process, 2, 0, process->frames_count,
-                                  m_last_param_values, cur_param_values,
-                                  process->audio_inputs[0].data32,
-                                  process->audio_outputs[0].data32);
-      } else if (process->audio_inputs[0].data64 &&
-                 process->audio_outputs[0].data64) {
-        s = _plugin_impl__process(process, 2, 0, process->frames_count,
-                                  m_last_param_values, cur_param_values,
-                                  process->audio_inputs[0].data64,
-                                  process->audio_outputs[0].data64);
+      if (ctx->audio_inputs[0].data32 && ctx->audio_outputs[0].data32) {
+        s = _process(ctx, 2, 0, ctx->frames_count, m_last_param_values,
+                     cur_param_values, ctx->audio_inputs[0].data32,
+                     ctx->audio_outputs[0].data32);
+      } else if (ctx->audio_inputs[0].data64 && ctx->audio_outputs[0].data64) {
+        s = _process(ctx, 2, 0, ctx->frames_count, m_last_param_values,
+                     cur_param_values, ctx->audio_inputs[0].data64,
+                     ctx->audio_outputs[0].data64);
       }
     }
 
@@ -150,11 +146,11 @@ struct Example_0 : public Plugin {
     return s;
   }
 
-  const void *plugin_impl__get_extension(const char *id) { return NULL; }
+  const void *getExtension(const char *id) { return NULL; }
 
-  void plugin_impl__on_main_thread() {}
+  void onMainThread() {}
 
-  void plugin_impl__draw() {
+  void draw() {
     ImGui::Text("Volume/Pan");
 
     for (int c = 0; c < 2; ++c) {
@@ -192,7 +188,7 @@ struct Example_0 : public Plugin {
     }
   }
 
-  bool plugin_impl__get_preferred_size(uint32_t *width, uint32_t *height) {
+  bool getPreferredSize(uint32_t *width, uint32_t *height) {
     *width = 400;
     *height = 400;
     return true;
@@ -200,14 +196,14 @@ struct Example_0 : public Plugin {
 
   uint32_t params__count() { return NUM_PARAMS; }
 
-  bool params__get_info(uint32_t param_index, clap_param_info_t *param_info) {
+  bool getParameterInfo(uint32_t param_index, clap_param_info_t *param_info) {
     if (param_index < 0 || param_index >= NUM_PARAMS)
       return false;
     *param_info = _param_info[param_index];
     return true;
   }
 
-  bool params__get_value(clap_id param_id, double *value) {
+  bool getParameterValue(clap_id param_id, double *value) {
     if (!value)
       return false;
     if (param_id < 0 || param_id >= NUM_PARAMS)
@@ -240,8 +236,8 @@ struct Example_0 : public Plugin {
     return 0.0;
   }
 
-  bool params__value_to_text(clap_id param_id, double value, char *display,
-                             uint32_t size) {
+  bool valueToText(clap_id param_id, double value, char *display,
+                   uint32_t size) {
     if (!display || !size)
       return false;
     if (param_id < 0 || param_id >= NUM_PARAMS)
@@ -258,8 +254,7 @@ struct Example_0 : public Plugin {
     return true;
   }
 
-  bool params__text_to_value(clap_id param_id, const char *display,
-                             double *value) {
+  bool textToValue(clap_id param_id, const char *display, double *value) {
     if (!display || !value)
       return false;
     if (param_id < 0 || param_id >= NUM_PARAMS)
@@ -276,8 +271,8 @@ struct Example_0 : public Plugin {
     return true;
   }
 
-  void params__flush(const clap_input_events *in,
-                     const clap_output_events *out) {
+  void flushParameter(const clap_input_events *in,
+                      const clap_output_events *out) {
     if (!in)
       return;
 

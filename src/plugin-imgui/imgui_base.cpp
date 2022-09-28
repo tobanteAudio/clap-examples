@@ -9,15 +9,15 @@
 #include "bindings/imgui_impl_opengl3.h"
 #include "imgui_internal.h" // so we can get the viewport associated with an ImGui window
 
-void get_native_window_position(void *native_display, void *native_window,
-                                int *x, int *y, int *w,
-                                int *h); // always in screen coordinates
-void set_native_parent(void *native_display, void *native_window,
-                       GLFWwindow *glfw_win);
+void getNativeWindowPosition(void *native_display, void *native_window, int *x,
+                             int *y, int *w,
+                             int *h); // always in screen coordinates
+void setNativeParent(void *native_display, void *native_window,
+                     GLFWwindow *glfw_win);
 
-bool create_timer(unsigned int ms);
-void destroy_timer();
-unsigned int get_tick_count();
+bool createTimer(unsigned int ms);
+void destroyTimer();
+unsigned int getTickCount();
 
 extern const clap_host *g_clap_host;
 
@@ -37,7 +37,7 @@ struct ui_ctx_rec {
 ui_ctx_rec *rec_list;
 
 int render_pass_reentry;
-void imgui__do_render_pass() {
+void imguiDoRenderPass() {
   if (!backend_wnd)
     return;
   if (!rec_list)
@@ -57,8 +57,8 @@ void imgui__do_render_pass() {
   ui_ctx_rec *rec = rec_list;
   while (rec) {
     int x, y, w, h;
-    get_native_window_position(rec->native_display, rec->native_window, &x, &y,
-                               &w, &h);
+    getNativeWindowPosition(rec->native_display, rec->native_window, &x, &y, &w,
+                            &h);
     ImGui::SetNextWindowPos(ImVec2(x, y));
     ImGui::SetNextWindowSize(ImVec2(w, h));
 
@@ -67,7 +67,7 @@ void imgui__do_render_pass() {
                      ImGuiWindowFlags_NoDecoration |
                      ImGuiWindowFlags_NoDocking);
 
-    rec->plugin->plugin_impl__draw();
+    rec->plugin->draw();
 
     ImGui::End();
 
@@ -86,7 +86,7 @@ void imgui__do_render_pass() {
       ImGuiWindow *w = ImGui::FindWindowByName(rec->name);
       if (w && w->Viewport && w->Viewport->PlatformWindowCreated) {
         GLFWwindow *glfw_win = (GLFWwindow *)w->Viewport->PlatformHandle;
-        set_native_parent(rec->native_display, rec->native_window, glfw_win);
+        setNativeParent(rec->native_display, rec->native_window, glfw_win);
         rec->did_parenting = 1;
       }
     }
@@ -96,11 +96,11 @@ void imgui__do_render_pass() {
   --render_pass_reentry;
 }
 
-void imgui__teardown() {
+void imguiTeardown() {
   if (!backend_wnd)
     return;
 
-  destroy_timer();
+  destroyTimer();
 
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
@@ -111,12 +111,12 @@ void imgui__teardown() {
   glfwTerminate();
 }
 
-void imgui__on_timer() {
+void imguiOnTimer() {
   if (want_teardown > 0) {
-    if (get_tick_count() > want_teardown)
-      imgui__teardown();
+    if (getTickCount() > want_teardown)
+      imguiTeardown();
   } else {
-    imgui__do_render_pass();
+    imguiDoRenderPass();
   }
 }
 
@@ -124,7 +124,7 @@ static void glfw_error_callback(int error, const char *description) {
   fprintf(stderr, "GLFW error %d: %s\n", error, description);
 }
 
-bool imgui__attach(Plugin *plugin, void *native_display, void *native_window) {
+bool imguiAttach(Plugin *plugin, void *native_display, void *native_window) {
   if (!plugin || !native_window)
     return false;
   if (plugin->m_ui_ctx)
@@ -132,7 +132,7 @@ bool imgui__attach(Plugin *plugin, void *native_display, void *native_window) {
 
   want_teardown = 0;
   if (!backend_wnd) {
-    if (!create_timer(TIMER_MS))
+    if (!createTimer(TIMER_MS))
       return false;
 
     glfwSetErrorCallback(glfw_error_callback);
@@ -179,7 +179,7 @@ bool imgui__attach(Plugin *plugin, void *native_display, void *native_window) {
   return true;
 }
 
-bool Plugin::gui__destroy(bool is_plugin_destroy) {
+bool Plugin::destroyUI(bool is_plugin_destroy) {
   if (m_ui_ctx) {
     ui_ctx_rec *old_rec = (ui_ctx_rec *)m_ui_ctx;
     m_ui_ctx = NULL;
@@ -203,16 +203,16 @@ bool Plugin::gui__destroy(bool is_plugin_destroy) {
 
   if (!rec_list) {
     if (is_plugin_destroy)
-      imgui__teardown();
+      imguiTeardown();
     else
-      want_teardown = get_tick_count() + 1000;
+      want_teardown = getTickCount() + 1000;
   }
 
   return true;
 }
 
 void on_timer(const clap_plugin *plugin, unsigned int timer_id) {
-  imgui__on_timer();
+  imguiOnTimer();
 }
 
 clap_plugin_timer_support gui__timer_support = {on_timer};
