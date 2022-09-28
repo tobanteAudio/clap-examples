@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(clap-examples CXX)
+project(imgui-glfw-example CXX)
 
 find_program(CCACHE ccache)
 if(CCACHE)
@@ -47,12 +47,16 @@ find_package(imgui CONFIG)
 find_package(glfw3 CONFIG)
 find_package(glew CONFIG)
 
-add_executable(clap-examples
-    src/main.cpp
-    src/opengl_shader.cpp
-    src/file_manager.cpp
-    src/opengl_shader.h
-    src/file_manager.h
+include(FetchContent)
+FetchContent_Declare(clap GIT_REPOSITORY "https://github.com/free-audio/clap" GIT_TAG "1.1.1")
+FetchContent_MakeAvailable(clap)
+
+add_executable(imgui-glfw-example
+    src/app/main.cpp
+    src/app/opengl_shader.cpp
+    src/app/file_manager.cpp
+    src/app/opengl_shader.h
+    src/app/file_manager.h
 
     bindings/imgui_impl_glfw.cpp
     bindings/imgui_impl_opengl3.cpp
@@ -63,14 +67,39 @@ add_executable(clap-examples
     assets/simple-shader.fs
 )
 
-add_custom_command(TARGET clap-examples
+add_custom_command(TARGET imgui-glfw-example
     POST_BUILD
     COMMAND
-        ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/assets/simple-shader.vs $<TARGET_FILE_DIR:clap-examples>
+        ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/assets/simple-shader.vs $<TARGET_FILE_DIR:imgui-glfw-example>
     COMMAND
-        ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/assets/simple-shader.fs $<TARGET_FILE_DIR:clap-examples>
+        ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/assets/simple-shader.fs $<TARGET_FILE_DIR:imgui-glfw-example>
 )
 
-target_include_directories(clap-examples PRIVATE ${CMAKE_BINARY_DIR})
-target_compile_definitions(clap-examples PRIVATE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
-target_link_libraries(clap-examples PRIVATE imgui::imgui GLEW::glew_s glfw::glfw)
+target_include_directories(imgui-glfw-example PRIVATE ${CMAKE_BINARY_DIR})
+target_compile_definitions(imgui-glfw-example PRIVATE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+target_link_libraries(imgui-glfw-example PRIVATE imgui::imgui GLEW::glew_s glfw::glfw clap-core)
+
+
+add_library(clap-plugin-template MODULE src/plugin/main.cpp)
+target_link_libraries(clap-plugin-template PRIVATE clap-core)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_libraries(clap-plugin-template PRIVATE -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/src/linux-my_plug.version)
+    target_link_libraries(clap-plugin-template PRIVATE -Wl,-z,defs)
+    set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_options(clap-plugin-template PRIVATE -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/src/macos-symbols.txt)
+
+    set_target_properties(clap-plugin-template PROPERTIES
+                BUNDLE True
+                BUNDLE_EXTENSION clap
+                MACOSX_BUNDLE_GUI_IDENTIFIER com.my_company.my_plug
+                MACOSX_BUNDLE_BUNDLE_NAME my_plug
+                MACOSX_BUNDLE_BUNDLE_VERSION "1"
+                MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
+                MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/plugins.plist.in
+                )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_options(clap-plugin-template PRIVATE /EXPORT:clap_entry)
+    set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
+endif()
