@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
 project(plugin-imgui)
 
-add_library(plugin-imgui
-    MODULE
+add_library(plugin-imgui MODULE)
+
+target_sources(plugin-imgui
+    PRIVATE
         gain.cpp
         gui.cpp
         imgui_base.cpp
