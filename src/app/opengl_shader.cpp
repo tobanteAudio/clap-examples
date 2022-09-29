@@ -9,10 +9,7 @@
 
 Shader::Shader() {}
 
-void Shader::init(
-    std::string const& vertex_code,
-    std::string const& fragment_code
-)
+void Shader::init(std::string const& vertex_code, std::string const& fragment_code)
 {
     vertex_code_   = vertex_code;
     fragment_code_ = fragment_code;
@@ -72,12 +69,7 @@ void Shader::setUniform<float>(std::string const& name, float val1, float val2)
 }
 
 template<>
-void Shader::setUniform<float>(
-    std::string const& name,
-    float val1,
-    float val2,
-    float val3
-)
+void Shader::setUniform<float>(std::string const& name, float val1, float val2, float val3)
 {
     glUniform3f(glGetUniformLocation(id_, name.c_str()), val1, val2, val3);
 }
@@ -85,12 +77,7 @@ void Shader::setUniform<float>(
 template<>
 void Shader::setUniform<float*>(std::string const& name, float* val)
 {
-    glUniformMatrix4fv(
-        glGetUniformLocation(id_, name.c_str()),
-        1,
-        GL_FALSE,
-        val
-    );
+    glUniformMatrix4fv(glGetUniformLocation(id_, name.c_str()), 1, GL_FALSE, val);
 }
 
 void Shader::checkCompileErr()
@@ -105,8 +92,7 @@ void Shader::checkCompileErr()
     glGetShaderiv(fragment_id_, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragment_id_, 1024, NULL, infoLog);
-        std::cout << "Error compiling Fragment Shader:\n"
-                  << infoLog << std::endl;
+        std::cout << "Error compiling Fragment Shader:\n" << infoLog << std::endl;
     }
 }
 

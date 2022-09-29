@@ -44,11 +44,7 @@ typedef struct
 // clap_plugin_audio_ports //
 /////////////////////////////
 
-static uint32_t
-my_plug_audio_ports_count(clap_plugin_t const* plugin, bool is_input)
-{
-    return 1;
-}
+static uint32_t my_plug_audio_ports_count(clap_plugin_t const* plugin, bool is_input) { return 1; }
 
 static bool my_plug_audio_ports_get(
     clap_plugin_t const* plugin,
@@ -76,11 +72,7 @@ static const clap_plugin_audio_ports_t s_my_plug_audio_ports = {
 // clap_plugin_note_ports //
 ////////////////////////////
 
-static uint32_t
-my_plug_note_ports_count(clap_plugin_t const* plugin, bool is_input)
-{
-    return 1;
-}
+static uint32_t my_plug_note_ports_count(clap_plugin_t const* plugin, bool is_input) { return 1; }
 
 static bool my_plug_note_ports_get(
     clap_plugin_t const* plugin,
@@ -92,9 +84,8 @@ static bool my_plug_note_ports_get(
     if (index > 0) return false;
     info->id = 0;
     snprintf(info->name, sizeof(info->name), "%s", "My Port Name");
-    info->supported_dialects = CLAP_NOTE_DIALECT_CLAP
-                             | CLAP_NOTE_DIALECT_MIDI_MPE
-                             | CLAP_NOTE_DIALECT_MIDI2;
+    info->supported_dialects
+        = CLAP_NOTE_DIALECT_CLAP | CLAP_NOTE_DIALECT_MIDI_MPE | CLAP_NOTE_DIALECT_MIDI2;
     info->preferred_dialect = CLAP_NOTE_DIALECT_CLAP;
     return true;
 }
@@ -127,14 +118,10 @@ static bool my_plug_init(const struct clap_plugin* plugin)
     auto* plug = (my_plug_t*)plugin->plugin_data;
 
     // Fetch host's extensions here
-    plug->hostLog
-        = (clap_host_log_t*)plug->host->get_extension(plug->host, CLAP_EXT_LOG);
+    plug->hostLog = (clap_host_log_t*)plug->host->get_extension(plug->host, CLAP_EXT_LOG);
     plug->hostThreadCheck
-        = (clap_host_thread_check_t*)
-              plug->host->get_extension(plug->host, CLAP_EXT_THREAD_CHECK);
-    plug->hostLatency
-        = (clap_host_latency_t*)
-              plug->host->get_extension(plug->host, CLAP_EXT_LATENCY);
+        = (clap_host_thread_check_t*)plug->host->get_extension(plug->host, CLAP_EXT_THREAD_CHECK);
+    plug->hostLatency = (clap_host_latency_t*)plug->host->get_extension(plug->host, CLAP_EXT_LATENCY);
     return true;
 }
 
@@ -144,29 +131,21 @@ static void my_plug_destroy(const struct clap_plugin* plugin)
     free(plug);
 }
 
-static bool my_plug_activate(
-    const struct clap_plugin* plugin,
-    double sr,
-    uint32_t minFrames,
-    uint32_t maxFrames
-)
+static bool
+my_plug_activate(const struct clap_plugin* plugin, double sr, uint32_t minFrames, uint32_t maxFrames)
 {
     return true;
 }
 
 static void my_plug_deactivate(const struct clap_plugin* plugin) {}
 
-static bool my_plug_start_processing(const struct clap_plugin* plugin)
-{
-    return true;
-}
+static bool my_plug_start_processing(const struct clap_plugin* plugin) { return true; }
 
 static void my_plug_stop_processing(const struct clap_plugin* plugin) {}
 
 static void my_plug_reset(const struct clap_plugin* plugin) {}
 
-static void
-my_plug_process_event(my_plug_t* plug, clap_event_header_t const* hdr)
+static void my_plug_process_event(my_plug_t* plug, clap_event_header_t const* hdr)
 {
     if (hdr->space_id == CLAP_CORE_EVENT_SPACE_ID) {
         switch (hdr->type) {
@@ -189,29 +168,25 @@ my_plug_process_event(my_plug_t* plug, clap_event_header_t const* hdr)
             }
 
             case CLAP_EVENT_NOTE_EXPRESSION: {
-                clap_event_note_expression_t const* ev
-                    = (clap_event_note_expression_t const*)hdr;
+                clap_event_note_expression_t const* ev = (clap_event_note_expression_t const*)hdr;
                 // TODO: handle note expression
                 break;
             }
 
             case CLAP_EVENT_PARAM_VALUE: {
-                clap_event_param_value_t const* ev
-                    = (clap_event_param_value_t const*)hdr;
+                clap_event_param_value_t const* ev = (clap_event_param_value_t const*)hdr;
                 // TODO: handle parameter change
                 break;
             }
 
             case CLAP_EVENT_PARAM_MOD: {
-                clap_event_param_mod_t const* ev
-                    = (clap_event_param_mod_t const*)hdr;
+                clap_event_param_mod_t const* ev = (clap_event_param_mod_t const*)hdr;
                 // TODO: handle parameter modulation
                 break;
             }
 
             case CLAP_EVENT_TRANSPORT: {
-                clap_event_transport_t const* ev
-                    = (clap_event_transport_t const*)hdr;
+                clap_event_transport_t const* ev = (clap_event_transport_t const*)hdr;
                 // TODO: handle transport event
                 break;
             }
@@ -223,8 +198,7 @@ my_plug_process_event(my_plug_t* plug, clap_event_header_t const* hdr)
             }
 
             case CLAP_EVENT_MIDI_SYSEX: {
-                clap_event_midi_sysex_t const* ev
-                    = (clap_event_midi_sysex_t const*)hdr;
+                clap_event_midi_sysex_t const* ev = (clap_event_midi_sysex_t const*)hdr;
                 // TODO: handle MIDI Sysex event
                 break;
             }
@@ -250,8 +224,7 @@ my_plug_process(const struct clap_plugin* plugin, clap_process_t const* process)
     for (uint32_t i = 0; i < nframes;) {
         /* handle every events that happrens at the frame "i" */
         while (ev_index < nev && next_ev_frame == i) {
-            clap_event_header_t const* hdr
-                = process->in_events->get(process->in_events, ev_index);
+            clap_event_header_t const* hdr = process->in_events->get(process->in_events, ev_index);
             if (hdr->time != i) {
                 next_ev_frame = hdr->time;
                 break;
@@ -287,8 +260,7 @@ my_plug_process(const struct clap_plugin* plugin, clap_process_t const* process)
     return CLAP_PROCESS_CONTINUE;
 }
 
-static void const*
-my_plug_get_extension(const struct clap_plugin* plugin, char const* id)
+static void const* my_plug_get_extension(const struct clap_plugin* plugin, char const* id)
 {
     if (!strcmp(id, CLAP_EXT_LATENCY)) return &s_my_plug_latency;
     if (!strcmp(id, CLAP_EXT_AUDIO_PORTS)) return &s_my_plug_audio_ports;
@@ -337,16 +309,13 @@ static struct
      },
 };
 
-static uint32_t
-plugin_factory_get_plugin_count(const struct clap_plugin_factory* factory)
+static uint32_t plugin_factory_get_plugin_count(const struct clap_plugin_factory* factory)
 {
     return sizeof(s_plugins) / sizeof(s_plugins[0]);
 }
 
-static clap_plugin_descriptor_t const* plugin_factory_get_plugin_descriptor(
-    const struct clap_plugin_factory* factory,
-    uint32_t index
-)
+static clap_plugin_descriptor_t const*
+plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory* factory, uint32_t index)
 {
     return s_plugins[index].desc;
 }
@@ -361,8 +330,7 @@ static clap_plugin_t const* plugin_factory_create_plugin(
 
     int const N = sizeof(s_plugins) / sizeof(s_plugins[0]);
     for (int i = 0; i < N; ++i)
-        if (!strcmp(plugin_id, s_plugins[i].desc->id))
-            return s_plugins[i].create(host);
+        if (!strcmp(plugin_id, s_plugins[i].desc->id)) return s_plugins[i].create(host);
 
     return NULL;
 }

@@ -25,8 +25,7 @@ static void main_loop(void*);
 int main(int, char**)
 {
     // Setup SDL
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER)
-        != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
         printf("Error: %s\n", SDL_GetError());
         return -1;
     }
@@ -48,8 +47,8 @@ int main(int, char**)
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
-    SDL_WindowFlags window_flags = (SDL_WindowFlags
-    )(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    SDL_WindowFlags window_flags
+        = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 
     g_Window = SDL_CreateWindow(
         "Dear ImGui Emscripten example",
@@ -168,8 +167,7 @@ static void main_loop(void* arg)
         static float f     = 0.0f;
         static int counter = 0;
 
-        ImGui::Begin("Hello, world!"
-        );  // Create a window called "Hello, world!" and append into it.
+        ImGui::Begin("Hello, world!");  // Create a window called "Hello, world!" and append into it.
 
         ImGui::Text("This is some useful text."
         );  // Display some text (you can use a format strings too)
@@ -179,20 +177,13 @@ static void main_loop(void* arg)
         );  // Edit bools storing our window open/close state
         ImGui::Checkbox("Another Window", &show_another_window);
 
-        ImGui::SliderFloat(
-            "float",
-            &f,
-            0.0f,
-            1.0f
-        );  // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::ColorEdit3(
-            "clear color",
-            (float*)&clear_color
-        );  // Edit 3 floats representing a color
+        ImGui::SliderFloat("float", &f, 0.0f,
+                           1.0f);  // Edit 1 float using a slider from 0.0f to 1.0f
+        ImGui::ColorEdit3("clear color",
+                          (float*)&clear_color);  // Edit 3 floats representing a color
 
-        if (ImGui::Button("Button"
-            ))  // Buttons return true when clicked (most widgets return true
-                // when edited/activated)
+        if (ImGui::Button("Button"))  // Buttons return true when clicked (most widgets return true
+                                      // when edited/activated)
             counter++;
         ImGui::SameLine();
         ImGui::Text("counter = %d", counter);

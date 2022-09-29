@@ -121,8 +121,7 @@ struct GainPlugin : public AudioPlugin
 
     clap_process_status process(clap_process const* ctx)
     {
-        double const decay
-            = pow(0.5, (double)ctx->frames_count / (double)m_srate / 0.125);
+        double const decay = pow(0.5, (double)ctx->frames_count / (double)m_srate / 0.125);
         for (int c = 0; c < 2; ++c) {
             m_peak_in[c] *= decay;
             m_peak_out[c] *= decay;
@@ -131,15 +130,11 @@ struct GainPlugin : public AudioPlugin
         }
 
         double cur_param_values[NUM_PARAMS];
-        for (int i = 0; i < NUM_PARAMS; ++i) {
-            cur_param_values[i] = m_param_values[i];
-        }
+        for (int i = 0; i < NUM_PARAMS; ++i) { cur_param_values[i] = m_param_values[i]; }
 
         clap_process_status s = -1;
-        if (ctx && ctx->audio_inputs_count == 1
-            && ctx->audio_inputs[0].channel_count == 2
-            && ctx->audio_outputs_count == 1
-            && ctx->audio_outputs[0].channel_count == 2) {
+        if (ctx && ctx->audio_inputs_count == 1 && ctx->audio_inputs[0].channel_count == 2
+            && ctx->audio_outputs_count == 1 && ctx->audio_outputs[0].channel_count == 2) {
             // handling incoming parameter changes and slicing the process call
             // on the time axis would happen here.
 
@@ -168,9 +163,7 @@ struct GainPlugin : public AudioPlugin
             }
         }
 
-        for (int i = 0; i < NUM_PARAMS; ++i) {
-            m_last_param_values[i] = m_param_values[i];
-        }
+        for (int i = 0; i < NUM_PARAMS; ++i) { m_last_param_values[i] = m_param_values[i]; }
 
         if (s < 0) s = CLAP_PROCESS_ERROR;
         return s;
@@ -257,16 +250,13 @@ struct GainPlugin : public AudioPlugin
 
         if (param_id < 0 || param_id >= NUM_PARAMS) return 0.0;
 
-        if (param_id == PARAM_VOLUME) {
-            return in_value > -150.0 ? pow(10.0, in_value / 20.0) : 0.0;
-        }
+        if (param_id == PARAM_VOLUME) { return in_value > -150.0 ? pow(10.0, in_value / 20.0) : 0.0; }
         if (param_id == PARAM_PAN) { return 0.01 * in_value; }
 
         return 0.0;
     }
 
-    bool
-    valueToText(clap_id param_id, double value, char* display, uint32_t size)
+    bool valueToText(clap_id param_id, double value, char* display, uint32_t size)
     {
         if (!display || !size) return false;
         if (param_id < 0 || param_id >= NUM_PARAMS) return false;
@@ -298,8 +288,7 @@ struct GainPlugin : public AudioPlugin
         return true;
     }
 
-    void
-    flushParameter(clap_input_events const* in, clap_output_events const* out)
+    void flushParameter(clap_input_events const* in, clap_output_events const* out)
     {
         if (!in) return;
 
@@ -308,11 +297,9 @@ struct GainPlugin : public AudioPlugin
             if (!evt || evt->space_id != CLAP_CORE_EVENT_SPACE_ID) continue;
             if (evt->type == CLAP_EVENT_PARAM_VALUE) {
                 auto const* pevt = (clap_event_param_value const*)evt;
-                if (pevt->param_id < 0 || pevt->param_id >= NUM_PARAMS)
-                    continue;  // assert
+                if (pevt->param_id < 0 || pevt->param_id >= NUM_PARAMS) continue;  // assert
 
-                m_param_values[pevt->param_id]
-                    = _params__convert_value(pevt->param_id, pevt->value);
+                m_param_values[pevt->param_id] = _params__convert_value(pevt->param_id, pevt->value);
             }
         }
     }
@@ -320,7 +307,4 @@ struct GainPlugin : public AudioPlugin
 
 clap_plugin_descriptor* getGainPluginDescriptor() { return &_descriptor; }
 
-AudioPlugin* createGainPlugin(clap_host const* host)
-{
-    return new GainPlugin(host);
-}
+AudioPlugin* createGainPlugin(clap_host const* host) { return new GainPlugin(host); }

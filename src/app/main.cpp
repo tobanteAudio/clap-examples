@@ -19,14 +19,10 @@ static void glfw_error_callback(int error, char const* description)
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-static constexpr auto col1
-    = ImVec4(68.0F / 255.0F, 83.0F / 255.0F, 89.0F / 255.0F, 1.0f);
-static constexpr auto col2
-    = ImVec4(40.0F / 255.0F, 60.0F / 255.0F, 80.0F / 255.0F, 1.0f);
-static constexpr auto col3
-    = ImVec4(50.0F / 255.0F, 65.0F / 255.0F, 82.0F / 255.0F, 1.0f);
-static constexpr auto col4
-    = ImVec4(20.0F / 255.0F, 40.0F / 255.0F, 60.0F / 255.0F, 1.0f);
+static constexpr auto col1 = ImVec4(68.0F / 255.0F, 83.0F / 255.0F, 89.0F / 255.0F, 1.0f);
+static constexpr auto col2 = ImVec4(40.0F / 255.0F, 60.0F / 255.0F, 80.0F / 255.0F, 1.0f);
+static constexpr auto col3 = ImVec4(50.0F / 255.0F, 65.0F / 255.0F, 82.0F / 255.0F, 1.0f);
+static constexpr auto col4 = ImVec4(20.0F / 255.0F, 40.0F / 255.0F, 60.0F / 255.0F, 1.0f);
 
 void render_conan_logo()
 {
@@ -110,36 +106,12 @@ void create_triangle(unsigned int& vbo, unsigned int& vao, unsigned int& ebo)
     glGenBuffers(1, &ebo);
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        sizeof(triangle_vertices),
-        triangle_vertices,
-        GL_STATIC_DRAW
-    );
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_vertices), triangle_vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(
-        GL_ELEMENT_ARRAY_BUFFER,
-        sizeof(triangle_indices),
-        triangle_indices,
-        GL_STATIC_DRAW
-    );
-    glVertexAttribPointer(
-        0,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        6 * sizeof(float),
-        (void*)0
-    );
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangle_indices), triangle_indices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        1,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        6 * sizeof(float),
-        (void*)(3 * sizeof(float))
-    );
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -158,7 +130,7 @@ int main(int, char**)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // Required on Mac
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
     // GL 3.0 + GLSL 130
     char const* glsl_version = "#version 130";
@@ -169,8 +141,7 @@ int main(int, char**)
 #endif
 
     // Create window with graphics context
-    GLFWwindow* window
-        = glfwCreateWindow(1280, 720, "Dear ImGui - Conan", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui - Conan", NULL, NULL);
     if (window == NULL) return 1;
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);  // Enable vsync
@@ -232,8 +203,7 @@ int main(int, char**)
         static float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
         // pass the parameters to the shader
         triangle_shader.setUniform("rotation", rotation);
-        triangle_shader
-            .setUniform("translation", translation[0], translation[1]);
+        triangle_shader.setUniform("translation", translation[0], translation[1]);
         // color picker
         ImGui::ColorEdit3("color", color);
         // multiply triangle's color with this color

@@ -9,43 +9,25 @@
 // clap_host const* clapHost;
 extern clap_plugin_timer_support guiTimerSupport;
 
-static auto asPlugin(clap_plugin const* plugin)
-{
-    return (AudioPlugin*)(plugin->plugin_data);
-}
+static auto asPlugin(clap_plugin const* plugin) { return (AudioPlugin*)(plugin->plugin_data); }
 
 namespace plugin {
 bool init(clap_plugin const* plugin) { return asPlugin(plugin)->init(); }
 
-void destroy(clap_plugin const* plugin)
-{
-    delete (AudioPlugin*)plugin->plugin_data;
-}
+void destroy(clap_plugin const* plugin) { delete (AudioPlugin*)plugin->plugin_data; }
 
-bool activate(
-    clap_plugin const* plugin,
-    double sr,
-    uint32_t minFrames,
-    uint32_t maxFrames
-)
+bool activate(clap_plugin const* plugin, double sr, uint32_t minFrames, uint32_t maxFrames)
 {
     return asPlugin(plugin)->activate(sr, minFrames, maxFrames);
 }
 
 void deactivate(clap_plugin const* plugin) { asPlugin(plugin)->deactivate(); }
 
-bool start_processing(clap_plugin const* plugin)
-{
-    return asPlugin(plugin)->startProcessing();
-}
+bool start_processing(clap_plugin const* plugin) { return asPlugin(plugin)->startProcessing(); }
 
-void stop_processing(clap_plugin const* plugin)
-{
-    asPlugin(plugin)->stopProcessing();
-}
+void stop_processing(clap_plugin const* plugin) { asPlugin(plugin)->stopProcessing(); }
 
-clap_process_status
-process(clap_plugin const* plugin, clap_process const* process)
+clap_process_status process(clap_plugin const* plugin, clap_process const* process)
 {
     return asPlugin(plugin)->process(process);
 }
@@ -57,18 +39,11 @@ void const* get_extension(clap_plugin const* plugin, char const* id)
     return asPlugin(plugin)->getExtension(id);
 }
 
-void on_main_thread(clap_plugin const* plugin)
-{
-    asPlugin(plugin)->onMainThread();
-}
+void on_main_thread(clap_plugin const* plugin) { asPlugin(plugin)->onMainThread(); }
 };  // namespace plugin
 
 namespace gui {
-bool is_api_supported(
-    clap_plugin const* plugin,
-    char const* api,
-    bool is_floating
-)
+bool is_api_supported(clap_plugin const* plugin, char const* api, bool is_floating)
 {
     return asPlugin(plugin)->isApiSupported(api, is_floating);
 }
@@ -80,20 +55,14 @@ bool create(clap_plugin const* plugin, char const* api, bool is_floating)
 
 void destroy(clap_plugin const* plugin) { asPlugin(plugin)->destroyUI(false); }
 
-bool set_scale(clap_plugin const* plugin, double scale)
-{
-    return asPlugin(plugin)->setScale(scale);
-}
+bool set_scale(clap_plugin const* plugin, double scale) { return asPlugin(plugin)->setScale(scale); }
 
 bool get_size(clap_plugin const* plugin, uint32_t* width, uint32_t* height)
 {
     return asPlugin(plugin)->getSize(width, height);
 }
 
-bool can_resize(clap_plugin const* plugin)
-{
-    return asPlugin(plugin)->canResize();
-}
+bool can_resize(clap_plugin const* plugin) { return asPlugin(plugin)->canResize(); }
 
 bool adjust_size(clap_plugin const* plugin, uint32_t* width, uint32_t* height)
 {
@@ -110,10 +79,7 @@ bool set_parent(clap_plugin const* plugin, clap_window const* window)
     return asPlugin(plugin)->setParent(window);
 }
 
-bool set_transient(clap_plugin const* plugin, clap_window const* window)
-{
-    return false;
-}
+bool set_transient(clap_plugin const* plugin, clap_window const* window) { return false; }
 
 void suggest_title(clap_plugin const* plugin, char const* title)
 {
@@ -126,16 +92,9 @@ bool hide(clap_plugin const* plugin) { return asPlugin(plugin)->hideUI(); }
 };  // namespace gui
 
 namespace params {
-uint32_t count(clap_plugin const* plugin)
-{
-    return asPlugin(plugin)->numParameter();
-}
+uint32_t count(clap_plugin const* plugin) { return asPlugin(plugin)->numParameter(); }
 
-bool get_info(
-    clap_plugin const* plugin,
-    uint32_t param_index,
-    clap_param_info_t* param_info
-)
+bool get_info(clap_plugin const* plugin, uint32_t param_index, clap_param_info_t* param_info)
 {
     return asPlugin(plugin)->getParameterInfo(param_index, param_info);
 }
@@ -156,30 +115,18 @@ bool value_to_text(
     return asPlugin(plugin)->valueToText(param_id, value, display, size);
 }
 
-bool text_to_value(
-    clap_plugin const* plugin,
-    clap_id param_id,
-    char const* display,
-    double* value
-)
+bool text_to_value(clap_plugin const* plugin, clap_id param_id, char const* display, double* value)
 {
     return asPlugin(plugin)->textToValue(param_id, display, value);
 }
 
-void flush(
-    clap_plugin const* plugin,
-    clap_input_events const* in,
-    clap_output_events const* out
-)
+void flush(clap_plugin const* plugin, clap_input_events const* in, clap_output_events const* out)
 {
     return asPlugin(plugin)->flushParameter(in, out);
 }
 };  // namespace params
 
-AudioPlugin::AudioPlugin(
-    clap_plugin_descriptor const* descriptor,
-    clap_host const* host
-)
+AudioPlugin::AudioPlugin(clap_plugin_descriptor const* descriptor, clap_host const* host)
 {
     m_w      = 0;
     m_h      = 0;

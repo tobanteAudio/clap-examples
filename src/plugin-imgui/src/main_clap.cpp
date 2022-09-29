@@ -12,10 +12,7 @@ HINSTANCE g_hinst;
 #include "gain.hpp"
 
 namespace factory {
-auto getPluginCount(clap_plugin_factory const* factory) -> uint32_t
-{
-    return 1;
-}
+auto getPluginCount(clap_plugin_factory const* factory) -> uint32_t { return 1; }
 
 auto getPluginDescriptor(clap_plugin_factory const* factory, uint32_t index)
     -> clap_plugin_descriptor const*
@@ -24,15 +21,11 @@ auto getPluginDescriptor(clap_plugin_factory const* factory, uint32_t index)
     return NULL;
 }
 
-auto create(
-    clap_plugin_factory const* factory,
-    clap_host const* host,
-    char const* id
-) -> clap_plugin const*
+auto create(clap_plugin_factory const* factory, clap_host const* host, char const* id)
+    -> clap_plugin const*
 {
     AudioPlugin* plugin = NULL;
-    if (!strcmp(getGainPluginDescriptor()->id, id))
-        plugin = createGainPlugin(host);
+    if (!strcmp(getGainPluginDescriptor()->id, id)) plugin = createGainPlugin(host);
     if (plugin) return &plugin->clapPluginHandle;
     return NULL;
 }

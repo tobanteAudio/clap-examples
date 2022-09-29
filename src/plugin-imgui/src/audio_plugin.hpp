@@ -11,23 +11,19 @@ struct AudioPlugin
     clap_plugin_gui clapGuiHandle;
     void* m_ui_ctx;
 
-    AudioPlugin(
-        clap_plugin_descriptor const* descriptor,
-        clap_host const* host
-    );
+    AudioPlugin(clap_plugin_descriptor const* descriptor, clap_host const* host);
     virtual ~AudioPlugin();
 
-    virtual bool init() = 0;
-    virtual bool activate(double sr, uint32_t minFrames, uint32_t maxFrames)
-        = 0;
-    virtual void deactivate()                                        = 0;
-    virtual bool startProcessing()                                   = 0;
-    virtual void stopProcessing()                                    = 0;
-    virtual clap_process_status process(clap_process const* ctx)     = 0;
-    virtual void const* getExtension(char const* id)                 = 0;
-    virtual void onMainThread()                                      = 0;
-    virtual void draw()                                              = 0;
-    virtual bool getPreferredSize(uint32_t* width, uint32_t* height) = 0;
+    virtual bool init()                                                      = 0;
+    virtual bool activate(double sr, uint32_t minFrames, uint32_t maxFrames) = 0;
+    virtual void deactivate()                                                = 0;
+    virtual bool startProcessing()                                           = 0;
+    virtual void stopProcessing()                                            = 0;
+    virtual clap_process_status process(clap_process const* ctx)             = 0;
+    virtual void const* getExtension(char const* id)                         = 0;
+    virtual void onMainThread()                                              = 0;
+    virtual void draw()                                                      = 0;
+    virtual bool getPreferredSize(uint32_t* width, uint32_t* height)         = 0;
 
     bool isApiSupported(char const* api, bool is_floating);
     bool createUI(char const* api, bool is_floating);
@@ -43,13 +39,10 @@ struct AudioPlugin
     bool showUI();
     bool hideUI();
 
-    virtual uint32_t numParameter()                                        = 0;
-    virtual bool getParameterInfo(uint32_t index, clap_param_info_t* info) = 0;
-    virtual bool getParameterValue(clap_id id, double* v)                  = 0;
-    virtual bool valueToText(clap_id id, double v, char* display, uint32_t size)
-        = 0;
-    virtual bool textToValue(clap_id id, char const* display, double* v) = 0;
-    virtual void
-    flushParameter(clap_input_events const* in, clap_output_events const* out)
-        = 0;
+    virtual uint32_t numParameter()                                                         = 0;
+    virtual bool getParameterInfo(uint32_t index, clap_param_info_t* info)                  = 0;
+    virtual bool getParameterValue(clap_id id, double* v)                                   = 0;
+    virtual bool valueToText(clap_id id, double v, char* display, uint32_t size)            = 0;
+    virtual bool textToValue(clap_id id, char const* display, double* v)                    = 0;
+    virtual void flushParameter(clap_input_events const* in, clap_output_events const* out) = 0;
 };

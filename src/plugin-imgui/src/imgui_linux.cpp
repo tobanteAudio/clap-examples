@@ -9,11 +9,7 @@
 #include <glfw/glfw3native.h>
 // clang-format on
 
-bool imguiAttach(
-    AudioPlugin* plugin,
-    void* native_display,
-    void* native_window
-);
+bool imguiAttach(AudioPlugin* plugin, void* native_display, void* native_window);
 
 bool AudioPlugin::isApiSupported(char const* api, bool is_floating)
 {
@@ -42,17 +38,7 @@ void getNativeWindowPosition(
     XGetWindowAttributes(xdisp, xwin, &xwa);
 
     Window xroot = DefaultRootWindow(xdisp), xchild = 0;
-    if (xroot)
-        XTranslateCoordinates(
-            xdisp,
-            xwin,
-            xroot,
-            0,
-            0,
-            &xwa.x,
-            &xwa.y,
-            &xchild
-        );
+    if (xroot) XTranslateCoordinates(xdisp, xwin, xroot, 0, 0, &xwa.x, &xwa.y, &xchild);
 
     x = xwa.x;
     y = xwa.y;
@@ -60,11 +46,7 @@ void getNativeWindowPosition(
     h = xwa.height;
 }
 
-void setNativeParent(
-    void* native_display,
-    void* native_window,
-    GLFWwindow* glfw_win
-)
+void setNativeParent(void* native_display, void* native_window, GLFWwindow* glfw_win)
 {
     Display* xdisp = (Display*)native_display;
     Window xpar    = (Window)native_window;
@@ -78,17 +60,14 @@ unsigned int timer_id;
 bool createTimer(unsigned int ms)
 {
     clap_host_timer_support* timer_support
-        = (clap_host_timer_support*)
-              g_clap_host->get_extension(g_clap_host, CLAP_EXT_TIMER_SUPPORT);
-    return timer_support
-        && timer_support->register_timer(g_clap_host, ms, &timer_id);
+        = (clap_host_timer_support*)g_clap_host->get_extension(g_clap_host, CLAP_EXT_TIMER_SUPPORT);
+    return timer_support && timer_support->register_timer(g_clap_host, ms, &timer_id);
 }
 
 void destroyTimer()
 {
     clap_host_timer_support* timer_support
-        = (clap_host_timer_support*)
-              g_clap_host->get_extension(g_clap_host, CLAP_EXT_TIMER_SUPPORT);
+        = (clap_host_timer_support*)g_clap_host->get_extension(g_clap_host, CLAP_EXT_TIMER_SUPPORT);
     if (timer_support) timer_support->unregister_timer(g_clap_host, timer_id);
     timer_id = 0;
 }

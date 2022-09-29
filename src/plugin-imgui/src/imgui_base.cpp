@@ -8,14 +8,7 @@
 #include <GLFW/glfw3.h>
 
 // always in screen coordinates
-void getNativeWindowPosition(
-    void* display,
-    void* window,
-    int& x,
-    int& y,
-    int& w,
-    int& h
-);
+void getNativeWindowPosition(void* display, void* window, int& x, int& y, int& w, int& h);
 void setNativeParent(void* display, void* window, GLFWwindow* glfw_win);
 
 bool createTimer(unsigned int ms);
@@ -68,8 +61,8 @@ void imguiDoRenderPass()
         ImGui::Begin(
             rec->name,
             NULL,
-            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize
-                | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration
+                | ImGuiWindowFlags_NoDocking
         );
 
         rec->plugin->draw();
@@ -213,9 +206,6 @@ bool AudioPlugin::destroyUI(bool is_plugin_destroy)
     return true;
 }
 
-void timerCallback(clap_plugin const* plugin, unsigned int timer_id)
-{
-    imguiTimerCallback();
-}
+void timerCallback(clap_plugin const* plugin, unsigned int timer_id) { imguiTimerCallback(); }
 
 auto guiTimerSupport = clap_plugin_timer_support_t{timerCallback};

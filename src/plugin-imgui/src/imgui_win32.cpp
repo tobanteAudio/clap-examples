@@ -25,14 +25,7 @@ bool AudioPlugin::setParent(clap_window const* parent)
     return parent && parent->win32 && imguiAttach(this, NULL, parent->win32);
 }
 
-void getNativeWindowPosition(
-    void* display,
-    void* window,
-    int& x,
-    int& y,
-    int& w,
-    int& h
-)
+void getNativeWindowPosition(void* display, void* window, int& x, int& y, int& w, int& h)
 {
     RECT wr;
     ::GetWindowRect((HWND)window, &wr);
@@ -51,15 +44,7 @@ void setNativeParent(void* display, void* window, GLFWwindow* glfw_win)
     style &= ~WS_POPUP;
     style |= WS_CHILDWINDOW;
     SetWindowLong(hwnd, GWL_STYLE, style);
-    SetWindowPos(
-        hwnd,
-        NULL,
-        0,
-        0,
-        0,
-        0,
-        SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE
-    );
+    SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 }
 
 unsigned int timer_id;
