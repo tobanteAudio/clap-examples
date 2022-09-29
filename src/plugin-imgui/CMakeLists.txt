@@ -42,4 +42,9 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
             MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
             MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/mac/plugins.plist.in
     )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_sources(plugin-imgui PRIVATE imgui_linux.cpp)
+    target_link_libraries(plugin-imgui PRIVATE -Wl,--version-script=${CMAKE_SOURCE_DIR}/resources/linux/plug.version)
+    target_link_libraries(plugin-imgui PRIVATE -Wl,-z,defs)
+    set_target_properties(plugin-imgui PROPERTIES SUFFIX ".clap" PREFIX "")
 endif()
