@@ -61,6 +61,7 @@ jobs:
           libgl-dev
           libxcb-util-dev
           libxcb-util0-dev
+          libglu1-mesa-dev
 
       - name: Install conan
         run: |
