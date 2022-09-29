@@ -12,17 +12,17 @@
 
 static char const* _features[] = {"", NULL};
 
-static clap_plugin_descriptor _descriptor = {
-    CLAP_VERSION,
-    "com.cockos.clap-example-0",
-    "CLAP Volume/Pan",
-    "cockos",
-    "https://reaper.fm",
-    "https://reaper.fm",
-    "https://reaper.fm",
-    "0.0.1",
-    "volume and pan",
-    _features,
+static auto _descriptor = clap_plugin_descriptor_t{
+    .clap_version = CLAP_VERSION,
+    .id           = "com.tobanteAudio.clap-imgui",
+    .name         = "CLAP ImGui",
+    .vendor       = "tobanteAudio",
+    .url          = "https://github.com/tobanteAudio/clap-examples",
+    .manual_url   = "https://github.com/tobanteAudio/clap-examples",
+    .support_url  = "https://github.com/tobanteAudio/clap-examples",
+    .version      = "0.1.0",
+    .description  = "CLAP + GLFW + ImGui",
+    .features     = _features,
 };
 
 enum

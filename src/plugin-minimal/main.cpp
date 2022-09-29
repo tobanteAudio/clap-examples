@@ -17,15 +17,15 @@ static constexpr auto features = std::array<char const*, 3>{
 };
 
 static const clap_plugin_descriptor_t s_my_plug_desc = {
-    .clap_version = CLAP_VERSION_INIT,
-    .id           = "com.your-company.YourPlugin",
-    .name         = "Plugin Name",
-    .vendor       = "Vendor",
-    .url          = "https://your-domain.com/your-plugin",
-    .manual_url   = "https://your-domain.com/your-plugin/manual",
-    .support_url  = "https://your-domain.com/support",
-    .version      = "1.4.2",
-    .description  = "The plugin description.",
+    .clap_version = CLAP_VERSION,
+    .id           = "com.tobanteAudio.clap-minimal",
+    .name         = "CLAP Minimal",
+    .vendor       = "tobanteAudio",
+    .url          = "https://github.com/tobanteAudio/clap-examples",
+    .manual_url   = "https://github.com/tobanteAudio/clap-examples",
+    .support_url  = "https://github.com/tobanteAudio/clap-examples",
+    .version      = "0.1.0",
+    .description  = "Minimal CLAP Audio-Plugin",
     .features     = (char const**)(features.data()),
 };
 

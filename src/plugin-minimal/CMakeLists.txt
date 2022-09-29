@@ -18,8 +18,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         PROPERTIES
             BUNDLE True
             BUNDLE_EXTENSION clap
-            MACOSX_BUNDLE_GUI_IDENTIFIER com.my_company.plugin-minimal
-            MACOSX_BUNDLE_BUNDLE_NAME plugin-minimal
+            MACOSX_BUNDLE_GUI_IDENTIFIER com.tobanteAudio.clap-minimal
+            MACOSX_BUNDLE_BUNDLE_NAME clap-minimal
             MACOSX_BUNDLE_BUNDLE_VERSION "1"
             MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
             MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/mac/plugins.plist.in
