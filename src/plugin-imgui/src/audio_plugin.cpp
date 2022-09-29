@@ -2,22 +2,25 @@
 // add generic passthroughs for extensions here.
 // plugin implementations should not need to touch this file.
 
-#include <string.h>
+#include "audio_plugin.hpp"
 
-#include "main.h"
+#include <string.h>
 
 // clap_host const* clapHost;
 extern clap_plugin_timer_support guiTimerSupport;
 
 static auto asPlugin(clap_plugin const* plugin)
 {
-    return (Plugin*)(plugin->plugin_data);
+    return (AudioPlugin*)(plugin->plugin_data);
 }
 
 namespace plugin {
 bool init(clap_plugin const* plugin) { return asPlugin(plugin)->init(); }
 
-void destroy(clap_plugin const* plugin) { delete (Plugin*)plugin->plugin_data; }
+void destroy(clap_plugin const* plugin)
+{
+    delete (AudioPlugin*)plugin->plugin_data;
+}
 
 bool activate(
     clap_plugin const* plugin,
@@ -173,7 +176,10 @@ void flush(
 }
 };  // namespace params
 
-Plugin::Plugin(clap_plugin_descriptor const* descriptor, clap_host const* host)
+AudioPlugin::AudioPlugin(
+    clap_plugin_descriptor const* descriptor,
+    clap_host const* host
+)
 {
     m_w      = 0;
     m_h      = 0;
@@ -215,4 +221,4 @@ Plugin::Plugin(clap_plugin_descriptor const* descriptor, clap_host const* host)
     clapParameterHandle.flush         = params::flush;
 }
 
-Plugin::~Plugin() { destroyUI(true); }
+AudioPlugin::~AudioPlugin() { destroyUI(true); }

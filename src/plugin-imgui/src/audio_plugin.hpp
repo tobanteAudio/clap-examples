@@ -1,11 +1,8 @@
-// add generic support for extensions here.
-// plugin implementations should not need to touch this file.
-
 #pragma once
 
 #include <clap/clap.h>
 
-struct Plugin
+struct AudioPlugin
 {
     clap_plugin clapPluginHandle;
     clap_plugin_params clapParameterHandle;
@@ -14,8 +11,11 @@ struct Plugin
     clap_plugin_gui clapGuiHandle;
     void* m_ui_ctx;
 
-    Plugin(clap_plugin_descriptor const* descriptor, clap_host const* host);
-    virtual ~Plugin();
+    AudioPlugin(
+        clap_plugin_descriptor const* descriptor,
+        clap_host const* host
+    );
+    virtual ~AudioPlugin();
 
     virtual bool init() = 0;
     virtual bool activate(double sr, uint32_t minFrames, uint32_t maxFrames)
@@ -53,6 +53,3 @@ struct Plugin
     flushParameter(clap_input_events const* in, clap_output_events const* out)
         = 0;
 };
-
-auto getGainPluginDescriptor() -> clap_plugin_descriptor*;
-auto createGainPlugin(clap_host const* host) -> Plugin*;

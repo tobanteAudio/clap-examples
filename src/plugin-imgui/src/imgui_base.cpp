@@ -1,10 +1,10 @@
 // platform independent connection between clap and imgui.
 // plugin implementations should not need to touch this file.
 
+#include "audio_plugin.hpp"
 #include "bindings/imgui_impl_glfw.h"
 #include "bindings/imgui_impl_opengl3.h"
 #include "imgui_internal.h"  // so we can get the viewport associated with an ImGui window
-#include "main.h"
 #include <GLFW/glfw3.h>
 
 // always in screen coordinates
@@ -31,7 +31,7 @@ unsigned int wnd_counter;
 
 struct ui_ctx_rec
 {
-    Plugin* plugin;
+    AudioPlugin* plugin;
     void* display;  // only used for x11
     void* window;
     char name[64];
@@ -130,7 +130,7 @@ static void glfw_error_callback(int error, char const* description)
     fprintf(stderr, "GLFW error %d: %s\n", error, description);
 }
 
-bool imguiAttach(Plugin* plugin, void* display, void* window)
+bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
 {
     if (!plugin || !window) { return false; }
     if (plugin->m_ui_ctx) { return true; }
@@ -180,7 +180,7 @@ bool imguiAttach(Plugin* plugin, void* display, void* window)
     return true;
 }
 
-bool Plugin::destroyUI(bool is_plugin_destroy)
+bool AudioPlugin::destroyUI(bool is_plugin_destroy)
 {
     if (m_ui_ctx) {
         ui_ctx_rec* old_rec = (ui_ctx_rec*)m_ui_ctx;

@@ -5,12 +5,16 @@ add_library(plugin-imgui MODULE)
 
 target_sources(plugin-imgui
     PRIVATE
-        gain.cpp
-        gui.cpp
-        imgui_base.cpp
-        imgui_win32.cpp
-        main.cpp
-        plugin.cpp
+        src/main_clap.cpp
+
+        src/audio_plugin.cpp
+        src/audio_plugin.hpp
+        src/gain.cpp
+        src/gain.hpp
+        src/gui.cpp
+        src/imgui_base.cpp
+        src/imgui_mac.mm
+        src/imgui_win32.cpp
 
         ${CMAKE_BINARY_DIR}/bindings/imgui_impl_glfw.h
         ${CMAKE_BINARY_DIR}/bindings/imgui_impl_glfw.cpp
@@ -26,7 +30,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_options(plugin-imgui PRIVATE /EXPORT:clap_entry)
     set_target_properties(plugin-imgui PROPERTIES SUFFIX ".clap" PREFIX "")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    target_sources(plugin-imgui PRIVATE imgui_mac.mm)
     target_link_options(plugin-imgui
         PRIVATE
             -exported_symbols_list ${CMAKE_SOURCE_DIR}/resources/mac/symbols.txt
@@ -43,7 +46,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
             MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/mac/plugins.plist.in
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    target_sources(plugin-imgui PRIVATE imgui_linux.cpp)
+    target_sources(plugin-imgui PRIVATE src/imgui_linux.cpp)
     target_link_libraries(plugin-imgui PRIVATE -Wl,--version-script=${CMAKE_SOURCE_DIR}/resources/linux/plug.version)
     target_link_libraries(plugin-imgui PRIVATE -Wl,-z,defs)
     set_target_properties(plugin-imgui PROPERTIES SUFFIX ".clap" PREFIX "")

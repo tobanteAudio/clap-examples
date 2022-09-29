@@ -9,7 +9,7 @@
 HINSTANCE g_hinst;
 #endif
 
-#include "main.h"
+#include "gain.hpp"
 
 namespace factory {
 auto getPluginCount(clap_plugin_factory const* factory) -> uint32_t
@@ -30,7 +30,7 @@ auto create(
     char const* id
 ) -> clap_plugin const*
 {
-    Plugin* plugin = NULL;
+    AudioPlugin* plugin = NULL;
     if (!strcmp(getGainPluginDescriptor()->id, id))
         plugin = createGainPlugin(host);
     if (plugin) return &plugin->clapPluginHandle;

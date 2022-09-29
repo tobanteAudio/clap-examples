@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "audio_plugin.hpp"
 #include "imgui.h"
-#include "main.h"
 
 static char const* _features[] = {"", NULL};
 
@@ -37,14 +37,14 @@ static const clap_param_info _param_info[NUM_PARAMS] = {
     {1, CLAP_PARAM_REQUIRES_PROCESS, NULL,    "Pan", "", -100.0, 100.0, 0.0}
 };
 
-struct Example_0 : public Plugin
+struct GainPlugin : public AudioPlugin
 {
     int m_srate;
     double m_param_values[NUM_PARAMS];
     double m_last_param_values[NUM_PARAMS];
     double m_peak_in[2], m_peak_out[2];
 
-    Example_0(clap_host const* host) : Plugin(&_descriptor, host)
+    GainPlugin(clap_host const* host) : AudioPlugin(&_descriptor, host)
     {
         m_srate = 48000;
         for (int i = 0; i < NUM_PARAMS; ++i) {
@@ -54,7 +54,7 @@ struct Example_0 : public Plugin
         m_peak_in[0] = m_peak_in[1] = m_peak_out[0] = m_peak_out[1] = 0.0;
     }
 
-    ~Example_0() {}
+    ~GainPlugin() {}
 
     bool init() { return true; }
 
@@ -320,4 +320,7 @@ struct Example_0 : public Plugin
 
 clap_plugin_descriptor* getGainPluginDescriptor() { return &_descriptor; }
 
-Plugin* createGainPlugin(clap_host const* host) { return new Example_0(host); }
+AudioPlugin* createGainPlugin(clap_host const* host)
+{
+    return new GainPlugin(host);
+}

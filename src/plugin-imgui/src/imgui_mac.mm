@@ -3,7 +3,8 @@
 
 #ifdef __APPLE__
 
-#include "main.h"
+#include "audio_plugin.hpp"
+
 #include <Cocoa/Cocoa.h>
 #include <sys/time.h>
 
@@ -11,13 +12,14 @@
 #include <glfw/glfw3.h>
 #include <glfw/glfw3native.h>
 
-bool imguiAttach(Plugin *plugin, void *native_display, void *native_window);
+bool imguiAttach(AudioPlugin *plugin, void *native_display,
+                 void *native_window);
 
-bool Plugin::isApiSupported(char const *api, bool is_floating) {
+bool AudioPlugin::isApiSupported(char const *api, bool is_floating) {
   return api && !strcmp(api, CLAP_WINDOW_API_COCOA) && !is_floating;
 }
 
-bool Plugin::setParent(clap_window const *parentWindow) {
+bool AudioPlugin::setParent(clap_window const *parentWindow) {
   return parentWindow && parentWindow->cocoa &&
          imguiAttach(this, NULL, parentWindow->cocoa);
 }

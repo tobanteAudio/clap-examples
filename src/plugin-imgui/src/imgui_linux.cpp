@@ -3,20 +3,24 @@
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
 
-#include "main.h"
+#include "audio_plugin.hpp"
 
 #include <glfw/glfw3.h>
 #include <glfw/glfw3native.h>
 // clang-format on
 
-bool imguiAttach(Plugin* plugin, void* native_display, void* native_window);
+bool imguiAttach(
+    AudioPlugin* plugin,
+    void* native_display,
+    void* native_window
+);
 
-bool Plugin::isApiSupported(char const* api, bool is_floating)
+bool AudioPlugin::isApiSupported(char const* api, bool is_floating)
 {
     return api && !strcmp(api, CLAP_WINDOW_API_X11) && !is_floating;
 }
 
-bool Plugin::setParent(clap_window const* parentWindow)
+bool AudioPlugin::setParent(clap_window const* parentWindow)
 {
     return parentWindow && parentWindow->x11
         && imguiAttach(this, XOpenDisplay(NULL), (void*)parentWindow->x11);

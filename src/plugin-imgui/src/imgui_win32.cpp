@@ -7,20 +7,20 @@
 #include <tchar.h>
 #include <windows.h>
 
-#include "main.h"
+#include "audio_plugin.hpp"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
-bool imguiAttach(Plugin* plugin, void* display, void* window);
+bool imguiAttach(AudioPlugin* plugin, void* display, void* window);
 
-bool Plugin::isApiSupported(char const* api, bool is_floating)
+bool AudioPlugin::isApiSupported(char const* api, bool is_floating)
 {
     return api && !strcmp(api, CLAP_WINDOW_API_WIN32) && !is_floating;
 }
 
-bool Plugin::setParent(clap_window const* parent)
+bool AudioPlugin::setParent(clap_window const* parent)
 {
     return parent && parent->win32 && imguiAttach(this, NULL, parent->win32);
 }
