@@ -18,27 +18,27 @@ unsigned int getTickCount();
 // extern clap_host const* clapHost;
 
 #define TIMER_MS 30
-GLFWwindow* backend_wnd;
-unsigned int want_teardown;
-unsigned int wnd_counter;
+GLFWwindow* gNativeWindow;
+unsigned int gWantTeardown;
+unsigned int gWindowCount;
 
-struct ui_ctx_rec
+struct GuiContext
 {
     AudioPlugin* plugin;
     void* display;  // only used for x11
     void* window;
     char name[64];
     int did_parenting;
-    ui_ctx_rec* next;
+    GuiContext* next;
 };
 
-ui_ctx_rec* rec_list;
+GuiContext* rec_list;
 
 int render_pass_reentry;
 
 void imguiDoRenderPass()
 {
-    if (!backend_wnd) return;
+    if (!gNativeWindow) return;
     if (!rec_list) return;
 
     if (render_pass_reentry) return;
@@ -51,7 +51,7 @@ void imguiDoRenderPass()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ui_ctx_rec* rec = rec_list;
+    GuiContext* rec = rec_list;
     while (rec) {
         int x, y, w, h;
         getNativeWindowPosition(rec->display, rec->window, x, y, w, h);
@@ -76,7 +76,7 @@ void imguiDoRenderPass()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     ImGui::UpdatePlatformWindows();
     ImGui::RenderPlatformWindowsDefault();
-    glfwSwapBuffers(backend_wnd);
+    glfwSwapBuffers(gNativeWindow);
 
     rec = rec_list;
     while (rec) {
@@ -96,7 +96,7 @@ void imguiDoRenderPass()
 
 void imguiTeardown()
 {
-    if (!backend_wnd) return;
+    if (!gNativeWindow) return;
 
     destroyTimer();
 
@@ -104,15 +104,15 @@ void imguiTeardown()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(backend_wnd);
-    backend_wnd = NULL;
+    glfwDestroyWindow(gNativeWindow);
+    gNativeWindow = NULL;
     glfwTerminate();
 }
 
 void imguiTimerCallback()
 {
-    if (want_teardown > 0) {
-        if (getTickCount() > want_teardown) imguiTeardown();
+    if (gWantTeardown > 0) {
+        if (getTickCount() > gWantTeardown) imguiTeardown();
     } else {
         imguiDoRenderPass();
     }
@@ -128,8 +128,8 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
     if (!plugin || !window) { return false; }
     if (plugin->uiContext) { return true; }
 
-    want_teardown = 0;
-    if (!backend_wnd) {
+    gWantTeardown = 0;
+    if (!gNativeWindow) {
         if (!createTimer(TIMER_MS)) { return false; }
 
         glfwSetErrorCallback(glfw_error_callback);
@@ -142,10 +142,10 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         // invisible top level window
-        backend_wnd = glfwCreateWindow(1, 1, "ImGui Backend", NULL, NULL);
-        if (!backend_wnd) { return false; }
+        gNativeWindow = glfwCreateWindow(1, 1, "ImGui Backend", NULL, NULL);
+        if (!gNativeWindow) { return false; }
 
-        glfwMakeContextCurrent(backend_wnd);
+        glfwMakeContextCurrent(gNativeWindow);
         glfwSwapInterval(1);
 
         IMGUI_CHECKVERSION();
@@ -155,16 +155,16 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
         ImGui::GetIO().ConfigViewportsNoTaskBarIcon   = true;
         ImGui::GetIO().ConfigViewportsNoDefaultParent = true;
 
-        ImGui_ImplGlfw_InitForOpenGL(backend_wnd, true);
-        ImGui_ImplOpenGL3_Init(NULL);
+        ImGui_ImplGlfw_InitForOpenGL(gNativeWindow, true);
+        ImGui_ImplOpenGL3_Init(nullptr);
     }
 
-    ui_ctx_rec* new_rec = (ui_ctx_rec*)malloc(sizeof(ui_ctx_rec));
-    memset(new_rec, 0, sizeof(ui_ctx_rec));
+    GuiContext* new_rec = (GuiContext*)malloc(sizeof(GuiContext));
+    memset(new_rec, 0, sizeof(GuiContext));
     new_rec->plugin  = plugin;
     new_rec->display = display;
     new_rec->window  = window;
-    sprintf(new_rec->name, "%d:%p", ++wnd_counter, new_rec);
+    sprintf(new_rec->name, "%d:%p", ++gWindowCount, new_rec);
     plugin->uiContext = new_rec;
 
     if (rec_list) new_rec->next = rec_list;
@@ -176,10 +176,11 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
 bool AudioPlugin::destroyUI(bool is_plugin_destroy)
 {
     if (uiContext) {
-        ui_ctx_rec* old_rec = (ui_ctx_rec*)uiContext;
+        GuiContext* old_rec = (GuiContext*)uiContext;
         uiContext           = NULL;
 
-        ui_ctx_rec *prev_rec = NULL, *rec = rec_list;
+        GuiContext* prev_rec = NULL;
+        GuiContext* rec      = rec_list;
         while (rec) {
             if (rec == old_rec) {
                 if (!prev_rec)
@@ -200,7 +201,7 @@ bool AudioPlugin::destroyUI(bool is_plugin_destroy)
         if (is_plugin_destroy)
             imguiTeardown();
         else
-            want_teardown = getTickCount() + 1000;
+            gWantTeardown = getTickCount() + 1000;
     }
 
     return true;

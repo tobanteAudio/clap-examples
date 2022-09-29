@@ -13,6 +13,7 @@ class ClapExamples(ConanFile):
     def requirements(self):
         self.requires("imgui/cci.20220621+1.88.docking")
         if self.settings.os != "Emscripten":
+            self.requires("cairo/1.17.4")
             self.requires("glfw/3.3.6")
             self.requires("glew/2.2.0")
 
