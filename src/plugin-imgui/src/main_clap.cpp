@@ -9,7 +9,7 @@
 HINSTANCE g_hinst;
 #endif
 
-#include "gain.hpp"
+#include "gain_plugin.hpp"
 
 namespace factory {
 auto getPluginCount(clap_plugin_factory const* factory) -> uint32_t { return 1; }

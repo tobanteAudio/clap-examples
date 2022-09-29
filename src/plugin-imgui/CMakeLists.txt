@@ -9,8 +9,8 @@ target_sources(plugin-imgui
 
         src/audio_plugin.cpp
         src/audio_plugin.hpp
-        src/gain.cpp
-        src/gain.hpp
+        src/gain_plugin.cpp
+        src/gain_plugin.hpp
         src/gui.cpp
         src/imgui_base.cpp
         src/imgui_mac.mm
