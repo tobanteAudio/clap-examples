@@ -1,0 +1,45 @@
+name: macOS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build_test:
+    name: Build & Test
+    strategy:
+      matrix:
+        target:
+          [
+            { "runner": "macos-10.15", "target": "10.14", "cxx": 17 },
+            { "runner": "macos-11", "target": "11.0", "cxx": 20 },
+          ]
+      fail-fast: false
+    runs-on: ${{ matrix.target.runner }}
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "${{ matrix.target.target }}"
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install ninja
+        run: brew install ninja
+
+      - name: Install conan
+        run: |
+          pip3 install --upgrade conan
+          conan config init
+
+      - name: Build - Debug
+        run: |
+          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Debug
+          cmake --build build --config Debug
+
+      - name: Build - Release
+        run: |
+          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release

@@ -1,0 +1,45 @@
+name: Windows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cl:
+    name: CL
+    strategy:
+      matrix:
+        cxx_std: [17, 20, 23]
+        build_mode: ["Debug", "Release"]
+      fail-fast: false
+    runs-on: windows-2022
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64
+
+      - name: Install ninja
+        run: choco install ninja
+
+      - name: Install conan
+        run: |
+          pip install --upgrade conan
+          conan config init
+
+      - name: Build - Debug
+        run: |
+          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Debug
+          cmake --build build --config Debug
+
+      - name: Build - Release
+        run: |
+          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release

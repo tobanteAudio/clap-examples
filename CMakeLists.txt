@@ -41,4 +41,3 @@ else()
     add_subdirectory(src/plugin-minimal)
     add_subdirectory(src/plugin-imgui)
 endif()
-

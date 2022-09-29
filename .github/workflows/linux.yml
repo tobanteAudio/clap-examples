@@ -1,0 +1,41 @@
+name: Linux
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  gcc:
+    name: GCC
+    strategy:
+      matrix:
+        cxx_std: [17, 20, 23]
+      fail-fast: false
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y ninja-build cmake
+
+      - name: Install conan
+        run: |
+          pip install conan
+          conan config init
+
+      - name: Build - Debug
+        run: |
+          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Debug
+          cmake --build build --config Debug
+
+      - name: Build - Release
+        run: |
+          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release

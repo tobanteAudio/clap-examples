@@ -108,3 +108,5 @@ Standard: Auto
 UseTab: Never
 QualifierAlignment: Custom
 QualifierOrder: ["inline", "static", "constexpr", "type", "const", "volatile"]
+---
+Language: ObjC
