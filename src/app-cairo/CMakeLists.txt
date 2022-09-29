@@ -3,5 +3,10 @@ project(app-cairo)
 
 find_package(cairo)
 
-add_executable(app-cairo src/main.cpp)
+add_executable(app-cairo
+    src/canvas.cpp
+    src/canvas.hpp
+    src/color.hpp
+    src/main.cpp
+)
 target_link_libraries(app-cairo PRIVATE glfw::glfw cairo::cairo)
