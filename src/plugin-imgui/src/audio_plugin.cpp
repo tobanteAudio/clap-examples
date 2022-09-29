@@ -128,9 +128,9 @@ void flush(clap_plugin const* plugin, clap_input_events const* in, clap_output_e
 
 AudioPlugin::AudioPlugin(clap_plugin_descriptor const* descriptor, clap_host const* host)
 {
-    m_w      = 0;
-    m_h      = 0;
-    m_ui_ctx = NULL;
+    windowWidth  = 0;
+    windowHeight = 0;
+    uiContext    = NULL;
 
     // clapHost = host;
 

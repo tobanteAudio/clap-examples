@@ -15,9 +15,9 @@ bool AudioPlugin::setScale(double scale) { return false; }
 
 bool AudioPlugin::getSize(uint32_t* width, uint32_t* height)
 {
-    if (m_w > 0 && m_h > 0) {
-        *width  = m_w;
-        *height = m_h;
+    if (windowWidth > 0 && windowHeight > 0) {
+        *width  = windowWidth;
+        *height = windowHeight;
     } else {
         getPreferredSize(width, height);
     }
@@ -31,8 +31,8 @@ bool AudioPlugin::adjustSize(uint32_t* width, uint32_t* height) { return true; }
 bool AudioPlugin::setSize(uint32_t width, uint32_t height)
 {
     // imgui should respond dynamically to the host window size changing
-    m_w = width;
-    m_h = height;
+    windowWidth  = width;
+    windowHeight = height;
     return true;
 }
 

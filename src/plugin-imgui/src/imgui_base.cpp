@@ -126,7 +126,7 @@ static void glfw_error_callback(int error, char const* description)
 bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
 {
     if (!plugin || !window) { return false; }
-    if (plugin->m_ui_ctx) { return true; }
+    if (plugin->uiContext) { return true; }
 
     want_teardown = 0;
     if (!backend_wnd) {
@@ -165,7 +165,7 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
     new_rec->display = display;
     new_rec->window  = window;
     sprintf(new_rec->name, "%d:%p", ++wnd_counter, new_rec);
-    plugin->m_ui_ctx = new_rec;
+    plugin->uiContext = new_rec;
 
     if (rec_list) new_rec->next = rec_list;
     rec_list = new_rec;
@@ -175,9 +175,9 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
 
 bool AudioPlugin::destroyUI(bool is_plugin_destroy)
 {
-    if (m_ui_ctx) {
-        ui_ctx_rec* old_rec = (ui_ctx_rec*)m_ui_ctx;
-        m_ui_ctx            = NULL;
+    if (uiContext) {
+        ui_ctx_rec* old_rec = (ui_ctx_rec*)uiContext;
+        uiContext           = NULL;
 
         ui_ctx_rec *prev_rec = NULL, *rec = rec_list;
         while (rec) {

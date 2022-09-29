@@ -24,14 +24,14 @@ static double _params__convert_value(clap_id id, double in)
     return 0.0;
 }
 
-GainPlugin::GainPlugin(clap_host const* host) : AudioPlugin(&GainPluginDescriptor, host)
+GainPlugin::GainPlugin(clap_host const* host) : AudioPlugin(getGainPluginDescriptor(), host)
 {
-    m_srate = 48000;
+    _sampleRate = 48000.0;
     for (int i = 0; i < NUM_PARAMS; ++i) {
-        m_param_values[i] = m_last_param_values[i]
+        _parameterValues[i] = _lastParameterValues[i]
             = _params__convert_value(i, _param_info[i].default_value);
     }
-    m_peak_in[0] = m_peak_in[1] = m_peak_out[0] = m_peak_out[1] = 0.0;
+    _peakIn[0] = _peakIn[1] = _peakOut[0] = _peakOut[1] = 0.0;
 }
 
 GainPlugin::~GainPlugin() {}
@@ -40,8 +40,8 @@ bool GainPlugin::init() { return true; }
 
 bool GainPlugin::activate(double sr, uint32_t minFrames, uint32_t maxFrames)
 {
-    m_srate      = (int)sr;
-    m_peak_in[0] = m_peak_in[1] = m_peak_out[0] = m_peak_out[1] = 0.0;
+    _sampleRate = sr;
+    _peakIn[0] = _peakIn[1] = _peakOut[0] = _peakOut[1] = 0.0;
     return true;
 }
 
@@ -53,16 +53,16 @@ void GainPlugin::stopProcessing() {}
 
 clap_process_status GainPlugin::process(clap_process const* ctx)
 {
-    double const decay = pow(0.5, (double)ctx->frames_count / (double)m_srate / 0.125);
+    double const decay = pow(0.5, (double)ctx->frames_count / _sampleRate / 0.125);
     for (int c = 0; c < 2; ++c) {
-        m_peak_in[c] *= decay;
-        m_peak_out[c] *= decay;
-        if (m_peak_in[c] < 1.0e-6) m_peak_in[c] = 0.0;
-        if (m_peak_out[c] < 1.0e-6) m_peak_out[c] = 0.0;
+        _peakIn[c] *= decay;
+        _peakOut[c] *= decay;
+        if (_peakIn[c] < 1.0e-6) _peakIn[c] = 0.0;
+        if (_peakOut[c] < 1.0e-6) _peakOut[c] = 0.0;
     }
 
     double cur_param_values[NUM_PARAMS];
-    for (int i = 0; i < NUM_PARAMS; ++i) { cur_param_values[i] = m_param_values[i]; }
+    for (int i = 0; i < NUM_PARAMS; ++i) { cur_param_values[i] = _parameterValues[i]; }
 
     clap_process_status s = -1;
     if (ctx && ctx->audio_inputs_count == 1 && ctx->audio_inputs[0].channel_count == 2
@@ -71,23 +71,23 @@ clap_process_status GainPlugin::process(clap_process const* ctx)
         // on the time axis would happen here.
 
         if (ctx->audio_inputs[0].data32 && ctx->audio_outputs[0].data32) {
-            s = _process(
+            s = processInternal(
                 ctx,
                 2,
                 0,
                 ctx->frames_count,
-                m_last_param_values,
+                _lastParameterValues.data(),
                 cur_param_values,
                 ctx->audio_inputs[0].data32,
                 ctx->audio_outputs[0].data32
             );
         } else if (ctx->audio_inputs[0].data64 && ctx->audio_outputs[0].data64) {
-            s = _process(
+            s = processInternal(
                 ctx,
                 2,
                 0,
                 ctx->frames_count,
-                m_last_param_values,
+                _lastParameterValues.data(),
                 cur_param_values,
                 ctx->audio_inputs[0].data64,
                 ctx->audio_outputs[0].data64
@@ -95,7 +95,7 @@ clap_process_status GainPlugin::process(clap_process const* ctx)
         }
     }
 
-    for (int i = 0; i < NUM_PARAMS; ++i) { m_last_param_values[i] = m_param_values[i]; }
+    for (int i = 0; i < NUM_PARAMS; ++i) { _lastParameterValues[i] = _parameterValues[i]; }
 
     if (s < 0) s = CLAP_PROCESS_ERROR;
     return s;
@@ -111,8 +111,8 @@ void GainPlugin::draw()
 
     for (int c = 0; c < 2; ++c) {
         double val = 0.0;
-        if (m_peak_in[c] > 0.001) {
-            double db = log(m_peak_in[c]) * 20.0 / log(10.0);
+        if (_peakIn[c] > 0.001) {
+            double db = log(_peakIn[c]) * 20.0 / log(10.0);
             val       = (db + 60.0) / 72.0;
         }
         ImGui::ProgressBar(val, ImVec2(-FLT_MIN, 0), "");
@@ -120,24 +120,24 @@ void GainPlugin::draw()
 
     float voldb     = -60.0;
     char const* lbl = "-inf";
-    if (m_param_values[PARAM_VOLUME] > 0.001) {
-        voldb = log(m_param_values[PARAM_VOLUME]) * 20.0 / log(10.0);
+    if (_parameterValues[PARAM_VOLUME] > 0.001) {
+        voldb = log(_parameterValues[PARAM_VOLUME]) * 20.0 / log(10.0);
         lbl   = "%+.1f dB";
     }
     ImGui::SliderFloat("Volume", &voldb, -60.0f, 12.0f, lbl, 1.0f);
     if (voldb > -60.0)
-        m_param_values[PARAM_VOLUME] = pow(10.0, voldb / 20.0);
+        _parameterValues[PARAM_VOLUME] = pow(10.0, voldb / 20.0);
     else
-        m_param_values[PARAM_VOLUME] = 0.0;
+        _parameterValues[PARAM_VOLUME] = 0.0;
 
-    float pan = m_param_values[PARAM_PAN] * 100.0;
+    float pan = _parameterValues[PARAM_PAN] * 100.0;
     ImGui::SliderFloat("Pan", &pan, -100.0f, 100.0f, "%+.1f%%", 1.0f);
-    m_param_values[PARAM_PAN] = 0.01 * pan;
+    _parameterValues[PARAM_PAN] = 0.01 * pan;
 
     for (int c = 0; c < 2; ++c) {
         double val = 0.0;
-        if (m_peak_out[c] > 0.001) {
-            double db = log(m_peak_out[c]) * 20.0 / log(10.0);
+        if (_peakOut[c] > 0.001) {
+            double db = log(_peakOut[c]) * 20.0 / log(10.0);
             val       = (db + 60.0) / 72.0;
         }
         ImGui::ProgressBar(val, ImVec2(-FLT_MIN, 0), "");
@@ -166,12 +166,12 @@ bool GainPlugin::getParameterValue(clap_id id, double* value)
     if (id < 0 || id >= NUM_PARAMS) { return false; }
 
     if (id == PARAM_VOLUME) {
-        if (m_param_values[PARAM_VOLUME] <= 0.0)
+        if (_parameterValues[PARAM_VOLUME] <= 0.0)
             *value = -150.0;
         else
-            *value = log(m_param_values[PARAM_VOLUME]) * 20.0 / log(10.0);
+            *value = log(_parameterValues[PARAM_VOLUME]) * 20.0 / log(10.0);
     } else if (id == PARAM_PAN) {
-        *value = 100.0 * m_param_values[PARAM_PAN];
+        *value = 100.0 * _parameterValues[PARAM_PAN];
     }
     return true;
 }
@@ -219,10 +219,25 @@ void GainPlugin::flushParameter(clap_input_events const* in, clap_output_events 
             auto const* pevt = (clap_event_param_value const*)evt;
             if (pevt->param_id < 0 || pevt->param_id >= NUM_PARAMS) continue;  // assert
 
-            m_param_values[pevt->param_id] = _params__convert_value(pevt->param_id, pevt->value);
+            _parameterValues[pevt->param_id] = _params__convert_value(pevt->param_id, pevt->value);
         }
     }
 }
+
+static char const* GainPluginFeatures[] = {"", 0};
+
+static auto GainPluginDescriptor = clap_plugin_descriptor_t{
+    .clap_version = CLAP_VERSION,
+    .id           = "com.tobanteAudio.clap-imgui",
+    .name         = "CLAP ImGui",
+    .vendor       = "tobanteAudio",
+    .url          = "https://github.com/tobanteAudio/clap-examples",
+    .manual_url   = "https://github.com/tobanteAudio/clap-examples",
+    .support_url  = "https://github.com/tobanteAudio/clap-examples",
+    .version      = "0.1.0",
+    .description  = "CLAP + GLFW + ImGui",
+    .features     = GainPluginFeatures,
+};
 
 clap_plugin_descriptor* getGainPluginDescriptor() { return &GainPluginDescriptor; }
 
