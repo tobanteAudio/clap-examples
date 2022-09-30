@@ -19,6 +19,9 @@ class ClapExamples(ConanFile):
 
     def configure(self):
         if self.settings.os != "Emscripten":
+            self.options["imgui"].shared = False
+            self.options["cairo"].shared = False
+            self.options["glfw"].shared = False
             self.options["glew"].shared = False
 
     def imports(self):
