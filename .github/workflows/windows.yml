@@ -28,6 +28,11 @@ jobs:
           pip install --upgrade conan
           conan config init
 
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64
+
       - name: Build - Debug
         run: |
           cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Debug
