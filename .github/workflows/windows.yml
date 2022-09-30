@@ -20,11 +20,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Set up Visual Studio shell
-        uses: egor-tensin/vs-shell@v2
-        with:
-          arch: x64
-
       - name: Install ninja
         run: choco install ninja
 
