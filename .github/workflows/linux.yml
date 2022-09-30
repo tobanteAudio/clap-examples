@@ -23,7 +23,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt update
-          sudo apt install -y ninja-build cmake
+          sudo apt install -y ninja-build cmake mesa-utils freeglut3-dev
 
       - name: Install conan
         run: |
@@ -35,7 +35,6 @@ jobs:
 
       - name: Build - Debug
         run: |
-          export CONAN_SYSREQUIRES_MODE=enabled
           cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Debug
           cmake --build build --config Debug
 
