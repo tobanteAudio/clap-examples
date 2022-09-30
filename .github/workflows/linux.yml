@@ -31,6 +31,7 @@ jobs:
           conan config init
           conan profile update settings.compiler.libcxx=libstdc++11 default
           conan profile update conf.tools.system.package_manager:mode=install default
+          conan profile update conf.tools.system.package_manager:sudo=True default
 
       - name: Build - Debug
         run: |
