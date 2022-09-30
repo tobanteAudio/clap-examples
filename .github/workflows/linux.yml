@@ -30,6 +30,7 @@ jobs:
           pip3 install conan
           conan config init
           conan profile update settings.compiler.libcxx=libstdc++11 default
+          conan profile update conf.tools.system.package_manager:mode=install default
 
       - name: Build - Debug
         run: |
