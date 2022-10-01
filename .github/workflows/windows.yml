@@ -23,6 +23,7 @@ jobs:
         run: |
           pip install --upgrade conan
           conan config init
+          conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
 
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
