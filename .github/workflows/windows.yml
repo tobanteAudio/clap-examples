@@ -9,10 +9,6 @@ on:
 jobs:
   cl:
     name: CL
-    strategy:
-      matrix:
-        cxx_std: [17, 20, 23]
-      fail-fast: false
     runs-on: windows-2022
     steps:
       - name: Check out code

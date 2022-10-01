@@ -7,19 +7,9 @@ on:
     branches: [main]
 
 jobs:
-  build_test:
-    name: Build & Test
-    strategy:
-      matrix:
-        target:
-          [
-            { "runner": "macos-10.15", "target": "10.14", "cxx": 17 },
-            { "runner": "macos-11", "target": "11.0", "cxx": 20 },
-          ]
-      fail-fast: false
-    runs-on: ${{ matrix.target.runner }}
-    env:
-      MACOSX_DEPLOYMENT_TARGET: "${{ matrix.target.target }}"
+  macos-11:
+    name: macOS 11
+    runs-on: macos-11
     steps:
       - name: Check out code
         uses: actions/checkout@v3
