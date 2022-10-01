@@ -12,15 +12,15 @@ class ClapExamples(ConanFile):
 
     def requirements(self):
         self.requires("imgui/cci.20220621+1.88.docking")
+        self.requires("cairo/1.17.4")
         if self.settings.os != "Emscripten":
-            self.requires("cairo/1.17.4")
             self.requires("glfw/3.3.6")
             self.requires("glew/2.2.0")
 
     def configure(self):
+        self.options["imgui"].shared = False
+        self.options["cairo"].shared = False
         if self.settings.os != "Emscripten":
-            self.options["imgui"].shared = False
-            self.options["cairo"].shared = False
             self.options["glfw"].shared = False
             self.options["glew"].shared = False
 
@@ -32,12 +32,12 @@ class ClapExamples(ConanFile):
         self.copy("imgui_impl_opengl3.cpp", dst=dest, src=src)
         self.copy("imgui_impl_opengl3_loader.h", dst=dest, src=src)
 
-        if self.settings.os != "Emscripten":
-            self.copy("imgui_impl_glfw.h", dst=dest, src=src)
-            self.copy("imgui_impl_glfw.cpp", dst=dest, src=src)
-        else:
+        if self.settings.os == "Emscripten":
             self.copy("imgui_impl_sdl.h", dst=dest, src=src)
             self.copy("imgui_impl_sdl.cpp", dst=dest, src=src)
+        else:
+            self.copy("imgui_impl_glfw.h", dst=dest, src=src)
+            self.copy("imgui_impl_glfw.cpp", dst=dest, src=src)
 
     def build(self):
         cmake = CMake(self)
