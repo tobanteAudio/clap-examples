@@ -7,33 +7,6 @@ on:
     branches: [main]
 
 jobs:
-  gcc-11:
-    name: GCC-11
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
-      - name: Install build dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y ninja-build cmake mesa-utils freeglut3-dev
-
-      - name: Install conan
-        run: |
-          pip3 install conan
-          conan config init
-          conan profile update settings.compiler.libcxx=libstdc++11 default
-          conan profile update conf.tools.system.package_manager:mode=install default
-          conan profile update conf.tools.system.package_manager:sudo=True default
-
-      - name: Build - Release
-        run: |
-          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
-          cmake --build build --config Release
-
   clang-14:
     name: Clang-14
     runs-on: ubuntu-22.04
