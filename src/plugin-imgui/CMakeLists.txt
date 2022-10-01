@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
 project(plugin-imgui)
 
+find_package(imgui CONFIG)
+find_package(glfw3 CONFIG)
+find_package(glew CONFIG)
+
 add_library(plugin-imgui MODULE)
 
 target_sources(plugin-imgui

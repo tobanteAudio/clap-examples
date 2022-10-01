@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
 project(app-glfw-imgui)
 
+find_package(imgui CONFIG)
+find_package(glfw3 CONFIG)
+find_package(glew CONFIG)
+
 add_executable(app-glfw-imgui
     main.cpp
     opengl_shader.cpp

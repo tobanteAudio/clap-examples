@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 project(plugin-minimal)
 
-
 add_library(plugin-minimal MODULE main.cpp)
 target_link_libraries(plugin-minimal PRIVATE clap-core)
 

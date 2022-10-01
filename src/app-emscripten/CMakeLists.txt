@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 project(app-glfw-imgui-emscripten)
 
+find_package(imgui CONFIG)
+
 add_executable(app-glfw-imgui-emscripten
     main.cpp
 

@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 project(app-cairo)
 
-find_package(cairo)
+find_package(cairo CONFIG)
+find_package(glfw3 CONFIG)
 
 add_executable(app-cairo
     src/canvas.cpp
