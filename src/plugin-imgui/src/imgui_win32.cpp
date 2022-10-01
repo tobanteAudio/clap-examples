@@ -1,7 +1,7 @@
 // imgui helpers for win.
 // plugin implementations should not need to touch this file.
 
-#ifdef _WIN32
+#if defined(_WIN32)
 
 #include <stdio.h>
 #include <tchar.h>

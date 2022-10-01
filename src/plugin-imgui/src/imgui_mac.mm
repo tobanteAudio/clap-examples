@@ -1,7 +1,4 @@
-// imgui helpers for mac.
-// plugin implementations should not need to touch this file.
-
-#ifdef __APPLE__
+#if defined(__APPLE__)
 
 #include "audio_plugin.hpp"
 

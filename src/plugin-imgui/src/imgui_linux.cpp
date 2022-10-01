@@ -1,3 +1,5 @@
+#if defined(__linux__)
+
 // clang-format off
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -5,6 +7,7 @@
 
 #include "audio_plugin.hpp"
 
+#define GLFW_EXPOSE_NATIVE_X11
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 // clang-format on
@@ -78,3 +81,5 @@ unsigned int getTickCount()
     gettimeofday(&tm, NULL);
     return (unsigned int)(tm.tv_sec * 1000 + tm.tv_usec / 1000);
 }
+
+#endif
