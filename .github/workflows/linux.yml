@@ -25,6 +25,13 @@ jobs:
           sudo apt update
           sudo apt install -y ninja-build cmake mesa-utils freeglut3-dev
 
+      - name: Install LLVM
+        if: matrix.compiler == 'clang'
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 14 all
+
       - name: Install conan
         run: |
           pip3 install conan
@@ -35,5 +42,5 @@ jobs:
 
       - name: Build - Release
         run: |
-          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
+          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER="clang-14" -D CMAKE_CXX_COMPILER="clang++-14"
           cmake --build build --config Release
