@@ -15,7 +15,7 @@ bool createTimer(unsigned int ms);
 void destroyTimer();
 unsigned int getTickCount();
 
-// extern clap_host const* clapHost;
+extern clap_host const* clapHost;
 
 #define TIMER_MS 30
 GLFWwindow* gNativeWindow;

@@ -6,7 +6,7 @@
 
 #include <string.h>
 
-// clap_host const* clapHost;
+clap_host const* clapHost;
 extern clap_plugin_timer_support guiTimerSupport;
 
 static auto asPlugin(clap_plugin const* plugin) { return (AudioPlugin*)(plugin->plugin_data); }
@@ -132,7 +132,7 @@ AudioPlugin::AudioPlugin(clap_plugin_descriptor const* descriptor, clap_host con
     windowHeight = 0;
     uiContext    = NULL;
 
-    // clapHost = host;
+    clapHost = host;
 
     clapPluginHandle.desc             = descriptor;
     clapPluginHandle.plugin_data      = this;

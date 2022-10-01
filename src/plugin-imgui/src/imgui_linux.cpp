@@ -57,21 +57,21 @@ void setNativeParent(void* native_display, void* native_window, GLFWwindow* glfw
     XReparentWindow(xdisp, xwin, xpar, 0, 0);
 }
 
-extern clap_host* g_clap_host;
+extern clap_host* clapHost;
 unsigned int timer_id;
 
 bool createTimer(unsigned int ms)
 {
     clap_host_timer_support* timer_support
-        = (clap_host_timer_support*)g_clap_host->get_extension(g_clap_host, CLAP_EXT_TIMER_SUPPORT);
-    return timer_support && timer_support->register_timer(g_clap_host, ms, &timer_id);
+        = (clap_host_timer_support*)clapHost->get_extension(clapHost, CLAP_EXT_TIMER_SUPPORT);
+    return timer_support && timer_support->register_timer(clapHost, ms, &timer_id);
 }
 
 void destroyTimer()
 {
     clap_host_timer_support* timer_support
-        = (clap_host_timer_support*)g_clap_host->get_extension(g_clap_host, CLAP_EXT_TIMER_SUPPORT);
-    if (timer_support) timer_support->unregister_timer(g_clap_host, timer_id);
+        = (clap_host_timer_support*)clapHost->get_extension(clapHost, CLAP_EXT_TIMER_SUPPORT);
+    if (timer_support) timer_support->unregister_timer(clapHost, timer_id);
     timer_id = 0;
 }
 
