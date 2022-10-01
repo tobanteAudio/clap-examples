@@ -9,8 +9,8 @@
 #include <sys/time.h>
 
 #define GLFW_EXPOSE_NATIVE_COCOA
-#include <glfw/glfw3.h>
-#include <glfw/glfw3native.h>
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
 
 bool imguiAttach(AudioPlugin *plugin, void *native_display,
                  void *native_window);
