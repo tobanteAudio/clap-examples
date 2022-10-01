@@ -33,11 +33,6 @@ jobs:
         with:
           arch: x64
 
-      - name: Build - Debug
-        run: |
-          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Debug
-          cmake --build build --config Debug
-
       - name: Build - Release
         run: |
           cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
