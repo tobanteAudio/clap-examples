@@ -23,7 +23,6 @@ jobs:
         run: |
           pip install --upgrade conan
           conan config init
-          conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
 
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
@@ -32,5 +31,5 @@ jobs:
 
       - name: Build - Release
         run: |
-          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
+          cmake -S. -Bbuild -G "Visual Studio 17 2022" -D CMAKE_BUILD_TYPE=Release
           cmake --build build --config Release
