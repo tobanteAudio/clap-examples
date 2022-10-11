@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mc/ui/geometry/point_2d.hpp>
+#include <mc/ui/geometry/rectangle.hpp>
 #include <mc/ui/graphics/color_rgba.hpp>
 
 #include <cairo/cairo.h>
@@ -18,7 +20,12 @@ struct Canvas
     };
 
     explicit Canvas(cairo_t* context);
-    auto fillAll(ColorRGBA color) -> void;
+
+    auto setColor(ColorRGBA color) -> void;
+    auto setColor(ColorFloatRGBA color) -> void;
+
+    auto fill(ColorRGBA color) -> void;
+    auto fillRectangle(Rectangle<int> rect) -> void;
 
     auto pushState() -> void;
     auto popState() -> void;

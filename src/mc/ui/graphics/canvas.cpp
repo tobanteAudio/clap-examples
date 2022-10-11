@@ -7,12 +7,24 @@ Canvas::ScopedSavedState::~ScopedSavedState() { _canvas.popState(); }
 
 Canvas::Canvas(cairo_t* context) : _context{context} {}
 
-auto Canvas::fillAll(ColorRGBA color) -> void
+auto Canvas::setColor(ColorRGBA color) -> void { setColor(toFloat(color)); }
+
+auto Canvas::setColor(ColorFloatRGBA color) -> void
 {
-    auto const c = toFloat(color);
-    cairo_set_source_rgb(_context, c.red, c.green, c.blue);
+    cairo_set_source_rgb(_context, color.red, color.green, color.blue);
+}
+
+auto Canvas::fill(ColorRGBA color) -> void
+{
+    setColor(color);
     cairo_set_operator(_context, CAIRO_OPERATOR_SOURCE);
     cairo_paint(_context);
+}
+
+auto Canvas::fillRectangle(Rectangle<int> rect) -> void
+{
+    cairo_rectangle(_context, rect.x, rect.y, rect.width, rect.height);
+    cairo_fill(_context);
 }
 
 auto Canvas::pushState() -> void { cairo_push_group(_context); }

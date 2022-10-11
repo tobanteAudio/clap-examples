@@ -13,16 +13,16 @@ target_sources(mc-ui
         "mc/ui/geometry/point_2d.hpp"
         "mc/ui/geometry/rectangle.hpp"
 
+        "mc/ui/graphics/canvas.cpp"
+        "mc/ui/graphics/canvas.hpp"
+        "mc/ui/graphics/color_rgba.hpp"
+
         "mc/ui/input/click_action.hpp"
         "mc/ui/input/key_click_event.hpp"
         "mc/ui/input/key_modifier.hpp"
         "mc/ui/input/mouse_button.hpp"
         "mc/ui/input/mouse_click_event.hpp"
         "mc/ui/input/mouse_cursor.hpp"
-
-        "mc/ui/graphics/canvas.cpp"
-        "mc/ui/graphics/canvas.hpp"
-        "mc/ui/graphics/color_rgba.hpp"
 
         "mc/ui/window/window.cpp"
         "mc/ui/window/window.hpp"

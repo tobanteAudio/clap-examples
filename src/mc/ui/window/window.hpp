@@ -21,15 +21,15 @@ struct Window
 
     auto show() -> int;
 
-    std::function<void(Rectangle<int>)> sizeChanged{};
-    std::function<void(Point2D<int>)> positionChanged{};
-    std::function<void(KeyClickEvent)> keyClicked{};
-    std::function<void()> mouseEnter{};
-    std::function<void()> mouseExit{};
-    std::function<void(MouseClickEvent)> mouseClicked{};
-    std::function<void(Point2D<int>)> mouseMoved{};
-    std::function<void(Point2D<int>)> mouseScrolled{};
-    std::function<void(Canvas&)> draw{};
+    std::function<void(int, int)> sizeChanged;
+    std::function<void(Point2D<int>)> positionChanged;
+    std::function<void(KeyClickEvent)> keyClicked;
+    std::function<void()> mouseEnter;
+    std::function<void()> mouseExit;
+    std::function<void(MouseClickEvent)> mouseClicked;
+    std::function<void(Point2D<int>)> mouseMoved;
+    std::function<void(Point2D<int>)> mouseScrolled;
+    std::function<void(Canvas&)> draw;
 
 private:
     std::unique_ptr<detail::WindowPimpl> _impl;

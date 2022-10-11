@@ -5,6 +5,8 @@ namespace mc {
 template<typename T>
 struct Rectangle
 {
+    T x;
+    T y;
     T width;
     T height;
 };
