@@ -16,8 +16,8 @@
 // store our SDL book-keeping variables globally. Having a single function that
 // acts as a loop prevents us to store state in the stack of said function. So
 // we need some location for this.
-SDL_Window* g_Window      = NULL;
-SDL_GLContext g_GLContext = NULL;
+SDL_Window* g_Window      = nullptr;
+SDL_GLContext g_GLContext = nullptr;
 
 // For clarity, our main loop code is declared at the end.
 static void main_loop(void*);
@@ -77,7 +77,7 @@ int main(int, char**)
     // For an Emscripten build we are disabling file-system access, so let's not
     // attempt to do a fopen() of the imgui.ini file. You may manually call
     // LoadIniSettingsFromMemory() to load settings from your own storage.
-    io.IniFilename = NULL;
+    io.IniFilename = nullptr;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -93,7 +93,7 @@ int main(int, char**)
     // them.
     // - AddFontFromFileTTF() will return the ImFont* so you can store it if you
     // need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please
+    // - If the file cannot be loaded, the function will return nullptr. Please
     // handle those errors in your application (e.g. use an assertion, or
     // display an error and quit).
     // - The fonts will be rasterized at a given size (w/ oversampling) and
@@ -115,12 +115,12 @@ int main(int, char**)
     // io.Fonts->AddFontFromFileTTF("fonts/Cousine-Regular.ttf", 15.0f);
     // io.Fonts->AddFontFromFileTTF("fonts/ProggyTiny.ttf", 10.0f);
     // ImFont* font = io.Fonts->AddFontFromFileTTF("fonts/ArialUni.ttf", 18.0f,
-    // NULL, io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != NULL);
+    // nullptr, io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != nullptr);
 #endif
 
     // This function call won't return, and will engage in an infinite loop,
     // processing events from the browser, and dispatching them.
-    emscripten_set_main_loop_arg(main_loop, NULL, 0, true);
+    emscripten_set_main_loop_arg(main_loop, nullptr, 0, true);
 }
 
 static void main_loop(void* arg)

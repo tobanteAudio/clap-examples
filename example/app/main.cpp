@@ -141,8 +141,8 @@ int main(int, char**)
 #endif
 
     // Create window with graphics context
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui - Conan", NULL, NULL);
-    if (window == NULL) return 1;
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui - Conan", nullptr, nullptr);
+    if (window == nullptr) return 1;
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);  // Enable vsync
 

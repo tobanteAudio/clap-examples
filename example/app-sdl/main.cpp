@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
     SDL_RenderClear(renderer);
 
     // White background with SDL2 API
-    // SDL_FillRect(sdl_surface, NULL, SDL_MapRGB(sdl_surface->format, 255, 255, 255));
+    // SDL_FillRect(sdl_surface, nullptr, SDL_MapRGB(sdl_surface->format, 255, 255, 255));
 
     // White background with cairo API
     cairo_set_source_rgba(cr, 1, 1, 1, 1.0);
@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, sdl_surface);
     SDL_FreeSurface(sdl_surface);
 
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
 
     bool done = false;

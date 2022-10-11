@@ -21,12 +21,12 @@ void Shader::compile()
 {
     char const* vcode = vertex_code_.c_str();
     vertex_id_        = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_id_, 1, &vcode, NULL);
+    glShaderSource(vertex_id_, 1, &vcode, nullptr);
     glCompileShader(vertex_id_);
 
     char const* fcode = fragment_code_.c_str();
     fragment_id_      = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_id_, 1, &fcode, NULL);
+    glShaderSource(fragment_id_, 1, &fcode, nullptr);
     glCompileShader(fragment_id_);
     checkCompileErr();
 }
@@ -86,12 +86,12 @@ void Shader::checkCompileErr()
     char infoLog[1024];
     glGetShaderiv(vertex_id_, GL_COMPILE_STATUS, &success);
     if (!success) {
-        glGetShaderInfoLog(vertex_id_, 1024, NULL, infoLog);
+        glGetShaderInfoLog(vertex_id_, 1024, nullptr, infoLog);
         std::cout << "Error compiling Vertex Shader:\n" << infoLog << std::endl;
     }
     glGetShaderiv(fragment_id_, GL_COMPILE_STATUS, &success);
     if (!success) {
-        glGetShaderInfoLog(fragment_id_, 1024, NULL, infoLog);
+        glGetShaderInfoLog(fragment_id_, 1024, nullptr, infoLog);
         std::cout << "Error compiling Fragment Shader:\n" << infoLog << std::endl;
     }
 }
@@ -102,7 +102,7 @@ void Shader::checkLinkingErr()
     char infoLog[1024];
     glGetProgramiv(id_, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(id_, 1024, NULL, infoLog);
+        glGetProgramInfoLog(id_, 1024, nullptr, infoLog);
         std::cout << "Error Linking Shader Program:\n" << infoLog << std::endl;
     }
 }

@@ -12,11 +12,11 @@
 #include "imgui.h"
 
 static const clap_param_info _param_info[GainPlugin::NUM_PARAMS] = {
-    {0, CLAP_PARAM_REQUIRES_PROCESS, NULL, "Volume", "",  -60.0,  12.0, 0.0},
-    {1, CLAP_PARAM_REQUIRES_PROCESS, NULL,    "Pan", "", -100.0, 100.0, 0.0}
+    {0, CLAP_PARAM_REQUIRES_PROCESS, nullptr, "Volume", "",  -60.0,  12.0, 0.0},
+    {1, CLAP_PARAM_REQUIRES_PROCESS, nullptr,    "Pan", "", -100.0, 100.0, 0.0}
 };
 
-static double _params__convert_value(clap_id id, double in)
+static double paramConvertValue(clap_id id, double in)
 {
     if (id < 0 || id >= GainPlugin::NUM_PARAMS) { return 0.0; }
     if (id == GainPlugin::PARAM_VOLUME) { return in > -150.0 ? pow(10.0, in / 20.0) : 0.0; }
@@ -29,7 +29,7 @@ GainPlugin::GainPlugin(clap_host const* host) : AudioPlugin(getGainPluginDescrip
     _sampleRate = 48000.0;
     for (int i = 0; i < NUM_PARAMS; ++i) {
         _parameterValues[i] = _lastParameterValues[i]
-            = _params__convert_value(i, _param_info[i].default_value);
+            = paramConvertValue(i, _param_info[i].default_value);
     }
     _peakIn[0] = _peakIn[1] = _peakOut[0] = _peakOut[1] = 0.0;
 }
@@ -101,7 +101,7 @@ clap_process_status GainPlugin::process(clap_process const* ctx)
     return s;
 }
 
-void const* GainPlugin::getExtension(char const* id) { return NULL; }
+void const* GainPlugin::getExtension(char const* id) { return nullptr; }
 
 void GainPlugin::onMainThread() {}
 
@@ -219,7 +219,7 @@ void GainPlugin::flushParameter(clap_input_events const* in, clap_output_events 
             auto const* pevt = (clap_event_param_value const*)evt;
             if (pevt->param_id < 0 || pevt->param_id >= NUM_PARAMS) continue;  // assert
 
-            _parameterValues[pevt->param_id] = _params__convert_value(pevt->param_id, pevt->value);
+            _parameterValues[pevt->param_id] = paramConvertValue(pevt->param_id, pevt->value);
         }
     }
 }

@@ -58,12 +58,10 @@ void imguiDoRenderPass()
         ImGui::SetNextWindowPos(ImVec2(x, y));
         ImGui::SetNextWindowSize(ImVec2(w, h));
 
-        ImGui::Begin(
-            rec->name,
-            NULL,
-            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration
-                | ImGuiWindowFlags_NoDocking
-        );
+        static constexpr auto const imguiFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize
+                                               | ImGuiWindowFlags_NoDecoration
+                                               | ImGuiWindowFlags_NoDocking;
+        ImGui::Begin(rec->name, nullptr, imguiFlags);
 
         rec->plugin->draw();
 
@@ -105,7 +103,7 @@ void imguiTeardown()
     ImGui::DestroyContext();
 
     glfwDestroyWindow(gNativeWindow);
-    gNativeWindow = NULL;
+    gNativeWindow = nullptr;
     glfwTerminate();
 }
 
@@ -142,7 +140,7 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         // invisible top level window
-        gNativeWindow = glfwCreateWindow(1, 1, "ImGui Backend", NULL, NULL);
+        gNativeWindow = glfwCreateWindow(1, 1, "ImGui Backend", nullptr, nullptr);
         if (!gNativeWindow) { return false; }
 
         glfwMakeContextCurrent(gNativeWindow);
@@ -177,9 +175,9 @@ bool AudioPlugin::destroyUI(bool is_plugin_destroy)
 {
     if (uiContext) {
         GuiContext* old_rec = (GuiContext*)uiContext;
-        uiContext           = NULL;
+        uiContext           = nullptr;
 
-        GuiContext* prev_rec = NULL;
+        GuiContext* prev_rec = nullptr;
         GuiContext* rec      = rec_list;
         while (rec) {
             if (rec == old_rec) {

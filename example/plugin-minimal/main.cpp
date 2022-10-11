@@ -13,7 +13,7 @@
 static constexpr auto features = std::array<char const*, 3>{
     CLAP_PLUGIN_FEATURE_INSTRUMENT,
     CLAP_PLUGIN_FEATURE_STEREO,
-    NULL,
+    nullptr,
 };
 
 static const clap_plugin_descriptor_t s_my_plug_desc = {
@@ -267,7 +267,7 @@ static void const* my_plug_get_extension(const struct clap_plugin* plugin, char 
     if (!strcmp(id, CLAP_EXT_NOTE_PORTS)) return &s_my_plug_note_ports;
     // TODO: add support to CLAP_EXT_PARAMS
     // TODO: add support to CLAP_EXT_STATE
-    return NULL;
+    return nullptr;
 }
 
 static void my_plug_on_main_thread(const struct clap_plugin* plugin) {}
@@ -326,13 +326,13 @@ static clap_plugin_t const* plugin_factory_create_plugin(
     char const* plugin_id
 )
 {
-    if (!clap_version_is_compatible(host->clap_version)) { return NULL; }
+    if (!clap_version_is_compatible(host->clap_version)) { return nullptr; }
 
     int const N = sizeof(s_plugins) / sizeof(s_plugins[0]);
     for (int i = 0; i < N; ++i)
         if (!strcmp(plugin_id, s_plugins[i].desc->id)) return s_plugins[i].create(host);
 
-    return NULL;
+    return nullptr;
 }
 
 static const clap_plugin_factory_t s_plugin_factory = {
@@ -359,7 +359,7 @@ static void entry_deinit(void)
 static void const* entry_get_factory(char const* factory_id)
 {
     if (!strcmp(factory_id, CLAP_PLUGIN_FACTORY_ID)) return &s_plugin_factory;
-    return NULL;
+    return nullptr;
 }
 
 CLAP_EXPORT const clap_plugin_entry_t clap_entry = {

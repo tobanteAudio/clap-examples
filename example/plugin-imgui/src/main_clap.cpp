@@ -18,16 +18,16 @@ auto getPluginDescriptor(clap_plugin_factory const* factory, uint32_t index)
     -> clap_plugin_descriptor const*
 {
     if (index == 0) return getGainPluginDescriptor();
-    return NULL;
+    return nullptr;
 }
 
 auto create(clap_plugin_factory const* factory, clap_host const* host, char const* id)
     -> clap_plugin const*
 {
-    AudioPlugin* plugin = NULL;
+    AudioPlugin* plugin = nullptr;
     if (!strcmp(getGainPluginDescriptor()->id, id)) plugin = createGainPlugin(host);
     if (plugin) return &plugin->clapPluginHandle;
-    return NULL;
+    return nullptr;
 }
 
 }  // namespace factory

@@ -22,7 +22,7 @@ bool AudioPlugin::isApiSupported(char const* api, bool is_floating)
 bool AudioPlugin::setParent(clap_window const* parentWindow)
 {
     return parentWindow && parentWindow->x11
-        && imguiAttach(this, XOpenDisplay(NULL), (void*)parentWindow->x11);
+        && imguiAttach(this, XOpenDisplay(nullptr), (void*)parentWindow->x11);
 }
 
 void getNativeWindowPosition(
@@ -78,7 +78,7 @@ void destroyTimer()
 unsigned int getTickCount()
 {
     struct timeval tm = {0};
-    gettimeofday(&tm, NULL);
+    gettimeofday(&tm, nullptr);
     return (unsigned int)(tm.tv_sec * 1000 + tm.tv_usec / 1000);
 }
 

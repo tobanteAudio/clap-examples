@@ -22,7 +22,7 @@ bool AudioPlugin::isApiSupported(char const* api, bool is_floating)
 
 bool AudioPlugin::setParent(clap_window const* parent)
 {
-    return parent && parent->win32 && imguiAttach(this, NULL, parent->win32);
+    return parent && parent->win32 && imguiAttach(this, nullptr, parent->win32);
 }
 
 void getNativeWindowPosition(void* display, void* window, int& x, int& y, int& w, int& h)
@@ -44,7 +44,7 @@ void setNativeParent(void* display, void* window, GLFWwindow* glfw_win)
     style &= ~WS_POPUP;
     style |= WS_CHILDWINDOW;
     SetWindowLong(hwnd, GWL_STYLE, style);
-    SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
+    SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 }
 
 unsigned int timer_id;
@@ -57,13 +57,13 @@ void CALLBACK timerCallback(HWND hwnd, UINT a, UINT_PTR b, DWORD c)
 
 bool createTimer(unsigned int ms)
 {
-    timer_id = SetTimer(NULL, 1, ms, timerCallback);
+    timer_id = SetTimer(nullptr, 1, ms, timerCallback);
     return true;
 }
 
 void destroyTimer()
 {
-    KillTimer(NULL, timer_id);
+    KillTimer(nullptr, timer_id);
     timer_id = 0;
 }
 

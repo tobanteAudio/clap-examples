@@ -130,7 +130,7 @@ AudioPlugin::AudioPlugin(clap_plugin_descriptor const* descriptor, clap_host con
 {
     windowWidth  = 0;
     windowHeight = 0;
-    uiContext    = NULL;
+    uiContext    = nullptr;
 
     clapHost = host;
 

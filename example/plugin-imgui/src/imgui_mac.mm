@@ -18,7 +18,7 @@ bool AudioPlugin::isApiSupported(char const *api, bool is_floating) {
 
 bool AudioPlugin::setParent(clap_window const *parentWindow) {
   return parentWindow && parentWindow->cocoa &&
-         imguiAttach(this, NULL, parentWindow->cocoa);
+         imguiAttach(this, nullptr, parentWindow->cocoa);
 }
 
 void getNativeWindowPosition(void *native_display, void *native_window, int &x,
@@ -72,12 +72,12 @@ bool createTimer(unsigned int ms) {
 void destroyTimer() {
   [timer->timer invalidate];
   [timer release];
-  timer = NULL;
+  timer = nullptr;
 }
 
 unsigned int getTickCount() {
   struct timeval tm = {0};
-  gettimeofday(&tm, NULL);
+  gettimeofday(&tm, nullptr);
   return (unsigned int)(tm.tv_sec * 1000 + tm.tv_usec / 1000);
 }
 
