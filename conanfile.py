@@ -16,6 +16,7 @@ class ClapExamples(ConanFile):
             self.requires("cairo/1.17.4")
             self.requires("glfw/3.3.6")
             self.requires("glew/2.2.0")
+            self.requires("sdl/2.24.0")
 
     def configure(self):
         self.options["imgui"].shared = False
