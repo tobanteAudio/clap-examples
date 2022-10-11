@@ -1,12 +1,12 @@
 #pragma once
 
-#include <functional>
+#include <mc/ui/geometry/point_2d.hpp>
+#include <mc/ui/geometry/rectangle.hpp>
+#include <mc/ui/graphics/canvas.hpp>
+#include <mc/ui/input/key_click_event.hpp>
+#include <mc/ui/input/mouse_click_event.hpp>
 
-#include "geometry/point_2d.hpp"
-#include "geometry/rectangle.hpp"
-#include "graphics/canvas.hpp"
-#include "input/key_click_event.hpp"
-#include "input/mouse_click_event.hpp"
+#include <functional>
 
 namespace mc {
 

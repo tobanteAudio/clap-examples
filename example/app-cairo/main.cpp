@@ -1,4 +1,4 @@
-#include "ui/window.hpp"
+#include <mc/ui.hpp>
 
 auto main() -> int
 {

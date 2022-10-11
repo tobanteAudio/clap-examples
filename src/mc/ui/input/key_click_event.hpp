@@ -1,7 +1,7 @@
 #pragma once
 
-#include "input/click_action.hpp"
-#include "input/key_modifier.hpp"
+#include <mc/ui/input/click_action.hpp>
+#include <mc/ui/input/key_modifier.hpp>
 
 namespace mc {
 struct KeyClickEvent

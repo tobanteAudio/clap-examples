@@ -1,8 +1,8 @@
 #pragma once
 
-#include "input/click_action.hpp"
-#include "input/key_modifier.hpp"
-#include "input/mouse_button.hpp"
+#include <mc/ui/input/click_action.hpp>
+#include <mc/ui/input/key_modifier.hpp>
+#include <mc/ui/input/mouse_button.hpp>
 
 namespace mc {
 struct MouseClickEvent

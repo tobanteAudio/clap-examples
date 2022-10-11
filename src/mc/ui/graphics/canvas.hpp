@@ -1,6 +1,7 @@
 #pragma once
 
-#include "color_rgba.hpp"
+#include <mc/ui/graphics/color_rgba.hpp>
+
 #include <cairo/cairo.h>
 
 namespace mc {
