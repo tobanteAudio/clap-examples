@@ -23,7 +23,7 @@ struct WindowPimpl
     auto operator=(WindowPimpl const& other) -> WindowPimpl& = delete;
 
     auto show() -> int;
-    auto updateCanvasSize(int w, int h) -> void;
+    auto updateCanvasSize(Rectangle<int> size) -> void;
 
     Window& window;
     GLFWwindow* glfwWindow{nullptr};
@@ -102,20 +102,20 @@ static auto mouseEnterCallback(GLFWwindow* backend, int entered) -> void
 static auto windowSizeCallback(GLFWwindow* backend, int width, int height) -> void
 {
     useWindowUserPtr(backend, [=](WindowPimpl& impl) {
-        if (impl.window.sizeChanged) { impl.window.sizeChanged(width, height); }
+        if (impl.window.sizeChanged) { impl.window.sizeChanged({width, height}); }
     });
 }
 
 static auto windowPosCallback(GLFWwindow* backend, int width, int height) -> void
 {
     useWindowUserPtr(backend, [=](WindowPimpl& impl) {
-        if (impl.window.positionChanged) { impl.window.positionChanged(width, height); }
+        if (impl.window.positionChanged) { impl.window.positionChanged({width, height}); }
     });
 }
 
 static auto frameBufferResizedCallback(GLFWwindow* backend, int width, int height) -> void
 {
-    useWindowUserPtr(backend, [=](WindowPimpl& impl) { impl.updateCanvasSize(width, height); });
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) { impl.updateCanvasSize({width, height}); });
 }
 
 WindowPimpl::WindowPimpl(Window& win, char const* name, int width, int height)
@@ -157,7 +157,7 @@ auto WindowPimpl::show() -> int
 
     // glfwSwapInterval(1);
 
-    updateCanvasSize(initialWidth, initialHeight);
+    updateCanvasSize({initialWidth, initialHeight});
 
     while (not glfwWindowShouldClose(glfwWindow)) {
         if (window.draw) { window.draw(*canvas); }
@@ -172,7 +172,7 @@ auto WindowPimpl::show() -> int
     return EXIT_SUCCESS;
 }
 
-auto WindowPimpl::updateCanvasSize(int w, int h) -> void
+auto WindowPimpl::updateCanvasSize(Rectangle<int> /*size*/) -> void
 {
     auto dc = GetDC(glfwGetWin32Window(glfwWindow));
     surface = cairo_win32_surface_create(dc);

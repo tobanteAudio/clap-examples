@@ -10,6 +10,7 @@ target_link_libraries(app-cairo PRIVATE glfw::glfw cairo::cairo)
 target_sources(app-cairo
     PRIVATE
         src/geometry/point_2d.hpp
+        src/geometry/rectangle.hpp
 
         src/input/click_action.hpp
         src/input/key_click_event.hpp
@@ -22,6 +23,6 @@ target_sources(app-cairo
         src/graphics/canvas.hpp
         src/graphics/color.hpp
 
-        src/window.cpp
-        src/window.hpp
+        src/ui/window.cpp
+        src/ui/window.hpp
 )
