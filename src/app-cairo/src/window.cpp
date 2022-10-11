@@ -24,7 +24,7 @@ static auto keyCallback(GLFWwindow* backend, int key, int scancode, int action, 
         if (not win.keyClicked) { return; }
         auto state    = static_cast<ClickAction>(action);
         auto modifier = static_cast<KeyModifier>(mods);
-        win.keyClicked(KeyEvent{key, state, modifier});
+        win.keyClicked(KeyClickEvent{key, state, modifier});
     });
 }
 
@@ -35,21 +35,23 @@ static auto mouseButtonCallback(GLFWwindow* backend, int button, int action, int
         auto btn      = static_cast<MouseButton>(button);
         auto state    = static_cast<ClickAction>(action);
         auto modifier = static_cast<KeyModifier>(mods);
-        win.mouseClicked(MouseEvent{btn, state, modifier});
+        win.mouseClicked(MouseClickEvent{btn, state, modifier});
     });
 }
 
 static auto mouseScrolledCallback(GLFWwindow* backend, double xoffset, double yoffset) -> void
 {
     useWindowUserPtr(backend, [=](Window& win) {
-        if (win.mouseScrolled) { win.mouseScrolled({xoffset, yoffset}); }
+        if (win.mouseScrolled) {
+            win.mouseScrolled({static_cast<int>(xoffset), static_cast<int>(yoffset)});
+        }
     });
 }
 
 static auto mouseMovedCallback(GLFWwindow* backend, double xpos, double ypos) -> void
 {
     useWindowUserPtr(backend, [=](Window& win) {
-        if (win.mouseMoved) { win.mouseMoved({xpos, ypos}); }
+        if (win.mouseMoved) { win.mouseMoved({static_cast<int>(xpos), static_cast<int>(ypos)}); }
     });
 }
 
