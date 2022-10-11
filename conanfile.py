@@ -21,7 +21,6 @@ class ClapExamples(ConanFile):
         self.options["imgui"].shared = False
         if self.settings.os != "Emscripten":
             self.options["cairo"].shared = False
-            self.options["cairo"].with_glib = False
             self.options["glfw"].shared = False
             self.options["glew"].shared = False
 
