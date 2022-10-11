@@ -2,10 +2,40 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <optional>
+#include <string>
 
+#define GLFW_EXPOSE_NATIVE_WIN32
 #include <cairo/cairo-win32.h>
+#include <cairo/cairo.h>
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
 
 namespace mc {
+
+namespace detail {
+struct WindowPimpl
+{
+    WindowPimpl(Window& win, char const* name, int width, int height);
+    ~WindowPimpl();
+
+    WindowPimpl(WindowPimpl const& other)                    = delete;
+    auto operator=(WindowPimpl const& other) -> WindowPimpl& = delete;
+
+    auto show() -> int;
+    auto updateCanvasSize(int w, int h) -> void;
+
+    Window& window;
+    GLFWwindow* glfwWindow{nullptr};
+    cairo_surface_t* surface;
+    cairo_t* ctx;
+    std::optional<Canvas> canvas;
+
+    std::string title;
+    int initialWidth;
+    int initialHeight;
+};
+
 static auto errorCallback(int error, char const* description) -> void
 {
     std::fprintf(stderr, "Error: %d %s\n", error, description);
@@ -15,137 +45,149 @@ static auto useWindowUserPtr(GLFWwindow* backend, auto callback) -> void
 {
     auto* ptr = glfwGetWindowUserPointer(backend);
     if (ptr == nullptr) { throw "No user pointer"; }
-    callback(*static_cast<Window*>(ptr));
+    callback(*static_cast<WindowPimpl*>(ptr));
 }
 
 static auto keyCallback(GLFWwindow* backend, int key, int scancode, int action, int mods) -> void
 {
-    useWindowUserPtr(backend, [=](Window& win) {
-        if (not win.keyClicked) { return; }
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) {
+        if (not impl.window.keyClicked) { return; }
         auto state    = static_cast<ClickAction>(action);
         auto modifier = static_cast<KeyModifier>(mods);
-        win.keyClicked(KeyClickEvent{key, state, modifier});
+        impl.window.keyClicked(KeyClickEvent{key, state, modifier});
     });
 }
 
 static auto mouseButtonCallback(GLFWwindow* backend, int button, int action, int mods) -> void
 {
-    useWindowUserPtr(backend, [=](Window& win) {
-        if (not win.mouseClicked) { return; }
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) {
+        if (not impl.window.mouseClicked) { return; }
         auto btn      = static_cast<MouseButton>(button);
         auto state    = static_cast<ClickAction>(action);
         auto modifier = static_cast<KeyModifier>(mods);
-        win.mouseClicked(MouseClickEvent{btn, state, modifier});
+        impl.window.mouseClicked(MouseClickEvent{btn, state, modifier});
     });
 }
 
 static auto mouseScrolledCallback(GLFWwindow* backend, double xoffset, double yoffset) -> void
 {
-    useWindowUserPtr(backend, [=](Window& win) {
-        if (win.mouseScrolled) {
-            win.mouseScrolled({static_cast<int>(xoffset), static_cast<int>(yoffset)});
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) {
+        if (impl.window.mouseScrolled) {
+            impl.window.mouseScrolled({static_cast<int>(xoffset), static_cast<int>(yoffset)});
         }
     });
 }
 
 static auto mouseMovedCallback(GLFWwindow* backend, double xpos, double ypos) -> void
 {
-    useWindowUserPtr(backend, [=](Window& win) {
-        if (win.mouseMoved) { win.mouseMoved({static_cast<int>(xpos), static_cast<int>(ypos)}); }
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) {
+        if (impl.window.mouseMoved) {
+            impl.window.mouseMoved({static_cast<int>(xpos), static_cast<int>(ypos)});
+        }
     });
 }
 
 static auto mouseEnterCallback(GLFWwindow* backend, int entered) -> void
 {
-    useWindowUserPtr(backend, [=](Window& win) {
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) {
         if (entered == GLFW_TRUE) {
-            if (win.mouseEnter) { win.mouseEnter(); }
+            if (impl.window.mouseEnter) { impl.window.mouseEnter(); }
             return;
         }
 
-        if (win.mouseExit) { win.mouseExit(); }
+        if (impl.window.mouseExit) { impl.window.mouseExit(); }
     });
 }
 
 static auto windowSizeCallback(GLFWwindow* backend, int width, int height) -> void
 {
-    useWindowUserPtr(backend, [=](Window& win) {
-        if (win.sizeChanged) { win.sizeChanged(width, height); }
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) {
+        if (impl.window.sizeChanged) { impl.window.sizeChanged(width, height); }
     });
 }
 
 static auto windowPosCallback(GLFWwindow* backend, int width, int height) -> void
 {
-    useWindowUserPtr(backend, [=](Window& win) {
-        if (win.positionChanged) { win.positionChanged(width, height); }
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) {
+        if (impl.window.positionChanged) { impl.window.positionChanged(width, height); }
     });
 }
 
 static auto frameBufferResizedCallback(GLFWwindow* backend, int width, int height) -> void
 {
-    useWindowUserPtr(backend, [=](Window& win) { win.updateCanvasSize(width, height); });
+    useWindowUserPtr(backend, [=](WindowPimpl& impl) { impl.updateCanvasSize(width, height); });
 }
 
-Window::Window(char const* name, int width, int height)
-    : _title{name}
-    , _initialWidth{width}
-    , _initialHeight{height}
+WindowPimpl::WindowPimpl(Window& win, char const* name, int width, int height)
+    : window{win}
+    , title{name}
+    , initialWidth{width}
+    , initialHeight{height}
 {
     glfwSetErrorCallback(errorCallback);
     if (not glfwInit()) { throw EXIT_FAILURE; }
 }
 
-Window::~Window()
+WindowPimpl::~WindowPimpl()
 {
-    if (_win) { glfwDestroyWindow(_win); }
-    if (_ctx) { cairo_destroy(_ctx); }
-    if (_surface) {
-        cairo_surface_finish(_surface);
-        cairo_surface_destroy(_surface);
+    if (glfwWindow) { glfwDestroyWindow(glfwWindow); }
+    if (ctx) { cairo_destroy(ctx); }
+    if (surface) {
+        cairo_surface_finish(surface);
+        cairo_surface_destroy(surface);
     }
     glfwTerminate();
 }
 
-auto Window::show() -> int
+auto WindowPimpl::show() -> int
 {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    _win = glfwCreateWindow(_initialWidth, _initialHeight, _title.c_str(), NULL, NULL);
-    if (!_win) { return EXIT_FAILURE; }
+    glfwWindow = glfwCreateWindow(initialWidth, initialHeight, title.c_str(), nullptr, nullptr);
+    if (!glfwWindow) { return EXIT_FAILURE; }
 
-    glfwSetWindowUserPointer(_win, this);
-    glfwSetCursorEnterCallback(_win, mouseEnterCallback);
-    glfwSetCursorPosCallback(_win, mouseMovedCallback);
-    glfwSetFramebufferSizeCallback(_win, frameBufferResizedCallback);
-
-    glfwSetKeyCallback(_win, keyCallback);
-    glfwSetMouseButtonCallback(_win, mouseButtonCallback);
-    glfwSetScrollCallback(_win, mouseScrolledCallback);
-    glfwSetWindowPosCallback(_win, windowPosCallback);
-    glfwSetWindowSizeCallback(_win, windowSizeCallback);
+    glfwSetWindowUserPointer(glfwWindow, this);
+    glfwSetCursorEnterCallback(glfwWindow, mouseEnterCallback);
+    glfwSetCursorPosCallback(glfwWindow, mouseMovedCallback);
+    glfwSetFramebufferSizeCallback(glfwWindow, frameBufferResizedCallback);
+    glfwSetKeyCallback(glfwWindow, keyCallback);
+    glfwSetMouseButtonCallback(glfwWindow, mouseButtonCallback);
+    glfwSetScrollCallback(glfwWindow, mouseScrolledCallback);
+    glfwSetWindowPosCallback(glfwWindow, windowPosCallback);
+    glfwSetWindowSizeCallback(glfwWindow, windowSizeCallback);
 
     // glfwSwapInterval(1);
 
-    updateCanvasSize(_initialWidth, _initialHeight);
+    updateCanvasSize(initialWidth, initialHeight);
 
-    while (not glfwWindowShouldClose(_win)) {
-        if (draw) { draw(*_canvas); }
+    while (not glfwWindowShouldClose(glfwWindow)) {
+        if (window.draw) { window.draw(*canvas); }
 
-        cairo_paint(_ctx);
-        cairo_surface_flush(_surface);
+        cairo_paint(ctx);
+        cairo_surface_flush(surface);
 
-        // glfwSwapBuffers(_win);
+        // glfwSwapBuffers(glfwWindow);
         glfwPollEvents();
     }
 
     return EXIT_SUCCESS;
 }
 
-auto Window::updateCanvasSize(int, int) -> void
+auto WindowPimpl::updateCanvasSize(int w, int h) -> void
 {
-    auto dc  = GetDC(glfwGetWin32Window(_win));
-    _surface = cairo_win32_surface_create(dc);
-    _ctx     = cairo_create(_surface);
-    _canvas  = Canvas{_ctx};
+    auto dc = GetDC(glfwGetWin32Window(glfwWindow));
+    surface = cairo_win32_surface_create(dc);
+    ctx     = cairo_create(surface);
+    canvas  = Canvas{ctx};
 }
+
+}  // namespace detail
+
+Window::Window(char const* name, int width, int height)
+    : _impl{std::make_unique<detail::WindowPimpl>(*this, name, width, height)}
+{}
+
+Window::~Window() = default;
+
+auto Window::show() -> int { return _impl->show(); }
 
 }  // namespace mc
