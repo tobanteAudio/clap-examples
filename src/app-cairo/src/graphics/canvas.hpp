@@ -1,6 +1,6 @@
 #pragma once
 
-#include "color.hpp"
+#include "color_rgba.hpp"
 #include <cairo/cairo.h>
 
 namespace mc {
@@ -17,10 +17,12 @@ struct Canvas
     };
 
     explicit Canvas(cairo_t* context);
-    auto fillAll(Color color) -> void;
+    auto fillAll(ColorRGBA color) -> void;
 
     auto pushState() -> void;
     auto popState() -> void;
+
+    auto native() const -> cairo_t* { return _context; }
 
 private:
     cairo_t* _context{nullptr};

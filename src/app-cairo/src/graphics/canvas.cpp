@@ -7,12 +7,10 @@ Canvas::ScopedSavedState::~ScopedSavedState() { _canvas.popState(); }
 
 Canvas::Canvas(cairo_t* context) : _context{context} {}
 
-auto Canvas::fillAll(Color color) -> void
+auto Canvas::fillAll(ColorRGBA color) -> void
 {
-    auto const r = redAsFloat(color);
-    auto const g = greenAsFloat(color);
-    auto const b = blueAsFloat(color);
-    cairo_set_source_rgb(_context, r, g, b);
+    auto const c = toFloat(color);
+    cairo_set_source_rgb(_context, c.red, c.green, c.blue);
     cairo_set_operator(_context, CAIRO_OPERATOR_SOURCE);
     cairo_paint(_context);
 }

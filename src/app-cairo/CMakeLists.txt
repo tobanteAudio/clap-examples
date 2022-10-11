@@ -21,7 +21,7 @@ target_sources(app-cairo
 
         src/graphics/canvas.cpp
         src/graphics/canvas.hpp
-        src/graphics/color.hpp
+        src/graphics/color_rgba.hpp
 
         src/ui/window.cpp
         src/ui/window.hpp
