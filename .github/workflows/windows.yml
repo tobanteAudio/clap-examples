@@ -23,6 +23,7 @@ jobs:
         run: |
           pip install --upgrade conan
           conan config init
+          conan config set general.revisions_enabled=1
 
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2

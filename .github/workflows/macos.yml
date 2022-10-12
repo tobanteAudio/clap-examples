@@ -23,6 +23,7 @@ jobs:
         run: |
           pip3 install --upgrade conan
           conan config init
+          conan config set general.revisions_enabled=1
 
       - name: Build - Release
         run: |
