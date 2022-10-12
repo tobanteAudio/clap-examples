@@ -1,12 +1,12 @@
 #pragma once
 
+#include <mc/core/functional.hpp>
+#include <mc/core/memory.hpp>
 #include <mc/ui/geometry/point_2d.hpp>
 #include <mc/ui/geometry/rectangle.hpp>
 #include <mc/ui/graphics/canvas.hpp>
 #include <mc/ui/input/key_click_event.hpp>
 #include <mc/ui/input/mouse_click_event.hpp>
-
-#include <functional>
 
 namespace mc {
 
@@ -32,6 +32,6 @@ struct Window
     std::function<void(Canvas&)> draw;
 
 private:
-    std::unique_ptr<detail::WindowPimpl> _impl;
+    UniquePtr<detail::WindowPimpl> _impl;
 };
 }  // namespace mc

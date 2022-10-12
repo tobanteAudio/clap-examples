@@ -1,9 +1,9 @@
 #include "window.hpp"
 
-#include <cstdio>
-#include <cstdlib>
-#include <optional>
-#include <string>
+#include <mc/core/cstdlib.hpp>
+#include <mc/core/optional.hpp>
+#include <mc/core/print.hpp>
+#include <mc/core/string.hpp>
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <cairo/cairo-win32.h>
@@ -29,16 +29,16 @@ struct WindowPimpl
     GLFWwindow* glfwWindow{nullptr};
     cairo_surface_t* surface;
     cairo_t* ctx;
-    std::optional<Canvas> canvas;
+    Optional<Canvas> canvas;
 
-    std::string title;
+    String title;
     int initialWidth;
     int initialHeight;
 };
 
 static auto errorCallback(int error, char const* description) -> void
 {
-    std::fprintf(stderr, "Error: %d %s\n", error, description);
+    print(stderr, "Error: {} {}\n", error, description);
 }
 
 static auto useWindowUserPtr(GLFWwindow* backend, auto callback) -> void
@@ -182,7 +182,7 @@ auto WindowPimpl::updateCanvasSize() -> void
 }  // namespace detail
 
 Window::Window(char const* name, int width, int height)
-    : _impl{std::make_unique<detail::WindowPimpl>(*this, name, width, height)}
+    : _impl{makeUnique<detail::WindowPimpl>(*this, name, width, height)}
 {}
 
 Window::~Window() = default;
