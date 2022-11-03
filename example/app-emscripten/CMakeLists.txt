@@ -13,6 +13,7 @@ add_executable(app-glfw-imgui-emscripten
     ${CMAKE_BINARY_DIR}/bindings/imgui_impl_opengl3.cpp
 )
 
+set_target_properties(app-glfw-imgui-emscripten PROPERTIES SUFFIX ".html")
 target_include_directories(app-glfw-imgui-emscripten PRIVATE ${CMAKE_BINARY_DIR})
 target_compile_definitions(app-glfw-imgui-emscripten PRIVATE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
 target_link_libraries(app-glfw-imgui-emscripten PRIVATE imgui::imgui mc-core::mc-core)
