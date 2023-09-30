@@ -6,8 +6,6 @@
 #include <SDL_opengles2.h>
 // clang-format on
 
-#include <mc/core/print.hpp>
-
 #include <emscripten.h>
 
 struct Application
@@ -26,7 +24,7 @@ static auto mainLoop(void*) -> void;
 int main(int, char**)
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
-        mc::print("Error: {}\n", SDL_GetError());
+        std::fprintf(stderr, "Error: {}\n", SDL_GetError());
         return -1;
     }
 
@@ -61,7 +59,7 @@ int main(int, char**)
 
     app.graphicsContext = SDL_GL_CreateContext(app.window);
     if (!app.graphicsContext) {
-        mc::print(stderr, "Failed to initialize WebGL context!\n");
+        std::fprintf(stderr, "Failed to initialize WebGL context!\n");
         return 1;
     }
     SDL_GL_SetSwapInterval(1);  // Enable vsync

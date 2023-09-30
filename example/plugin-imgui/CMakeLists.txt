@@ -17,7 +17,7 @@ target_sources(plugin-imgui
         src/gain_plugin.hpp
         src/gui.cpp
         src/imgui_base.cpp
-        src/imgui_mac.mm
+        # src/imgui_mac.mm
         src/imgui_win32.cpp
 
         ${CMAKE_BINARY_DIR}/bindings/imgui_impl_glfw.h

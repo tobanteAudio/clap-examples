@@ -1,9 +1,8 @@
 #include "window.hpp"
 
-#include <mc/core/cstdlib.hpp>
-#include <mc/core/optional.hpp>
-#include <mc/core/print.hpp>
-#include <mc/core/string.hpp>
+#include <cstdlib>
+#include <optional>
+#include <string>
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <cairo/cairo-win32.h>

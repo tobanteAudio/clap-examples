@@ -3,12 +3,11 @@ project(mc-ui)
 
 find_package(cairo REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(mc-core REQUIRED)
 
 add_library(mc-ui "mc/ui.cpp" "mc/ui.hpp")
 add_library(mc::ui ALIAS mc-ui)
 target_include_directories(mc-ui PUBLIC ${PROJECT_SOURCE_DIR})
-target_link_libraries(mc-ui PUBLIC glfw::glfw cairo::cairo mc-core::mc-core)
+target_link_libraries(mc-ui PUBLIC glfw::glfw cairo::cairo)
 target_sources(mc-ui
     PRIVATE
         "mc/ui/geometry/point_2d.hpp"
