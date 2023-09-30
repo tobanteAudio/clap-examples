@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mc {
+namespace ta {
 enum struct MouseButton
 {
     button1 = 0,
@@ -16,4 +16,4 @@ enum struct MouseButton
     right  = button2,
     middle = button3,
 };
-}  // namespace mc
+}  // namespace ta

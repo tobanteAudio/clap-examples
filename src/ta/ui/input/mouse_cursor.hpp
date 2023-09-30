@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mc {
+namespace ta {
 enum struct MouseCursor
 {
     arrow            = 0x00036001,
@@ -10,4 +10,4 @@ enum struct MouseCursor
     resizeHorizontal = 0x00036005,
     resizeVertical   = 0x00036006,
 };
-}  // namespace mc
+}  // namespace ta

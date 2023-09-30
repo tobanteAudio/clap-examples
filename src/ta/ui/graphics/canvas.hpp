@@ -1,12 +1,12 @@
 #pragma once
 
-#include <mc/ui/geometry/point_2d.hpp>
-#include <mc/ui/geometry/rectangle.hpp>
-#include <mc/ui/graphics/color_rgba.hpp>
+#include <ta/ui/geometry/point_2d.hpp>
+#include <ta/ui/geometry/rectangle.hpp>
+#include <ta/ui/graphics/color_rgba.hpp>
 
 #include <cairo/cairo.h>
 
-namespace mc {
+namespace ta {
 
 struct Canvas
 {
@@ -36,4 +36,4 @@ private:
     cairo_t* _context{nullptr};
 };
 
-}  // namespace mc
+}  // namespace ta

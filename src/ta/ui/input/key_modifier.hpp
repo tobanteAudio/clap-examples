@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mc {
+namespace ta {
 enum struct KeyModifier
 {
     shift    = 0x01,
@@ -10,4 +10,4 @@ enum struct KeyModifier
     capsLock = 0x10,
     numLock  = 0x20,
 };
-}  // namespace mc
+}  // namespace ta

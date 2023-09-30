@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mc {
+namespace ta {
 
 template<typename T>
 struct Point2D
@@ -9,4 +9,4 @@ struct Point2D
     T y;
 };
 
-}  // namespace mc
+}  // namespace ta

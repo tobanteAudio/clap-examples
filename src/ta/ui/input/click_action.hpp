@@ -1,10 +1,10 @@
 #pragma once
 
-namespace mc {
+namespace ta {
 enum struct ClickAction
 {
     release = 0,
     press   = 1,
     repeat  = 2,
 };
-}  // namespace mc
+}  // namespace ta

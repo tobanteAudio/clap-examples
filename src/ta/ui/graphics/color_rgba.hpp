@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace mc {
+namespace ta {
 template<typename T>
 struct BasicColorRGBA
 {
@@ -35,4 +35,4 @@ struct Colors
     static constexpr auto green = ColorRGBA{0, 255, 0, 255};
     static constexpr auto blue  = ColorRGBA{0, 0, 255, 255};
 };
-}  // namespace mc
+}  // namespace ta

@@ -57,9 +57,9 @@ DisableFormat: false
 FixNamespaceComments: true
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex: "^<mc/core/config.hpp"
+  - Regex: "^<ta/core/config.hpp"
     Priority: 2
-  - Regex: "^<mc/[[:alnum:].]+"
+  - Regex: "^<ta/[[:alnum:].]+"
     Priority: 3
   - Regex: "^<(boost|fmt|range)/"
     Priority: 4

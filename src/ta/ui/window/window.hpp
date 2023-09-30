@@ -1,15 +1,15 @@
 #pragma once
 
-#include <mc/ui/geometry/point_2d.hpp>
-#include <mc/ui/geometry/rectangle.hpp>
-#include <mc/ui/graphics/canvas.hpp>
-#include <mc/ui/input/key_click_event.hpp>
-#include <mc/ui/input/mouse_click_event.hpp>
+#include <ta/ui/geometry/point_2d.hpp>
+#include <ta/ui/geometry/rectangle.hpp>
+#include <ta/ui/graphics/canvas.hpp>
+#include <ta/ui/input/key_click_event.hpp>
+#include <ta/ui/input/mouse_click_event.hpp>
 
 #include <functional>
 #include <memory>
 
-namespace mc {
+namespace ta {
 
 namespace detail {
 struct WindowPimpl;
@@ -35,4 +35,4 @@ struct Window
 private:
     std::unique_ptr<detail::WindowPimpl> _impl;
 };
-}  // namespace mc
+}  // namespace ta

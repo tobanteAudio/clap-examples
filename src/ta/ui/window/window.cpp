@@ -10,7 +10,7 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
-namespace mc {
+namespace ta {
 
 namespace detail {
 struct WindowPimpl
@@ -188,4 +188,4 @@ Window::~Window() = default;
 
 auto Window::show() -> int { return _impl->show(); }
 
-}  // namespace mc
+}  // namespace ta

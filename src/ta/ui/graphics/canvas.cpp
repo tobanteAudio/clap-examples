@@ -1,6 +1,6 @@
 #include "canvas.hpp"
 
-namespace mc {
+namespace ta {
 Canvas::ScopedSavedState::ScopedSavedState(Canvas& canvas) : _canvas{canvas} { _canvas.pushState(); }
 
 Canvas::ScopedSavedState::~ScopedSavedState() { _canvas.popState(); }
@@ -31,4 +31,4 @@ auto Canvas::pushState() -> void { cairo_push_group(_context); }
 
 auto Canvas::popState() -> void { cairo_pop_group_to_source(_context); }
 
-}  // namespace mc
+}  // namespace ta

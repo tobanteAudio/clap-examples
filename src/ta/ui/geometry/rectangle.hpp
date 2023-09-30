@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mc {
+namespace ta {
 
 template<typename T>
 struct Rectangle
@@ -11,4 +11,4 @@ struct Rectangle
     T height;
 };
 
-}  // namespace mc
+}  // namespace ta

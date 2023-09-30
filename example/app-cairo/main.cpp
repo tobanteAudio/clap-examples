@@ -1,8 +1,8 @@
-#include <mc/ui.hpp>
+#include <ta/ui.hpp>
 
 auto main() -> int
 {
-    using namespace mc;
+    using namespace ta;
 
     auto win            = Window{"Application", 1024, 576};
     win.sizeChanged     = [](auto w, auto h) { std::printf("Size: %d,%d\n", w, h); };
