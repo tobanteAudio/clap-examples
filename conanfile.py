@@ -16,8 +16,8 @@ class ClapExamples(ConanFile):
             self.requires("cairo/1.17.6")
             self.requires("glfw/3.3.8")
             self.requires("glew/2.2.0")
-        if self.settings.os != "Macos":
-            self.requires("sdl/2.28.2")
+            if self.settings.os != "Macos":
+                self.requires("sdl/2.28.2")
 
     def configure(self):
         self.options["imgui"].shared = False
@@ -25,11 +25,8 @@ class ClapExamples(ConanFile):
             self.options["cairo"].shared = False
             self.options["glfw"].shared = False
             self.options["glew"].shared = False
-        if self.settings.os != "Macos":
-            self.options["sdl"].alsa = False
-            self.options["sdl"].pulse = False
-            self.options["sdl"].vulkan = False
-            self.options["sdl"].xscrnsaver = False
+
+            self.options["cairo"].with_glib = False
 
     def imports(self):
         src = "res/bindings"
