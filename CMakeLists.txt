@@ -51,4 +51,3 @@ else()
         add_subdirectory(example/app-cairo)
     endif()
 endif()
-

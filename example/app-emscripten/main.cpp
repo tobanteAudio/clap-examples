@@ -8,6 +8,8 @@
 
 #include <emscripten.h>
 
+#include <cstdio>
+
 struct Application
 {
     SDL_Window* window            = nullptr;
