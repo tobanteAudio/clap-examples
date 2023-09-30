@@ -17,7 +17,6 @@ target_sources(plugin-imgui
         src/gain_plugin.hpp
         src/gui.cpp
         src/imgui_base.cpp
-        # src/imgui_mac.mm
         src/imgui_win32.cpp
 
         ${CMAKE_BINARY_DIR}/bindings/imgui_impl_glfw.h
@@ -26,6 +25,10 @@ target_sources(plugin-imgui
         ${CMAKE_BINARY_DIR}/bindings/imgui_impl_opengl3.h
         ${CMAKE_BINARY_DIR}/bindings/imgui_impl_opengl3.cpp
 )
+
+if(APPLE)
+    target_sources(plugin-imgui PRIVATE src/imgui_mac.mm)
+endif()
 
 target_include_directories(plugin-imgui PRIVATE ${CMAKE_BINARY_DIR})
 target_link_libraries(plugin-imgui PRIVATE clap-core imgui::imgui GLEW::glew_s glfw::glfw)
