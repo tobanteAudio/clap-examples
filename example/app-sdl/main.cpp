@@ -1,8 +1,7 @@
-#include <stdbool.h>
-#include <stdio.h>
-
 #include <cairo/cairo.h>
 #include <SDL2/SDL.h>
+
+#include <cstdio>
 
 int main(int argc, char* argv[])
 {

@@ -1,5 +1,5 @@
+#include <cstdio>
 #include <iostream>
-#include <stdio.h>
 #include <vector>
 
 #include "bindings/imgui_impl_glfw.h"

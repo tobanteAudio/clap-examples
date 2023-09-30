@@ -1,14 +1,14 @@
 #include "window.hpp"
 
-#include <cstdlib>
-#include <optional>
-#include <string>
-
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <cairo/cairo-win32.h>
 #include <cairo/cairo.h>
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
+
+#include <cstdlib>
+#include <optional>
+#include <string>
 
 namespace ta {
 
@@ -28,9 +28,9 @@ struct WindowPimpl
     GLFWwindow* glfwWindow{nullptr};
     cairo_surface_t* surface;
     cairo_t* ctx;
-    Optional<Canvas> canvas;
+    std::optional<Canvas> canvas;
 
-    String title;
+    std::string title;
     int initialWidth;
     int initialHeight;
 };

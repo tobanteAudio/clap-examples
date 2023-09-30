@@ -1,10 +1,10 @@
 // generic ui functions.
 // plugin implementations that use imgui should not need to touch this file.
 
-#include <stdio.h>
-#include <string.h>
-
 #include "audio_plugin.hpp"
+
+#include <cstdio>
+#include <cstring>
 
 bool AudioPlugin::createUI(char const* api, bool is_floating)
 {

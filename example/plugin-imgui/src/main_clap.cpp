@@ -1,15 +1,14 @@
-#include <cstdlib>
-#include <stdint.h>
-#include <string.h>
-
-#include <string_view>
-
 #if defined _WIN32
 #include <windows.h>
 HINSTANCE g_hinst;
 #endif
 
 #include "gain_plugin.hpp"
+
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <string_view>
 
 namespace factory {
 auto getPluginCount(clap_plugin_factory const* factory) -> uint32_t { return 1; }

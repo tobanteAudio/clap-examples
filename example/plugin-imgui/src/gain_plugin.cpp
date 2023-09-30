@@ -4,12 +4,12 @@
 
 #include "gain_plugin.hpp"
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "imgui.h"
+
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 static const clap_param_info _param_info[GainPlugin::NUM_PARAMS] = {
     {0, CLAP_PARAM_REQUIRES_PROCESS, nullptr, "Volume", "",  -60.0,  12.0, 0.0},

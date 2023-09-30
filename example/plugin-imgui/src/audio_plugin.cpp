@@ -4,7 +4,7 @@
 
 #include "audio_plugin.hpp"
 
-#include <string.h>
+#include <cstring>
 
 clap_host const* clapHost;
 extern clap_plugin_timer_support guiTimerSupport;
