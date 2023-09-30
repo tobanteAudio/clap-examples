@@ -33,6 +33,6 @@ struct Window
     std::function<void(Canvas&)> draw;
 
 private:
-    UniquePtr<detail::WindowPimpl> _impl;
+    std::unique_ptr<detail::WindowPimpl> _impl;
 };
 }  // namespace mc
