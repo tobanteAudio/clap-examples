@@ -26,7 +26,7 @@ static auto mainLoop(void*) -> void;
 int main(int, char**)
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
-        std::fprintf(stderr, "Error: {}\n", SDL_GetError());
+        std::fprintf(stderr, "Error: %s\n", SDL_GetError());
         return -1;
     }
 

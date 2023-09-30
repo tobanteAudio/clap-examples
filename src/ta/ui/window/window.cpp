@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
+#include <cstdio>
 #include <cstdlib>
 #include <optional>
 #include <string>
@@ -37,7 +38,7 @@ struct WindowPimpl
 
 static auto errorCallback(int error, char const* description) -> void
 {
-    print(stderr, "Error: {} {}\n", error, description);
+    std::fprintf(stderr, "Error: %d %s\n", error, description);
 }
 
 static auto useWindowUserPtr(GLFWwindow* backend, auto callback) -> void
