@@ -181,7 +181,7 @@ auto WindowPimpl::updateCanvasSize() -> void
 }  // namespace detail
 
 Window::Window(char const* name, int width, int height)
-    : _impl{makeUnique<detail::WindowPimpl>(*this, name, width, height)}
+    : _impl{std::make_unique<detail::WindowPimpl>(*this, name, width, height)}
 {}
 
 Window::~Window() = default;
