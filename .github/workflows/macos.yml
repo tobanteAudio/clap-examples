@@ -21,7 +21,7 @@ jobs:
 
       - name: Install conan
         run: |
-          pip3 install --upgrade conan
+          pip3 install --force-reinstall "conan==1.59.0"
           conan config init
           conan config set general.revisions_enabled=1
 
