@@ -28,7 +28,7 @@ class ClapExamples(ConanFile):
 
             self.options["cairo"].with_glib = False
 
-        if self.settings.os != "Linux":
+        if self.settings.os == "Linux":
             self.options["sdl"].alsa = False
             self.options["sdl"].pulse = False
             self.options["sdl"].vulkan = False
