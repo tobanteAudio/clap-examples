@@ -11,13 +11,13 @@ class ClapExamples(ConanFile):
     generators = "cmake_find_package_multi", "markdown"
 
     def requirements(self):
-        self.requires("imgui/cci.20220621+1.88.docking")
+        self.requires("imgui/cci.20230105+1.89.2.docking")
         if self.settings.os != "Emscripten":
-            self.requires("cairo/1.17.4")
-            self.requires("glfw/3.3.6")
+            self.requires("cairo/1.17.6")
+            self.requires("glfw/3.3.8")
             self.requires("glew/2.2.0")
         if self.settings.os == "Windows":
-            self.requires("sdl/2.24.0")
+            self.requires("sdl/2.28.2")
 
     def configure(self):
         self.options["imgui"].shared = False
