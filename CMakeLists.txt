@@ -41,13 +41,14 @@ else()
     add_subdirectory(example/app)
     add_subdirectory(example/plugin-minimal)
     add_subdirectory(example/plugin-imgui)
+
+    if(NOT APPLE)
+        add_subdirectory(example/app-sdl)
+    endif()
+
+    if(WIN32)
+        add_subdirectory(src)
+        add_subdirectory(example/app-cairo)
+    endif()
 endif()
 
-if(NOT APPLE)
-    add_subdirectory(example/app-sdl)
-endif()
-
-if(WIN32)
-    add_subdirectory(src)
-    add_subdirectory(example/app-cairo)
-endif()
