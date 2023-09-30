@@ -7,9 +7,9 @@ on:
     branches: [main]
 
 jobs:
-  macos-11:
-    name: macOS 11
-    runs-on: macos-11
+  macos-12:
+    name: macOS 12
+    runs-on: macos-12
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -25,7 +25,8 @@ jobs:
           conan config init
           conan config set general.revisions_enabled=1
 
-      - name: Build - Release
-        run: |
-          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
-          cmake --build build --config Release
+      - name: CMake config
+        run: cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
+
+      - name: CMake build
+        run: cmake --build build --config Release

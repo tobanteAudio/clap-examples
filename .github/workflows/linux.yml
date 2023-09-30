@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  clang-14:
-    name: Clang-14
+  clang:
+    name: Clang
     runs-on: ubuntu-22.04
     steps:
       - name: Check out code
@@ -36,7 +36,8 @@ jobs:
           conan profile update conf.tools.system.package_manager:mode=install default
           conan profile update conf.tools.system.package_manager:sudo=True default
 
-      - name: Build - Release
-        run: |
-          cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER="clang-16" -D CMAKE_CXX_COMPILER="clang++-16"
-          cmake --build build --config Release
+      - name: CMake config
+        run: cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER="clang-16" -D CMAKE_CXX_COMPILER="clang++-16"
+
+      - name: CMake build
+        run: cmake --build build --config Release
