@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  CMAKE_GENERATOR: Ninja
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+
 jobs:
   macos-12:
     name: macOS 12
