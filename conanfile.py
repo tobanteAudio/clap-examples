@@ -28,6 +28,11 @@ class ClapExamples(ConanFile):
 
             self.options["cairo"].with_glib = False
 
+        if self.settings.os != "Linux":
+            self.options["cairo"].alsa = False
+            self.options["cairo"].pulse = False
+            self.options["cairo"].vulkan = False
+
     def imports(self):
         src = "res/bindings"
         dest = "bindings"
