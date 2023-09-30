@@ -3,13 +3,13 @@ os=Emscripten
 arch=wasm
 
 compiler=clang
-compiler.version=16
+compiler.version=17
 compiler.libcxx=libc++
 
 [options]
 
 [tool_requires]
-emsdk/3.1.23
+emsdk/3.1.44
 
 [env]
 

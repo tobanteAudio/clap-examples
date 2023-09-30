@@ -27,7 +27,6 @@ jobs:
           conan config init
           conan config set general.revisions_enabled=1
           conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
-          conan remote add modern-circuits https://moderncircuits.jfrog.io/artifactory/api/conan/modern-circuits-conan
 
       - name: Build dependencies
         run: >
