@@ -32,7 +32,7 @@ if(NOT EMSCRIPTEN)
 endif()
 
 include(FetchContent)
-FetchContent_Declare(clap GIT_REPOSITORY "https://github.com/free-audio/clap" GIT_TAG "1.1.1")
+FetchContent_Declare(clap GIT_REPOSITORY "https://github.com/free-audio/clap" GIT_TAG "1.1.8")
 FetchContent_MakeAvailable(clap)
 
 if(EMSCRIPTEN)
