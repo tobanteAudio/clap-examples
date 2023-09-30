@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(imgui-glfw-example C CXX)
+project(clap-examples C CXX)
 
 find_program(CCACHE ccache)
 if(CCACHE)
