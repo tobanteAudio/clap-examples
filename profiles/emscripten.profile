@@ -3,7 +3,7 @@ os=Emscripten
 arch=wasm
 
 compiler=clang
-compiler.version=17
+compiler.version=16
 compiler.libcxx=libc++
 
 [options]
