@@ -38,7 +38,7 @@ FetchContent_MakeAvailable(clap)
 if(EMSCRIPTEN)
     add_subdirectory(example/app-emscripten)
 else()
-    add_subdirectory(example/app)
+    add_subdirectory(example/app-glfw-imgui)
     add_subdirectory(example/plugin-minimal)
     add_subdirectory(example/plugin-imgui)
 
