@@ -12,8 +12,8 @@ class ClapExamples(ConanFile):
 
     def requirements(self):
         self.requires("imgui/cci.20230105+1.89.2.docking")
+        self.requires("cairo/1.17.6")
         if self.settings.os != "Emscripten":
-            self.requires("cairo/1.17.6")
             self.requires("glfw/3.3.8")
             self.requires("glew/2.2.0")
             if self.settings.os != "Macos":
@@ -21,12 +21,13 @@ class ClapExamples(ConanFile):
 
     def configure(self):
         self.options["imgui"].shared = False
+        self.options["cairo"].shared = False
+        self.options["cairo"].with_fontconfig = False
+        self.options["cairo"].with_glib = False
+
         if self.settings.os != "Emscripten":
-            self.options["cairo"].shared = False
             self.options["glfw"].shared = False
             self.options["glew"].shared = False
-
-            self.options["cairo"].with_glib = False
 
         if self.settings.os == "Linux":
             self.options["sdl"].alsa = False
