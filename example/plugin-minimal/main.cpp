@@ -16,7 +16,7 @@ static constexpr auto features = std::array<char const*, 3>{
     nullptr,
 };
 
-static const clap_plugin_descriptor_t s_my_plug_desc = {
+static clap_plugin_descriptor_t const s_my_plug_desc = {
     .clap_version = CLAP_VERSION,
     .id           = "com.tobanteAudio.clap-minimal",
     .name         = "CLAP Minimal",
@@ -63,7 +63,7 @@ static bool my_plug_audio_ports_get(
     return true;
 }
 
-static const clap_plugin_audio_ports_t s_my_plug_audio_ports = {
+static clap_plugin_audio_ports_t const s_my_plug_audio_ports = {
     .count = my_plug_audio_ports_count,
     .get   = my_plug_audio_ports_get,
 };
@@ -90,7 +90,7 @@ static bool my_plug_note_ports_get(
     return true;
 }
 
-static const clap_plugin_note_ports_t s_my_plug_note_ports = {
+static clap_plugin_note_ports_t const s_my_plug_note_ports = {
     .count = my_plug_note_ports_count,
     .get   = my_plug_note_ports_get,
 };
@@ -105,7 +105,7 @@ uint32_t my_plug_latency_get(clap_plugin_t const* plugin)
     return plug->latency;
 }
 
-static const clap_plugin_latency_t s_my_plug_latency = {
+static clap_plugin_latency_t const s_my_plug_latency = {
     .get = my_plug_latency_get,
 };
 
@@ -216,8 +216,8 @@ static clap_process_status
 my_plug_process(const struct clap_plugin* plugin, clap_process_t const* process)
 {
     auto* plug             = (my_plug_t*)plugin->plugin_data;
-    const uint32_t nframes = process->frames_count;
-    const uint32_t nev     = process->in_events->size(process->in_events);
+    uint32_t const nframes = process->frames_count;
+    uint32_t const nev     = process->in_events->size(process->in_events);
     uint32_t ev_index      = 0;
     uint32_t next_ev_frame = nev > 0 ? 0 : nframes;
 
@@ -335,7 +335,7 @@ static clap_plugin_t const* plugin_factory_create_plugin(
     return nullptr;
 }
 
-static const clap_plugin_factory_t s_plugin_factory = {
+static clap_plugin_factory_t const s_plugin_factory = {
     .get_plugin_count      = plugin_factory_get_plugin_count,
     .get_plugin_descriptor = plugin_factory_get_plugin_descriptor,
     .create_plugin         = plugin_factory_create_plugin,

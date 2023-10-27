@@ -28,7 +28,7 @@ void render_conan_logo()
 {
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     float sz              = 300.0F;
-    const ImVec2 p        = ImGui::GetCursorScreenPos();
+    ImVec2 const p        = ImGui::GetCursorScreenPos();
     float x = p.x + 4.0f, y = p.y + 4.0f;
     draw_list->AddQuadFilled(
         ImVec2(x, y + 0.25F * sz),

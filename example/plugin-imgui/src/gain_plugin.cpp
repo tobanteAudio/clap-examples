@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 
-static const clap_param_info _param_info[GainPlugin::NUM_PARAMS] = {
+static clap_param_info const _param_info[GainPlugin::NUM_PARAMS] = {
     {0, CLAP_PARAM_REQUIRES_PROCESS, nullptr, "Volume", "",  -60.0,  12.0, 0.0},
     {1, CLAP_PARAM_REQUIRES_PROCESS, nullptr,    "Pan", "", -100.0, 100.0, 0.0}
 };
