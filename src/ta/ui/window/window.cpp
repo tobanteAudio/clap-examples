@@ -1,11 +1,18 @@
 #include "window.hpp"
 
+#if defined(_WIN32)
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <cairo/cairo-win32.h>
+#elif defined(__linux__)
+#define GLFW_EXPOSE_NATIVE_X11
+#include <cairo/cairo-xlib.h>
+#endif
+
 #include <cairo/cairo.h>
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <optional>
@@ -158,6 +165,15 @@ auto WindowPimpl::show() -> int
     updateCanvasSize();
 
     while (not glfwWindowShouldClose(glfwWindow)) {
+        glfwPollEvents();
+
+#if defined(__linux__)
+        auto width  = 0;
+        auto height = 0;
+        glfwGetFramebufferSize(glfwWindow, &width, &height);
+        cairo_xlib_surface_set_size(surface, width, height);
+#endif
+
         if (window.draw) {
             auto savedState = Canvas::ScopedSavedState{*canvas};
             window.draw(*canvas);
@@ -165,7 +181,6 @@ auto WindowPimpl::show() -> int
 
         cairo_paint(ctx);
         cairo_surface_flush(surface);
-        glfwPollEvents();
     }
 
     return EXIT_SUCCESS;
@@ -173,10 +188,25 @@ auto WindowPimpl::show() -> int
 
 auto WindowPimpl::updateCanvasSize() -> void
 {
+#if defined(_WIN32)
     auto dc = GetDC(glfwGetWin32Window(glfwWindow));
     surface = cairo_win32_surface_create(dc);
     ctx     = cairo_create(surface);
-    canvas  = Canvas{ctx};
+#elif defined(__linux__)
+    int width{0};
+    int height{0};
+    glfwGetFramebufferSize(glfwWindow, &width, &height);
+    auto* x11Display = glfwGetX11Display();
+    auto x11Window   = glfwGetX11Window(glfwWindow);
+    auto* vis        = DefaultVisual(x11Display, DefaultScreen(x11Display));
+    surface          = cairo_xlib_surface_create(x11Display, x11Window, vis, width, height);
+    ctx              = cairo_create(surface);
+#else
+#error "GLFW + Cairo not implemented on this OS"
+#endif
+
+    assert(ctx != nullptr);
+    canvas = Canvas{ctx};
 }
 
 }  // namespace detail

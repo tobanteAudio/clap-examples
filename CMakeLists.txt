@@ -43,11 +43,8 @@ else()
     add_subdirectory(example/plugin-imgui)
 
     if(NOT APPLE)
-        add_subdirectory(example/app-sdl)
-    endif()
-
-    if(WIN32)
         add_subdirectory(src)
         add_subdirectory(example/app-cairo)
+        add_subdirectory(example/app-sdl)
     endif()
 endif()
