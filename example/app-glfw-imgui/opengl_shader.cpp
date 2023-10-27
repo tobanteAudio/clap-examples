@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-Shader::Shader() {}
+Shader::Shader() = default;
 
 void Shader::init(std::string const& vertex_code, std::string const& fragment_code)
 {
@@ -42,7 +42,7 @@ void Shader::link()
     glDeleteShader(fragment_id_);
 }
 
-void Shader::use() { glUseProgram(id_); }
+void Shader::use() const { glUseProgram(id_); }
 
 template<>
 void Shader::setUniform<int>(std::string const& name, int val)
@@ -53,7 +53,7 @@ void Shader::setUniform<int>(std::string const& name, int val)
 template<>
 void Shader::setUniform<bool>(std::string const& name, bool val)
 {
-    glUniform1i(glGetUniformLocation(id_, name.c_str()), val);
+    glUniform1i(glGetUniformLocation(id_, name.c_str()), static_cast<GLint>(val));
 }
 
 template<>
@@ -80,28 +80,28 @@ void Shader::setUniform<float*>(std::string const& name, float* val)
     glUniformMatrix4fv(glGetUniformLocation(id_, name.c_str()), 1, GL_FALSE, val);
 }
 
-void Shader::checkCompileErr()
+void Shader::checkCompileErr() const
 {
-    int success;
+    int success = 0;
     char infoLog[1024];
     glGetShaderiv(vertex_id_, GL_COMPILE_STATUS, &success);
-    if (!success) {
+    if (success == 0) {
         glGetShaderInfoLog(vertex_id_, 1024, nullptr, infoLog);
         std::cout << "Error compiling Vertex Shader:\n" << infoLog << std::endl;
     }
     glGetShaderiv(fragment_id_, GL_COMPILE_STATUS, &success);
-    if (!success) {
+    if (success == 0) {
         glGetShaderInfoLog(fragment_id_, 1024, nullptr, infoLog);
         std::cout << "Error compiling Fragment Shader:\n" << infoLog << std::endl;
     }
 }
 
-void Shader::checkLinkingErr()
+void Shader::checkLinkingErr() const
 {
-    int success;
+    int success = 0;
     char infoLog[1024];
     glGetProgramiv(id_, GL_LINK_STATUS, &success);
-    if (!success) {
+    if (success == 0) {
         glGetProgramInfoLog(id_, 1024, nullptr, infoLog);
         std::cout << "Error Linking Shader Program:\n" << infoLog << std::endl;
     }

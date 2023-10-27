@@ -3,7 +3,7 @@
 
 #include <cstdio>
 
-int main(int argc, char* argv[])
+auto main(int /*argc*/, char* /*argv*/[]) -> int
 {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -19,8 +19,8 @@ int main(int argc, char* argv[])
     auto* renderer
         = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    int window_width;
-    int window_height;
+    int window_width  = 0;
+    int window_height = 0;
     SDL_GetWindowSize(window, &window_width, &window_height);
 
     printf(
@@ -30,8 +30,8 @@ int main(int argc, char* argv[])
         window_height
     );
 
-    int renderer_width;
-    int renderer_height;
+    int renderer_width  = 0;
+    int renderer_height = 0;
     SDL_GetRendererOutputSize(renderer, &renderer_width, &renderer_height);
 
     printf(
@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
         renderer_height
     );
 
-    int cairo_x_multiplier = renderer_width / window_width;
-    int cairo_y_multiplier = renderer_height / window_height;
+    int const cairo_x_multiplier = renderer_width / window_width;
+    int const cairo_y_multiplier = renderer_height / window_height;
 
     SDL_Surface* sdl_surface = SDL_CreateRGBSurface(
         0,
@@ -88,11 +88,11 @@ int main(int argc, char* argv[])
     cairo_rectangle(cr, 0, 0, 640, 480);
     cairo_fill(cr);
 
-    double xc     = 320.0;
-    double yc     = 240.0;
-    double radius = 200.0;
-    double angle1 = 45.0 * (M_PI / 180.0);
-    double angle2 = 180.0 * (M_PI / 180.0);
+    double const xc     = 320.0;
+    double const yc     = 240.0;
+    double const radius = 200.0;
+    double const angle1 = 45.0 * (M_PI / 180.0);
+    double const angle2 = 180.0 * (M_PI / 180.0);
 
     cairo_set_source_rgba(cr, 0, 0, 0, 1.0);
     cairo_set_line_width(cr, 10.0);
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
     bool done = false;
     while (!done) {
         SDL_Event event;
-        while (SDL_PollEvent(&event)) {
+        while (SDL_PollEvent(&event) != 0) {
             switch (event.type) {
                 case SDL_QUIT: done = true; break;
                 default: break;

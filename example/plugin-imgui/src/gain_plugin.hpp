@@ -45,36 +45,37 @@ private:
         int numChannels,
         int startFrame,
         int endFrame,
-        double* startParamValues,
-        double* endParamValues,
+        double const* startParamValues,
+        double const* endParamValues,
         T** in,
         T** out
     ) -> clap_process_status;
 
-    double _sampleRate;
-    std::array<double, NUM_PARAMS> _parameterValues;
-    std::array<double, NUM_PARAMS> _lastParameterValues;
-    std::array<double, 2> _peakIn;
-    std::array<double, 2> _peakOut;
+    double _sampleRate{48000.0};
+    std::array<double, NUM_PARAMS> _parameterValues{};
+    std::array<double, NUM_PARAMS> _lastParameterValues{};
+    std::array<double, 2> _peakIn{};
+    std::array<double, 2> _peakOut{};
 };
 
 template<class T>
 auto GainPlugin::processInternal(
-    clap_process const* ctx,
+    clap_process const* /*ctx*/,
     int numChannels,
     int startFrame,
     int endFrame,
-    double* startParamValues,
-    double* endParamValues,
+    double const* startParamValues,
+    double const* endParamValues,
     T** in,
     T** out
 ) -> clap_process_status
 {
-    if (!in || !out) return CLAP_PROCESS_ERROR;
+    if (!in || !out) { return CLAP_PROCESS_ERROR; }
 
     for (int c = 0; c < numChannels; ++c) {
-        T *cin = in[c], *cout = out[c];
-        if (!cin || !cout) return CLAP_PROCESS_ERROR;
+        T* cin  = in[c];
+        T* cout = out[c];
+        if (!cin || !cout) { return CLAP_PROCESS_ERROR; }
 
         double adj = startParamValues[PARAM_VOLUME];
         if ((c & 1) && startParamValues[PARAM_PAN] < 0.0) {
@@ -95,8 +96,8 @@ auto GainPlugin::processInternal(
 
         for (int i = startFrame; i < endFrame; ++i) {
             cout[i] = cin[i] * adj;
-            if (cin[i] > _peakIn[c]) _peakIn[c] = cin[i];
-            if (cout[i] > _peakOut[c]) _peakOut[c] = cout[i];
+            if (cin[i] > _peakIn[c]) { _peakIn[c] = cin[i]; }
+            if (cout[i] > _peakOut[c]) { _peakOut[c] = cout[i]; }
             adj += d_adj;
         }
     }

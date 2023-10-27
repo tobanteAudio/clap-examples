@@ -11,21 +11,21 @@ HINSTANCE g_hinst;
 #include <string_view>
 
 namespace factory {
-auto getPluginCount(clap_plugin_factory const* factory) -> uint32_t { return 1; }
+auto getPluginCount(clap_plugin_factory const* /*factory*/) -> uint32_t { return 1; }
 
-auto getPluginDescriptor(clap_plugin_factory const* factory, uint32_t index)
+auto getPluginDescriptor(clap_plugin_factory const* /*factory*/, uint32_t index)
     -> clap_plugin_descriptor const*
 {
-    if (index == 0) return getGainPluginDescriptor();
+    if (index == 0) { return getGainPluginDescriptor(); }
     return nullptr;
 }
 
-auto create(clap_plugin_factory const* factory, clap_host const* host, char const* id)
+auto create(clap_plugin_factory const* /*factory*/, clap_host const* host, char const* id)
     -> clap_plugin const*
 {
     AudioPlugin* plugin = nullptr;
-    if (!strcmp(getGainPluginDescriptor()->id, id)) plugin = createGainPlugin(host);
-    if (plugin) return &plugin->clapPluginHandle;
+    if (strcmp(getGainPluginDescriptor()->id, id) == 0) { plugin = createGainPlugin(host); }
+    if (plugin != nullptr) { return &plugin->clapPluginHandle; }
     return nullptr;
 }
 
@@ -38,7 +38,7 @@ clap_plugin_factory plugin_factory = {
 };
 
 namespace entry {
-auto init(char const* path) -> bool { return true; }
+auto init(char const* /*path*/) -> bool { return true; }
 
 auto deinit() -> void {}
 

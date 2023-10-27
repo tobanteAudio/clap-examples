@@ -11,13 +11,17 @@
 void getNativeWindowPosition(void* display, void* window, int& x, int& y, int& w, int& h);
 void setNativeParent(void* display, void* window, GLFWwindow* glfw_win);
 
-bool createTimer(unsigned int ms);
+auto createTimer(unsigned int ms) -> bool;
 void destroyTimer();
-unsigned int getTickCount();
+auto getTickCount() -> unsigned int;
 
 extern clap_host const* clapHost;
 
-#define TIMER_MS 30
+enum
+{
+    TIMER_MS = 30
+};
+
 GLFWwindow* gNativeWindow;
 unsigned int gWantTeardown;
 unsigned int gWindowCount;
@@ -38,10 +42,10 @@ int render_pass_reentry;
 
 void imguiDoRenderPass()
 {
-    if (!gNativeWindow) return;
-    if (!rec_list) return;
+    if (gNativeWindow == nullptr) { return; }
+    if (rec_list == nullptr) { return; }
 
-    if (render_pass_reentry) return;
+    if (render_pass_reentry != 0) { return; }
     ++render_pass_reentry;  // glfwPollEvents can reenter us by pumping timer
                             // messages
 
@@ -52,8 +56,11 @@ void imguiDoRenderPass()
     ImGui::NewFrame();
 
     GuiContext* rec = rec_list;
-    while (rec) {
-        int x, y, w, h;
+    while (rec != nullptr) {
+        int x = 0;
+        int y = 0;
+        int w = 0;
+        int h = 0;
         getNativeWindowPosition(rec->display, rec->window, x, y, w, h);
         ImGui::SetNextWindowPos(ImVec2(x, y));
         ImGui::SetNextWindowSize(ImVec2(w, h));
@@ -77,11 +84,11 @@ void imguiDoRenderPass()
     glfwSwapBuffers(gNativeWindow);
 
     rec = rec_list;
-    while (rec) {
-        if (!rec->did_parenting) {
+    while (rec != nullptr) {
+        if (rec->did_parenting == 0) {
             ImGuiWindow* w = ImGui::FindWindowByName(rec->name);
-            if (w && w->Viewport && w->Viewport->PlatformWindowCreated) {
-                GLFWwindow* glfw_win = (GLFWwindow*)w->Viewport->PlatformHandle;
+            if ((w != nullptr) && (w->Viewport != nullptr) && w->Viewport->PlatformWindowCreated) {
+                auto* glfw_win = (GLFWwindow*)w->Viewport->PlatformHandle;
                 setNativeParent(rec->display, rec->window, glfw_win);
                 rec->did_parenting = 1;
             }
@@ -94,7 +101,7 @@ void imguiDoRenderPass()
 
 void imguiTeardown()
 {
-    if (!gNativeWindow) return;
+    if (gNativeWindow == nullptr) { return; }
 
     destroyTimer();
 
@@ -110,7 +117,7 @@ void imguiTeardown()
 void imguiTimerCallback()
 {
     if (gWantTeardown > 0) {
-        if (getTickCount() > gWantTeardown) imguiTeardown();
+        if (getTickCount() > gWantTeardown) { imguiTeardown(); }
     } else {
         imguiDoRenderPass();
     }
@@ -121,17 +128,17 @@ static void glfw_error_callback(int error, char const* description)
     fprintf(stderr, "GLFW error %d: %s\n", error, description);
 }
 
-bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
+auto imguiAttach(AudioPlugin* plugin, void* display, void* window) -> bool
 {
-    if (!plugin || !window) { return false; }
-    if (plugin->uiContext) { return true; }
+    if ((plugin == nullptr) || (window == nullptr)) { return false; }
+    if (plugin->uiContext != nullptr) { return true; }
 
     gWantTeardown = 0;
-    if (!gNativeWindow) {
+    if (gNativeWindow == nullptr) {
         if (!createTimer(TIMER_MS)) { return false; }
 
         glfwSetErrorCallback(glfw_error_callback);
-        if (!glfwInit()) { return false; }
+        if (glfwInit() == 0) { return false; }
 
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
@@ -141,7 +148,7 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         // invisible top level window
         gNativeWindow = glfwCreateWindow(1, 1, "ImGui Backend", nullptr, nullptr);
-        if (!gNativeWindow) { return false; }
+        if (gNativeWindow == nullptr) { return false; }
 
         glfwMakeContextCurrent(gNativeWindow);
         glfwSwapInterval(1);
@@ -157,7 +164,7 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
         ImGui_ImplOpenGL3_Init(nullptr);
     }
 
-    GuiContext* new_rec = (GuiContext*)malloc(sizeof(GuiContext));
+    auto* new_rec = (GuiContext*)malloc(sizeof(GuiContext));
     memset(new_rec, 0, sizeof(GuiContext));
     new_rec->plugin  = plugin;
     new_rec->display = display;
@@ -165,26 +172,27 @@ bool imguiAttach(AudioPlugin* plugin, void* display, void* window)
     sprintf(new_rec->name, "%d:%p", ++gWindowCount, new_rec);
     plugin->uiContext = new_rec;
 
-    if (rec_list) new_rec->next = rec_list;
+    if (rec_list != nullptr) { new_rec->next = rec_list; }
     rec_list = new_rec;
 
     return true;
 }
 
-bool AudioPlugin::destroyUI(bool is_plugin_destroy)
+auto AudioPlugin::destroyUI(bool is_plugin_destroy) -> bool
 {
-    if (uiContext) {
-        GuiContext* old_rec = (GuiContext*)uiContext;
-        uiContext           = nullptr;
+    if (uiContext != nullptr) {
+        auto* old_rec = static_cast<GuiContext*>(uiContext);
+        uiContext     = nullptr;
 
         GuiContext* prev_rec = nullptr;
         GuiContext* rec      = rec_list;
-        while (rec) {
+        while (rec != nullptr) {
             if (rec == old_rec) {
-                if (!prev_rec)
+                if (prev_rec == nullptr) {
                     rec_list = old_rec->next;
-                else
+                } else {
                     prev_rec->next = old_rec->next;
+                }
                 break;
             }
             prev_rec = rec;
@@ -195,16 +203,17 @@ bool AudioPlugin::destroyUI(bool is_plugin_destroy)
         // in a render pass
     }
 
-    if (!rec_list) {
-        if (is_plugin_destroy)
+    if (rec_list == nullptr) {
+        if (is_plugin_destroy) {
             imguiTeardown();
-        else
+        } else {
             gWantTeardown = getTickCount() + 1000;
+        }
     }
 
     return true;
 }
 
-void timerCallback(clap_plugin const* plugin, unsigned int timer_id) { imguiTimerCallback(); }
+void timerCallback(clap_plugin const* /*plugin*/, unsigned int /*timer_id*/) { imguiTimerCallback(); }
 
 auto guiTimerSupport = clap_plugin_timer_support_t{timerCallback};

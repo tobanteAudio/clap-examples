@@ -1,10 +1,8 @@
 #include "file_manager.h"
 
-FileManager::FileManager() {}
+FileManager::FileManager() = default;
 
-FileManager::~FileManager() {}
-
-std::string FileManager::read(std::string const& filename)
+auto FileManager::read(std::string const& filename) -> std::string
 {
     std::ifstream file;
     file.exceptions(std::ifstream::failbit | std::ifstream::badbit);

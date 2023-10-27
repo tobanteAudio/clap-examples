@@ -9,6 +9,6 @@ class FileManager
 {
 public:
     FileManager();
-    ~FileManager();
-    static std::string read(std::string const& filename);
+    ~FileManager() = default;
+    static auto read(std::string const& filename) -> std::string;
 };

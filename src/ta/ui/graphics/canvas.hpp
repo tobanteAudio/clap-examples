@@ -30,7 +30,7 @@ struct Canvas
     auto pushState() -> void;
     auto popState() -> void;
 
-    auto native() const -> cairo_t* { return _context; }
+    [[nodiscard]] auto native() const -> cairo_t* { return _context; }
 
 private:
     cairo_t* _context{nullptr};

@@ -29,7 +29,7 @@ static clap_plugin_descriptor_t const s_my_plug_desc = {
     .features     = (char const**)(features.data()),
 };
 
-typedef struct
+using my_plug_t = struct
 {
     clap_plugin_t plugin;
     clap_host_t const* host;
@@ -38,22 +38,25 @@ typedef struct
     clap_host_thread_check_t const* hostThreadCheck;
 
     uint32_t latency;
-} my_plug_t;
+};
 
 /////////////////////////////
 // clap_plugin_audio_ports //
 /////////////////////////////
 
-static uint32_t my_plug_audio_ports_count(clap_plugin_t const* plugin, bool is_input) { return 1; }
-
-static bool my_plug_audio_ports_get(
-    clap_plugin_t const* plugin,
-    uint32_t index,
-    bool is_input,
-    clap_audio_port_info_t* info
-)
+static auto my_plug_audio_ports_count(clap_plugin_t const* /*plugin*/, bool /*is_input*/) -> uint32_t
 {
-    if (index > 0) return false;
+    return 1;
+}
+
+static auto my_plug_audio_ports_get(
+    clap_plugin_t const* /*plugin*/,
+    uint32_t index,
+    bool /*is_input*/,
+    clap_audio_port_info_t* info
+) -> bool
+{
+    if (index > 0) { return false; }
     info->id = 0;
     snprintf(info->name, sizeof(info->name), "%s", "My Port Name");
     info->channel_count = 2;
@@ -72,16 +75,19 @@ static clap_plugin_audio_ports_t const s_my_plug_audio_ports = {
 // clap_plugin_note_ports //
 ////////////////////////////
 
-static uint32_t my_plug_note_ports_count(clap_plugin_t const* plugin, bool is_input) { return 1; }
-
-static bool my_plug_note_ports_get(
-    clap_plugin_t const* plugin,
-    uint32_t index,
-    bool is_input,
-    clap_note_port_info_t* info
-)
+static auto my_plug_note_ports_count(clap_plugin_t const* /*plugin*/, bool /*is_input*/) -> uint32_t
 {
-    if (index > 0) return false;
+    return 1;
+}
+
+static auto my_plug_note_ports_get(
+    clap_plugin_t const* /*plugin*/,
+    uint32_t index,
+    bool /*is_input*/,
+    clap_note_port_info_t* info
+) -> bool
+{
+    if (index > 0) { return false; }
     info->id = 0;
     snprintf(info->name, sizeof(info->name), "%s", "My Port Name");
     info->supported_dialects
@@ -99,7 +105,7 @@ static clap_plugin_note_ports_t const s_my_plug_note_ports = {
 // clap_latency //
 //////////////////
 
-uint32_t my_plug_latency_get(clap_plugin_t const* plugin)
+auto my_plug_latency_get(clap_plugin_t const* plugin) -> uint32_t
 {
     auto* plug = (my_plug_t*)plugin->plugin_data;
     return plug->latency;
@@ -113,7 +119,7 @@ static clap_plugin_latency_t const s_my_plug_latency = {
 // clap_plugin //
 /////////////////
 
-static bool my_plug_init(const struct clap_plugin* plugin)
+static auto my_plug_init(const struct clap_plugin* plugin) -> bool
 {
     auto* plug = (my_plug_t*)plugin->plugin_data;
 
@@ -131,80 +137,84 @@ static void my_plug_destroy(const struct clap_plugin* plugin)
     free(plug);
 }
 
-static bool
-my_plug_activate(const struct clap_plugin* plugin, double sr, uint32_t minFrames, uint32_t maxFrames)
+static auto my_plug_activate(
+    const struct clap_plugin* /*plugin*/,
+    double /*sr*/,
+    uint32_t /*minFrames*/,
+    uint32_t /*maxFrames*/
+) -> bool
 {
     return true;
 }
 
 static void my_plug_deactivate(const struct clap_plugin* plugin) {}
 
-static bool my_plug_start_processing(const struct clap_plugin* plugin) { return true; }
+static auto my_plug_start_processing(const struct clap_plugin* /*plugin*/) -> bool { return true; }
 
 static void my_plug_stop_processing(const struct clap_plugin* plugin) {}
 
 static void my_plug_reset(const struct clap_plugin* plugin) {}
 
-static void my_plug_process_event(my_plug_t* plug, clap_event_header_t const* hdr)
+static void my_plug_process_event(clap_event_header_t const* hdr)
 {
     if (hdr->space_id == CLAP_CORE_EVENT_SPACE_ID) {
         switch (hdr->type) {
             case CLAP_EVENT_NOTE_ON: {
-                clap_event_note_t const* ev = (clap_event_note_t const*)hdr;
+                auto const* ev = (clap_event_note_t const*)hdr;
                 // TODO: handle note on
                 break;
             }
 
             case CLAP_EVENT_NOTE_OFF: {
-                clap_event_note_t const* ev = (clap_event_note_t const*)hdr;
+                auto const* ev = (clap_event_note_t const*)hdr;
                 // TODO: handle note off
                 break;
             }
 
             case CLAP_EVENT_NOTE_CHOKE: {
-                clap_event_note_t const* ev = (clap_event_note_t const*)hdr;
+                auto const* ev = (clap_event_note_t const*)hdr;
                 // TODO: handle note choke
                 break;
             }
 
             case CLAP_EVENT_NOTE_EXPRESSION: {
-                clap_event_note_expression_t const* ev = (clap_event_note_expression_t const*)hdr;
+                auto const* ev = (clap_event_note_expression_t const*)hdr;
                 // TODO: handle note expression
                 break;
             }
 
             case CLAP_EVENT_PARAM_VALUE: {
-                clap_event_param_value_t const* ev = (clap_event_param_value_t const*)hdr;
+                auto const* ev = (clap_event_param_value_t const*)hdr;
                 // TODO: handle parameter change
                 break;
             }
 
             case CLAP_EVENT_PARAM_MOD: {
-                clap_event_param_mod_t const* ev = (clap_event_param_mod_t const*)hdr;
+                auto const* ev = (clap_event_param_mod_t const*)hdr;
                 // TODO: handle parameter modulation
                 break;
             }
 
             case CLAP_EVENT_TRANSPORT: {
-                clap_event_transport_t const* ev = (clap_event_transport_t const*)hdr;
+                auto const* ev = (clap_event_transport_t const*)hdr;
                 // TODO: handle transport event
                 break;
             }
 
             case CLAP_EVENT_MIDI: {
-                clap_event_midi_t const* ev = (clap_event_midi_t const*)hdr;
+                auto const* ev = (clap_event_midi_t const*)hdr;
                 // TODO: handle MIDI event
                 break;
             }
 
             case CLAP_EVENT_MIDI_SYSEX: {
-                clap_event_midi_sysex_t const* ev = (clap_event_midi_sysex_t const*)hdr;
+                auto const* ev = (clap_event_midi_sysex_t const*)hdr;
                 // TODO: handle MIDI Sysex event
                 break;
             }
 
             case CLAP_EVENT_MIDI2: {
-                clap_event_midi2_t const* ev = (clap_event_midi2_t const*)hdr;
+                auto const* ev = (clap_event_midi2_t const*)hdr;
                 // TODO: handle MIDI2 event
                 break;
             }
@@ -212,8 +222,8 @@ static void my_plug_process_event(my_plug_t* plug, clap_event_header_t const* hd
     }
 }
 
-static clap_process_status
-my_plug_process(const struct clap_plugin* plugin, clap_process_t const* process)
+static auto my_plug_process(const struct clap_plugin* plugin, clap_process_t const* process)
+    -> clap_process_status
 {
     auto* plug             = (my_plug_t*)plugin->plugin_data;
     uint32_t const nframes = process->frames_count;
@@ -230,7 +240,7 @@ my_plug_process(const struct clap_plugin* plugin, clap_process_t const* process)
                 break;
             }
 
-            my_plug_process_event(plug, hdr);
+            my_plug_process_event(hdr);
             ++ev_index;
 
             if (ev_index == nev) {
@@ -260,11 +270,11 @@ my_plug_process(const struct clap_plugin* plugin, clap_process_t const* process)
     return CLAP_PROCESS_CONTINUE;
 }
 
-static void const* my_plug_get_extension(const struct clap_plugin* plugin, char const* id)
+static auto my_plug_get_extension(const struct clap_plugin* /*plugin*/, char const* id) -> void const*
 {
-    if (!strcmp(id, CLAP_EXT_LATENCY)) return &s_my_plug_latency;
-    if (!strcmp(id, CLAP_EXT_AUDIO_PORTS)) return &s_my_plug_audio_ports;
-    if (!strcmp(id, CLAP_EXT_NOTE_PORTS)) return &s_my_plug_note_ports;
+    if (strcmp(id, CLAP_EXT_LATENCY) == 0) { return &s_my_plug_latency; }
+    if (strcmp(id, CLAP_EXT_AUDIO_PORTS) == 0) { return &s_my_plug_audio_ports; }
+    if (strcmp(id, CLAP_EXT_NOTE_PORTS) == 0) { return &s_my_plug_note_ports; }
     // TODO: add support to CLAP_EXT_PARAMS
     // TODO: add support to CLAP_EXT_STATE
     return nullptr;
@@ -272,7 +282,7 @@ static void const* my_plug_get_extension(const struct clap_plugin* plugin, char 
 
 static void my_plug_on_main_thread(const struct clap_plugin* plugin) {}
 
-clap_plugin_t* my_plug_create(clap_host_t const* host)
+auto my_plug_create(clap_host_t const* host) -> clap_plugin_t*
 {
     auto* p                    = (my_plug_t*)calloc(1, sizeof(my_plug_t));
     p->host                    = host;
@@ -309,28 +319,30 @@ static struct
      },
 };
 
-static uint32_t plugin_factory_get_plugin_count(const struct clap_plugin_factory* factory)
+static auto plugin_factory_get_plugin_count(const struct clap_plugin_factory* /*factory*/) -> uint32_t
 {
     return sizeof(s_plugins) / sizeof(s_plugins[0]);
 }
 
-static clap_plugin_descriptor_t const*
-plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory* factory, uint32_t index)
+static auto
+plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory* /*factory*/, uint32_t index)
+    -> clap_plugin_descriptor_t const*
 {
     return s_plugins[index].desc;
 }
 
-static clap_plugin_t const* plugin_factory_create_plugin(
-    const struct clap_plugin_factory* factory,
+static auto plugin_factory_create_plugin(
+    const struct clap_plugin_factory* /*factory*/,
     clap_host_t const* host,
     char const* plugin_id
-)
+) -> clap_plugin_t const*
 {
     if (!clap_version_is_compatible(host->clap_version)) { return nullptr; }
 
     int const N = sizeof(s_plugins) / sizeof(s_plugins[0]);
-    for (int i = 0; i < N; ++i)
-        if (!strcmp(plugin_id, s_plugins[i].desc->id)) return s_plugins[i].create(host);
+    for (auto& s_plugin : s_plugins) {
+        if (strcmp(plugin_id, s_plugin.desc->id) == 0) { return s_plugin.create(host); }
+    }
 
     return nullptr;
 }
@@ -345,20 +357,20 @@ static clap_plugin_factory_t const s_plugin_factory = {
 // clap_entry //
 ////////////////
 
-static bool entry_init(char const* plugin_path)
+static auto entry_init(char const* /*plugin_path*/) -> bool
 {
     // called only once, and very first
     return true;
 }
 
-static void entry_deinit(void)
+static void entry_deinit()
 {
     // called before unloading the DSO
 }
 
-static void const* entry_get_factory(char const* factory_id)
+static auto entry_get_factory(char const* factory_id) -> void const*
 {
-    if (!strcmp(factory_id, CLAP_PLUGIN_FACTORY_ID)) return &s_plugin_factory;
+    if (strcmp(factory_id, CLAP_PLUGIN_FACTORY_ID) == 0) { return &s_plugin_factory; }
     return nullptr;
 }
 

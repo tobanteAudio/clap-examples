@@ -6,14 +6,14 @@
 #include <cstdio>
 #include <cstring>
 
-bool AudioPlugin::createUI(char const* api, bool is_floating)
+auto AudioPlugin::createUI(char const* api, bool is_floating) -> bool
 {
     return isApiSupported(api, is_floating);
 }
 
-bool AudioPlugin::setScale(double scale) { return false; }
+auto AudioPlugin::setScale(double /*scale*/) -> bool { return false; }
 
-bool AudioPlugin::getSize(uint32_t* width, uint32_t* height)
+auto AudioPlugin::getSize(uint32_t* width, uint32_t* height) -> bool
 {
     if (windowWidth > 0 && windowHeight > 0) {
         *width  = windowWidth;
@@ -24,11 +24,11 @@ bool AudioPlugin::getSize(uint32_t* width, uint32_t* height)
     return true;
 }
 
-bool AudioPlugin::canResize() { return true; }
+auto AudioPlugin::canResize() -> bool { return true; }
 
-bool AudioPlugin::adjustSize(uint32_t* width, uint32_t* height) { return true; }
+auto AudioPlugin::adjustSize(uint32_t* /*width*/, uint32_t* /*height*/) -> bool { return true; }
 
-bool AudioPlugin::setSize(uint32_t width, uint32_t height)
+auto AudioPlugin::setSize(uint32_t width, uint32_t height) -> bool
 {
     // imgui should respond dynamically to the host window size changing
     windowWidth  = width;
@@ -36,10 +36,10 @@ bool AudioPlugin::setSize(uint32_t width, uint32_t height)
     return true;
 }
 
-bool AudioPlugin::setTransient(clap_window const* window) { return false; }
+auto AudioPlugin::setTransient(clap_window const* /*window*/) -> bool { return false; }
 
 void AudioPlugin::suggestTitle(char const* title) {}
 
-bool AudioPlugin::showUI() { return true; }
+auto AudioPlugin::showUI() -> bool { return true; }
 
-bool AudioPlugin::hideUI() { return true; }
+auto AudioPlugin::hideUI() -> bool { return true; }

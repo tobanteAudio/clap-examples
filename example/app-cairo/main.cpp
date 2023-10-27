@@ -18,7 +18,7 @@ auto main() -> int
 
         for (auto i : {0, 1, 2, 3, 4, 5}) {
             canvas.setColor(Colors::green);
-            auto ctx = canvas.native();
+            auto* ctx = canvas.native();
             cairo_move_to(ctx, 300.0, 60.0 * i + 40.0);
             cairo_line_to(ctx, 350.0, 60.0 * i + 40.0);
             cairo_set_line_width(ctx, 40.0);

@@ -11,12 +11,12 @@
 #include <cstdlib>
 #include <cstring>
 
-static clap_param_info const _param_info[GainPlugin::NUM_PARAMS] = {
+static clap_param_info const param_info[GainPlugin::NUM_PARAMS] = {
     {0, CLAP_PARAM_REQUIRES_PROCESS, nullptr, "Volume", "",  -60.0,  12.0, 0.0},
     {1, CLAP_PARAM_REQUIRES_PROCESS, nullptr,    "Pan", "", -100.0, 100.0, 0.0}
 };
 
-static double paramConvertValue(clap_id id, double in)
+static auto paramConvertValue(clap_id id, double in) -> double
 {
     if (id < 0 || id >= GainPlugin::NUM_PARAMS) { return 0.0; }
     if (id == GainPlugin::PARAM_VOLUME) { return in > -150.0 ? pow(10.0, in / 20.0) : 0.0; }
@@ -26,19 +26,19 @@ static double paramConvertValue(clap_id id, double in)
 
 GainPlugin::GainPlugin(clap_host const* host) : AudioPlugin(getGainPluginDescriptor(), host)
 {
-    _sampleRate = 48000.0;
+
     for (int i = 0; i < NUM_PARAMS; ++i) {
         _parameterValues[i] = _lastParameterValues[i]
-            = paramConvertValue(i, _param_info[i].default_value);
+            = paramConvertValue(i, param_info[i].default_value);
     }
     _peakIn[0] = _peakIn[1] = _peakOut[0] = _peakOut[1] = 0.0;
 }
 
-GainPlugin::~GainPlugin() {}
+GainPlugin::~GainPlugin() = default;
 
-bool GainPlugin::init() { return true; }
+auto GainPlugin::init() -> bool { return true; }
 
-bool GainPlugin::activate(double sr, uint32_t minFrames, uint32_t maxFrames)
+auto GainPlugin::activate(double sr, uint32_t /*minFrames*/, uint32_t /*maxFrames*/) -> bool
 {
     _sampleRate = sr;
     _peakIn[0] = _peakIn[1] = _peakOut[0] = _peakOut[1] = 0.0;
@@ -47,30 +47,30 @@ bool GainPlugin::activate(double sr, uint32_t minFrames, uint32_t maxFrames)
 
 void GainPlugin::deactivate() {}
 
-bool GainPlugin::startProcessing() { return true; }
+auto GainPlugin::startProcessing() -> bool { return true; }
 
 void GainPlugin::stopProcessing() {}
 
-clap_process_status GainPlugin::process(clap_process const* ctx)
+auto GainPlugin::process(clap_process const* ctx) -> clap_process_status
 {
     double const decay = pow(0.5, (double)ctx->frames_count / _sampleRate / 0.125);
     for (int c = 0; c < 2; ++c) {
         _peakIn[c] *= decay;
         _peakOut[c] *= decay;
-        if (_peakIn[c] < 1.0e-6) _peakIn[c] = 0.0;
-        if (_peakOut[c] < 1.0e-6) _peakOut[c] = 0.0;
+        if (_peakIn[c] < 1.0e-6) { _peakIn[c] = 0.0; }
+        if (_peakOut[c] < 1.0e-6) { _peakOut[c] = 0.0; }
     }
 
     double cur_param_values[NUM_PARAMS];
     for (int i = 0; i < NUM_PARAMS; ++i) { cur_param_values[i] = _parameterValues[i]; }
 
     clap_process_status s = -1;
-    if (ctx && ctx->audio_inputs_count == 1 && ctx->audio_inputs[0].channel_count == 2
+    if ((ctx != nullptr) && ctx->audio_inputs_count == 1 && ctx->audio_inputs[0].channel_count == 2
         && ctx->audio_outputs_count == 1 && ctx->audio_outputs[0].channel_count == 2) {
         // handling incoming parameter changes and slicing the process call
         // on the time axis would happen here.
 
-        if (ctx->audio_inputs[0].data32 && ctx->audio_outputs[0].data32) {
+        if ((ctx->audio_inputs[0].data32 != nullptr) && (ctx->audio_outputs[0].data32 != nullptr)) {
             s = processInternal(
                 ctx,
                 2,
@@ -81,7 +81,7 @@ clap_process_status GainPlugin::process(clap_process const* ctx)
                 ctx->audio_inputs[0].data32,
                 ctx->audio_outputs[0].data32
             );
-        } else if (ctx->audio_inputs[0].data64 && ctx->audio_outputs[0].data64) {
+        } else if ((ctx->audio_inputs[0].data64 != nullptr) && (ctx->audio_outputs[0].data64 != nullptr)) {
             s = processInternal(
                 ctx,
                 2,
@@ -97,11 +97,11 @@ clap_process_status GainPlugin::process(clap_process const* ctx)
 
     for (int i = 0; i < NUM_PARAMS; ++i) { _lastParameterValues[i] = _parameterValues[i]; }
 
-    if (s < 0) s = CLAP_PROCESS_ERROR;
+    if (s < 0) { s = CLAP_PROCESS_ERROR; }
     return s;
 }
 
-void const* GainPlugin::getExtension(char const* id) { return nullptr; }
+auto GainPlugin::getExtension(char const* /*id*/) -> void const* { return nullptr; }
 
 void GainPlugin::onMainThread() {}
 
@@ -112,8 +112,8 @@ void GainPlugin::draw()
     for (int c = 0; c < 2; ++c) {
         double val = 0.0;
         if (_peakIn[c] > 0.001) {
-            double db = log(_peakIn[c]) * 20.0 / log(10.0);
-            val       = (db + 60.0) / 72.0;
+            double const db = log(_peakIn[c]) * 20.0 / log(10.0);
+            val             = (db + 60.0) / 72.0;
         }
         ImGui::ProgressBar(val, ImVec2(-FLT_MIN, 0), "");
     }
@@ -124,107 +124,113 @@ void GainPlugin::draw()
         voldb = log(_parameterValues[PARAM_VOLUME]) * 20.0 / log(10.0);
         lbl   = "%+.1f dB";
     }
-    ImGui::SliderFloat("Volume", &voldb, -60.0f, 12.0f, lbl, 1.0f);
-    if (voldb > -60.0)
+    ImGui::SliderFloat("Volume", &voldb, -60.0F, 12.0F, lbl, 1.0F);
+    if (voldb > -60.0) {
         _parameterValues[PARAM_VOLUME] = pow(10.0, voldb / 20.0);
-    else
+    } else {
         _parameterValues[PARAM_VOLUME] = 0.0;
+    }
 
     float pan = _parameterValues[PARAM_PAN] * 100.0;
-    ImGui::SliderFloat("Pan", &pan, -100.0f, 100.0f, "%+.1f%%", 1.0f);
+    ImGui::SliderFloat("Pan", &pan, -100.0F, 100.0F, "%+.1f%%", 1.0F);
     _parameterValues[PARAM_PAN] = 0.01 * pan;
 
     for (int c = 0; c < 2; ++c) {
         double val = 0.0;
         if (_peakOut[c] > 0.001) {
-            double db = log(_peakOut[c]) * 20.0 / log(10.0);
-            val       = (db + 60.0) / 72.0;
+            double const db = log(_peakOut[c]) * 20.0 / log(10.0);
+            val             = (db + 60.0) / 72.0;
         }
         ImGui::ProgressBar(val, ImVec2(-FLT_MIN, 0), "");
     }
 }
 
-bool GainPlugin::getPreferredSize(uint32_t* width, uint32_t* height)
+auto GainPlugin::getPreferredSize(uint32_t* width, uint32_t* height) -> bool
 {
     *width  = 400;
     *height = 400;
     return true;
 }
 
-uint32_t GainPlugin::numParameter() { return NUM_PARAMS; }
+auto GainPlugin::numParameter() -> uint32_t { return NUM_PARAMS; }
 
-bool GainPlugin::getParameterInfo(uint32_t index, clap_param_info_t* info)
+auto GainPlugin::getParameterInfo(uint32_t index, clap_param_info_t* info) -> bool
 {
     if (index < 0 || index >= NUM_PARAMS) { return false; }
-    *info = _param_info[index];
+    *info = param_info[index];
     return true;
 }
 
-bool GainPlugin::getParameterValue(clap_id id, double* value)
+auto GainPlugin::getParameterValue(clap_id id, double* value) -> bool
 {
-    if (!value) { return false; }
+    if (value == nullptr) { return false; }
     if (id < 0 || id >= NUM_PARAMS) { return false; }
 
     if (id == PARAM_VOLUME) {
-        if (_parameterValues[PARAM_VOLUME] <= 0.0)
+        if (_parameterValues[PARAM_VOLUME] <= 0.0) {
             *value = -150.0;
-        else
+        } else {
             *value = log(_parameterValues[PARAM_VOLUME]) * 20.0 / log(10.0);
+        }
     } else if (id == PARAM_PAN) {
         *value = 100.0 * _parameterValues[PARAM_PAN];
     }
     return true;
 }
 
-bool GainPlugin::valueToText(clap_id id, double value, char* display, uint32_t size)
+auto GainPlugin::valueToText(clap_id id, double value, char* display, uint32_t size) -> bool
 {
-    if (!display || !size) return false;
-    if (id < 0 || id >= NUM_PARAMS) return false;
+    if ((display == nullptr) || (size == 0U)) { return false; }
+    if (id < 0 || id >= NUM_PARAMS) { return false; }
 
     if (id == PARAM_VOLUME) {
-        if (value <= -150.0)
+        if (value <= -150.0) {
             strcpy(display, "-inf");
-        else
+        } else {
             sprintf(display, "%+.2f", value);
+        }
     } else if (id == PARAM_PAN) {
         sprintf(display, "%+.0f%%", value);
     }
     return true;
 }
 
-bool GainPlugin::textToValue(clap_id id, char const* display, double* value)
+auto GainPlugin::textToValue(clap_id id, char const* display, double* value) -> bool
 {
-    if (!display || !value) return false;
-    if (id < 0 || id >= NUM_PARAMS) return false;
+    if ((display == nullptr) || (value == nullptr)) { return false; }
+    if (id < 0 || id >= NUM_PARAMS) { return false; }
 
     if (id == PARAM_VOLUME) {
-        if (!strcmp(display, "-inf"))
+        if (strcmp(display, "-inf") == 0) {
             *value = -150.0;
-        else
+        } else {
             *value = atof(display);
+        }
     } else if (id == PARAM_PAN) {
         *value = atof(display);
     }
     return true;
 }
 
-void GainPlugin::flushParameter(clap_input_events const* in, clap_output_events const* out)
+void GainPlugin::flushParameter(clap_input_events const* in, clap_output_events const* /*out*/)
 {
-    if (!in) return;
+    if (in == nullptr) { return; }
 
     for (int i = 0; i < in->size(in); ++i) {
         auto const* evt = in->get(in, i);
-        if (!evt || evt->space_id != CLAP_CORE_EVENT_SPACE_ID) continue;
+        if ((evt == nullptr) || evt->space_id != CLAP_CORE_EVENT_SPACE_ID) { continue; }
         if (evt->type == CLAP_EVENT_PARAM_VALUE) {
             auto const* pevt = (clap_event_param_value const*)evt;
-            if (pevt->param_id < 0 || pevt->param_id >= NUM_PARAMS) continue;  // assert
+            if (pevt->param_id < 0 || pevt->param_id >= NUM_PARAMS) {
+                continue;  // assert
+            }
 
             _parameterValues[pevt->param_id] = paramConvertValue(pevt->param_id, pevt->value);
         }
     }
 }
 
-static char const* GainPluginFeatures[] = {"", 0};
+static char const* GainPluginFeatures[] = {"", nullptr};
 
 static auto GainPluginDescriptor = clap_plugin_descriptor_t{
     .clap_version = CLAP_VERSION,
@@ -239,6 +245,6 @@ static auto GainPluginDescriptor = clap_plugin_descriptor_t{
     .features     = GainPluginFeatures,
 };
 
-clap_plugin_descriptor* getGainPluginDescriptor() { return &GainPluginDescriptor; }
+auto getGainPluginDescriptor() -> clap_plugin_descriptor* { return &GainPluginDescriptor; }
 
-AudioPlugin* createGainPlugin(clap_host const* host) { return new GainPlugin(host); }
+auto createGainPlugin(clap_host const* host) -> AudioPlugin* { return new GainPlugin(host); }

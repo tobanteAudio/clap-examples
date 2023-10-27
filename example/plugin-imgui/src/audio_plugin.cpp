@@ -9,33 +9,39 @@
 clap_host const* clapHost;
 extern clap_plugin_timer_support guiTimerSupport;
 
-static auto asPlugin(clap_plugin const* plugin) { return (AudioPlugin*)(plugin->plugin_data); }
+[[nodiscard]] static auto asPlugin(clap_plugin const* plugin) -> AudioPlugin*
+{
+    return static_cast<AudioPlugin*>(plugin->plugin_data);
+}
 
 namespace plugin {
-bool init(clap_plugin const* plugin) { return asPlugin(plugin)->init(); }
+auto init(clap_plugin const* plugin) -> bool { return asPlugin(plugin)->init(); }
 
 void destroy(clap_plugin const* plugin) { delete (AudioPlugin*)plugin->plugin_data; }
 
-bool activate(clap_plugin const* plugin, double sr, uint32_t minFrames, uint32_t maxFrames)
+auto activate(clap_plugin const* plugin, double sr, uint32_t minFrames, uint32_t maxFrames) -> bool
 {
     return asPlugin(plugin)->activate(sr, minFrames, maxFrames);
 }
 
 void deactivate(clap_plugin const* plugin) { asPlugin(plugin)->deactivate(); }
 
-bool start_processing(clap_plugin const* plugin) { return asPlugin(plugin)->startProcessing(); }
+auto start_processing(clap_plugin const* plugin) -> bool
+{
+    return asPlugin(plugin)->startProcessing();
+}
 
 void stop_processing(clap_plugin const* plugin) { asPlugin(plugin)->stopProcessing(); }
 
-clap_process_status process(clap_plugin const* plugin, clap_process const* process)
+auto process(clap_plugin const* plugin, clap_process const* process) -> clap_process_status
 {
     return asPlugin(plugin)->process(process);
 }
 
-void const* get_extension(clap_plugin const* plugin, char const* id)
+auto get_extension(clap_plugin const* plugin, char const* id) -> void const*
 {
-    if (!strcmp(id, CLAP_EXT_GUI)) return &asPlugin(plugin)->clapGuiHandle;
-    if (!strcmp(id, CLAP_EXT_TIMER_SUPPORT)) return &guiTimerSupport;
+    if (strcmp(id, CLAP_EXT_GUI) == 0) { return &asPlugin(plugin)->clapGuiHandle; }
+    if (strcmp(id, CLAP_EXT_TIMER_SUPPORT) == 0) { return &guiTimerSupport; }
     return asPlugin(plugin)->getExtension(id);
 }
 
@@ -43,79 +49,86 @@ void on_main_thread(clap_plugin const* plugin) { asPlugin(plugin)->onMainThread(
 };  // namespace plugin
 
 namespace gui {
-bool is_api_supported(clap_plugin const* plugin, char const* api, bool is_floating)
+auto is_api_supported(clap_plugin const* plugin, char const* api, bool is_floating) -> bool
 {
     return asPlugin(plugin)->isApiSupported(api, is_floating);
 }
 
-bool create(clap_plugin const* plugin, char const* api, bool is_floating)
+auto create(clap_plugin const* plugin, char const* api, bool is_floating) -> bool
 {
     return asPlugin(plugin)->createUI(api, is_floating);
 }
 
 void destroy(clap_plugin const* plugin) { asPlugin(plugin)->destroyUI(false); }
 
-bool set_scale(clap_plugin const* plugin, double scale) { return asPlugin(plugin)->setScale(scale); }
+auto set_scale(clap_plugin const* plugin, double scale) -> bool
+{
+    return asPlugin(plugin)->setScale(scale);
+}
 
-bool get_size(clap_plugin const* plugin, uint32_t* width, uint32_t* height)
+auto get_size(clap_plugin const* plugin, uint32_t* width, uint32_t* height) -> bool
 {
     return asPlugin(plugin)->getSize(width, height);
 }
 
-bool can_resize(clap_plugin const* plugin) { return asPlugin(plugin)->canResize(); }
+auto can_resize(clap_plugin const* plugin) -> bool { return asPlugin(plugin)->canResize(); }
 
-bool adjust_size(clap_plugin const* plugin, uint32_t* width, uint32_t* height)
+auto adjust_size(clap_plugin const* plugin, uint32_t* width, uint32_t* height) -> bool
 {
     return asPlugin(plugin)->adjustSize(width, height);
 }
 
-bool set_size(clap_plugin const* plugin, uint32_t width, uint32_t height)
+auto set_size(clap_plugin const* plugin, uint32_t width, uint32_t height) -> bool
 {
     return asPlugin(plugin)->setSize(width, height);
 }
 
-bool set_parent(clap_plugin const* plugin, clap_window const* window)
+auto set_parent(clap_plugin const* plugin, clap_window const* window) -> bool
 {
     return asPlugin(plugin)->setParent(window);
 }
 
-bool set_transient(clap_plugin const* plugin, clap_window const* window) { return false; }
+auto set_transient(clap_plugin const* /*plugin*/, clap_window const* /*window*/) -> bool
+{
+    return false;
+}
 
 void suggest_title(clap_plugin const* plugin, char const* title)
 {
     return asPlugin(plugin)->suggestTitle(title);
 }
 
-bool show(clap_plugin const* plugin) { return asPlugin(plugin)->showUI(); }
+auto show(clap_plugin const* plugin) -> bool { return asPlugin(plugin)->showUI(); }
 
-bool hide(clap_plugin const* plugin) { return asPlugin(plugin)->hideUI(); }
+auto hide(clap_plugin const* plugin) -> bool { return asPlugin(plugin)->hideUI(); }
 };  // namespace gui
 
 namespace params {
-uint32_t count(clap_plugin const* plugin) { return asPlugin(plugin)->numParameter(); }
+auto count(clap_plugin const* plugin) -> uint32_t { return asPlugin(plugin)->numParameter(); }
 
-bool get_info(clap_plugin const* plugin, uint32_t param_index, clap_param_info_t* param_info)
+auto get_info(clap_plugin const* plugin, uint32_t param_index, clap_param_info_t* param_info) -> bool
 {
     return asPlugin(plugin)->getParameterInfo(param_index, param_info);
 }
 
-bool get_value(clap_plugin const* plugin, clap_id param_id, double* value)
+auto get_value(clap_plugin const* plugin, clap_id param_id, double* value) -> bool
 {
     return asPlugin(plugin)->getParameterValue(param_id, value);
 }
 
-bool value_to_text(
+auto value_to_text(
     clap_plugin const* plugin,
     clap_id param_id,
     double value,
     char* display,
     uint32_t size
-)
+) -> bool
 {
     return asPlugin(plugin)->valueToText(param_id, value, display, size);
 }
 
-bool text_to_value(clap_plugin const* plugin, clap_id param_id, char const* display, double* value)
+auto text_to_value(clap_plugin const* plugin, clap_id param_id, char const* display, double* value)
+    -> bool
 {
     return asPlugin(plugin)->textToValue(param_id, display, value);
 }
@@ -128,9 +141,6 @@ void flush(clap_plugin const* plugin, clap_input_events const* in, clap_output_e
 
 AudioPlugin::AudioPlugin(clap_plugin_descriptor const* descriptor, clap_host const* host)
 {
-    windowWidth  = 0;
-    windowHeight = 0;
-    uiContext    = nullptr;
 
     clapHost = host;
 

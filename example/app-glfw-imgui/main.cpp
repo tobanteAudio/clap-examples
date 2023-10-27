@@ -19,17 +19,18 @@ static void glfw_error_callback(int error, char const* description)
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-static constexpr auto col1 = ImVec4(68.0F / 255.0F, 83.0F / 255.0F, 89.0F / 255.0F, 1.0f);
-static constexpr auto col2 = ImVec4(40.0F / 255.0F, 60.0F / 255.0F, 80.0F / 255.0F, 1.0f);
-static constexpr auto col3 = ImVec4(50.0F / 255.0F, 65.0F / 255.0F, 82.0F / 255.0F, 1.0f);
-static constexpr auto col4 = ImVec4(20.0F / 255.0F, 40.0F / 255.0F, 60.0F / 255.0F, 1.0f);
+static constexpr auto col1 = ImVec4(68.0F / 255.0F, 83.0F / 255.0F, 89.0F / 255.0F, 1.0F);
+static constexpr auto col2 = ImVec4(40.0F / 255.0F, 60.0F / 255.0F, 80.0F / 255.0F, 1.0F);
+static constexpr auto col3 = ImVec4(50.0F / 255.0F, 65.0F / 255.0F, 82.0F / 255.0F, 1.0F);
+static constexpr auto col4 = ImVec4(20.0F / 255.0F, 40.0F / 255.0F, 60.0F / 255.0F, 1.0F);
 
 void render_conan_logo()
 {
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    float sz              = 300.0F;
+    float const sz        = 300.0F;
     ImVec2 const p        = ImGui::GetCursorScreenPos();
-    float x = p.x + 4.0f, y = p.y + 4.0f;
+    float const x         = p.x + 4.0F;
+    float const y         = p.y + 4.0F;
     draw_list->AddQuadFilled(
         ImVec2(x, y + 0.25F * sz),
         ImVec2(x + 0.5F * sz, y + 0.5F * sz),
@@ -84,21 +85,21 @@ void create_triangle(unsigned int& vbo, unsigned int& vao, unsigned int& ebo)
         0.0F,
         0.25F,
         0.0F,  // position vertex 1
-        1.0f,
+        1.0F,
         0.0F,
         0.0F,  // color vertex 1
         0.25F,
         -0.25F,
         0.0F,  // position vertex 1
         0.0F,
-        1.0f,
+        1.0F,
         0.0F,  // color vertex 1
         -0.25F,
         -0.25F,
         0.0F,  // position vertex 1
         0.0F,
         0.0F,
-        1.0f,  // color vertex 1
+        1.0F,  // color vertex 1
     };
     unsigned int triangle_indices[] = {0, 1, 2};
     glGenVertexArrays(1, &vao);
@@ -109,7 +110,7 @@ void create_triangle(unsigned int& vbo, unsigned int& vao, unsigned int& ebo)
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_vertices), triangle_vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangle_indices), triangle_indices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
@@ -117,13 +118,13 @@ void create_triangle(unsigned int& vbo, unsigned int& vao, unsigned int& ebo)
     glBindVertexArray(0);
 }
 
-int main(int, char**)
+auto main(int /*unused*/, char** /*unused*/) -> int
 {
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit()) return 1;
+    if (glfwInit() == 0) { return 1; }
 
-        // Decide GL+GLSL versions
+    // Decide GL+GLSL versions
 #if __APPLE__
     // GL 3.2 + GLSL 150
     char const* glsl_version = "#version 150";
@@ -142,23 +143,26 @@ int main(int, char**)
 
     // Create window with graphics context
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui - Conan", nullptr, nullptr);
-    if (window == nullptr) return 1;
+    if (window == nullptr) { return 1; }
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);  // Enable vsync
 
-    bool err = glewInit() != GLEW_OK;
+    bool const err = glewInit() != GLEW_OK;
 
     if (err) {
         fprintf(stderr, "Failed to initialize OpenGL loader!\n");
         return 1;
     }
 
-    int screen_width, screen_height;
+    int screen_width  = 0;
+    int screen_height = 0;
     glfwGetFramebufferSize(window, &screen_width, &screen_height);
     glViewport(0, 0, screen_width, screen_height);
 
     // create our geometries
-    unsigned int vbo, vao, ebo;
+    unsigned int vbo = 0;
+    unsigned int vao = 0;
+    unsigned int ebo = 0;
     create_triangle(vbo, vao, ebo);
 
     // init shader
@@ -171,16 +175,16 @@ int main(int, char**)
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO const& io = ImGui::GetIO();
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
-    while (!glfwWindowShouldClose(window)) {
+    while (glfwWindowShouldClose(window) == 0) {
         glfwPollEvents();
-        glClearColor(0.45F, 0.55F, 0.60F, 1.00f);
+        glClearColor(0.45F, 0.55F, 0.60F, 1.00F);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // feed inputs to dear imgui, start new frame
@@ -191,7 +195,7 @@ int main(int, char**)
         // rendering our geometries
         triangle_shader.use();
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0);
 
         // render your GUI
@@ -200,7 +204,7 @@ int main(int, char**)
         ImGui::SliderFloat("rotation", &rotation, 0, (float)(2 * PI));
         static float translation[] = {0.0F, 0.0F};
         ImGui::SliderFloat2("position", translation, -1.0F, 1.0);
-        static float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+        static float color[4] = {1.0F, 1.0F, 1.0F, 1.0F};
         // pass the parameters to the shader
         triangle_shader.setUniform("rotation", rotation);
         triangle_shader.setUniform("translation", translation[0], translation[1]);
@@ -217,7 +221,8 @@ int main(int, char**)
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        int display_w, display_h;
+        int display_w = 0;
+        int display_h = 0;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
         glfwSwapBuffers(window);

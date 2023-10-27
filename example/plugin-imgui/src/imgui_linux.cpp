@@ -12,16 +12,16 @@
 #include <GLFW/glfw3native.h>
 // clang-format on
 
-bool imguiAttach(AudioPlugin* plugin, void* native_display, void* native_window);
+auto imguiAttach(AudioPlugin* plugin, void* native_display, void* native_window) -> bool;
 
-bool AudioPlugin::isApiSupported(char const* api, bool is_floating)
+auto AudioPlugin::isApiSupported(char const* api, bool is_floating) -> bool
 {
-    return api && !strcmp(api, CLAP_WINDOW_API_X11) && !is_floating;
+    return (api != nullptr) && (strcmp(api, CLAP_WINDOW_API_X11) == 0) && !is_floating;
 }
 
-bool AudioPlugin::setParent(clap_window const* parentWindow)
+auto AudioPlugin::setParent(clap_window const* parentWindow) -> bool
 {
-    return parentWindow && parentWindow->x11
+    return (parentWindow != nullptr) && (parentWindow->x11 != 0U)
         && imguiAttach(this, XOpenDisplay(nullptr), (void*)parentWindow->x11);
 }
 
@@ -34,14 +34,15 @@ void getNativeWindowPosition(
     int& h
 )
 {
-    Display* xdisp = (Display*)native_display;
-    Window xwin    = (Window)native_window;
+    auto* xdisp     = (Display*)native_display;
+    auto const xwin = (Window)native_window;
 
     XWindowAttributes xwa;
     XGetWindowAttributes(xdisp, xwin, &xwa);
 
-    Window xroot = DefaultRootWindow(xdisp), xchild = 0;
-    if (xroot) XTranslateCoordinates(xdisp, xwin, xroot, 0, 0, &xwa.x, &xwa.y, &xchild);
+    Window const xroot = DefaultRootWindow(xdisp);
+    Window xchild      = 0;
+    if (xroot != 0U) { XTranslateCoordinates(xdisp, xwin, xroot, 0, 0, &xwa.x, &xwa.y, &xchild); }
 
     x = xwa.x;
     y = xwa.y;
@@ -51,31 +52,31 @@ void getNativeWindowPosition(
 
 void setNativeParent(void* native_display, void* native_window, GLFWwindow* glfw_win)
 {
-    Display* xdisp = (Display*)native_display;
-    Window xpar    = (Window)native_window;
-    Window xwin    = (Window)glfwGetX11Window(glfw_win);
+    auto* xdisp     = (Display*)native_display;
+    auto const xpar = (Window)native_window;
+    auto const xwin = (Window)glfwGetX11Window(glfw_win);
     XReparentWindow(xdisp, xwin, xpar, 0, 0);
 }
 
 extern clap_host* clapHost;
 unsigned int timer_id;
 
-bool createTimer(unsigned int ms)
+auto createTimer(unsigned int ms) -> bool
 {
-    clap_host_timer_support* timer_support
+    auto* timer_support
         = (clap_host_timer_support*)clapHost->get_extension(clapHost, CLAP_EXT_TIMER_SUPPORT);
-    return timer_support && timer_support->register_timer(clapHost, ms, &timer_id);
+    return (timer_support != nullptr) && timer_support->register_timer(clapHost, ms, &timer_id);
 }
 
 void destroyTimer()
 {
-    clap_host_timer_support* timer_support
+    auto* timer_support
         = (clap_host_timer_support*)clapHost->get_extension(clapHost, CLAP_EXT_TIMER_SUPPORT);
-    if (timer_support) timer_support->unregister_timer(clapHost, timer_id);
+    if (timer_support != nullptr) { timer_support->unregister_timer(clapHost, timer_id); }
     timer_id = 0;
 }
 
-unsigned int getTickCount()
+auto getTickCount() -> unsigned int
 {
     struct timeval tm = {0};
     gettimeofday(&tm, nullptr);

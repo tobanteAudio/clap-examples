@@ -39,11 +39,11 @@ struct AudioPlugin
     auto showUI() -> bool;
     auto hideUI() -> bool;
 
-    clap_plugin clapPluginHandle;
-    clap_plugin_params clapParameterHandle;
+    clap_plugin clapPluginHandle{};
+    clap_plugin_params clapParameterHandle{};
 
-    clap_plugin_gui clapGuiHandle;
-    void* uiContext;
-    int windowWidth;
-    int windowHeight;
+    clap_plugin_gui clapGuiHandle{};
+    void* uiContext{nullptr};
+    int windowWidth{0};
+    int windowHeight{0};
 };
