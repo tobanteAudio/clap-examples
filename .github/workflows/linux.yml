@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -48,6 +48,7 @@ jobs:
           -D CMAKE_C_COMPILER="clang-18"
           -D CMAKE_CXX_COMPILER="clang++-18"
           -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
+          -D CONAN_INSTALL_ARGS="-c tools.system.package_manager:mode=install;-c tools.system.package_manager:sudo=True"
 
       - name: CMake build
         run: cmake --build build --config Release

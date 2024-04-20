@@ -10,16 +10,13 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-env:
-  CMAKE_GENERATOR: Ninja
-
 jobs:
-  cl:
-    name: CL
+  msvc:
+    name: MSVC
     runs-on: windows-2022
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -41,7 +38,7 @@ jobs:
           cmake
           -S .
           -B build
-          -G "Ninja Multi-Config"
+          -G "Visual Studio 17 2022"
           -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
 
       - name: CMake build
