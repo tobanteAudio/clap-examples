@@ -15,9 +15,9 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 jobs:
-  macos-13:
-    name: macOS-13
-    runs-on: macos-13
+  macos-14:
+    name: macOS-14
+    runs-on: macos-14
     steps:
       - name: Check out code
         uses: actions/checkout@v4
