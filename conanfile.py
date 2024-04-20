@@ -14,6 +14,8 @@ class ImGuiExample(ConanFile):
         self.requires("imgui/1.89.7-docking")
         self.requires("glew/2.2.0")
         self.requires("glfw/3.4")
+        if self.settings.os != "Macos":
+                self.requires("sdl/2.28.5")
 
     def configure(self):
         self.options["imgui"].shared = False
@@ -22,6 +24,11 @@ class ImGuiExample(ConanFile):
         self.options["cairo"].with_glib = False
         self.options["glew"].shared = False
         self.options["glfw"].shared = False
+
+        if self.settings.os == "Linux":
+            self.options["sdl"].alsa = False
+            self.options["sdl"].pulse = False
+            self.options["sdl"].vulkan = False
 
     def generate(self):
         copy(self, "*glfw*", os.path.join(self.dependencies["imgui"].package_folder,
