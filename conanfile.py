@@ -12,18 +12,22 @@ class ImGuiExample(ConanFile):
     def requirements(self):
         self.requires("cairo/1.18.0")
         self.requires("imgui/1.89.7-docking")
-        self.requires("glew/2.2.0")
-        self.requires("glfw/3.4")
-        if self.settings.os != "Macos":
-                self.requires("sdl/2.28.5")
+
+        if self.settings.os != "Emscripten":
+            self.requires("glew/2.2.0")
+            self.requires("glfw/3.4")
+            if self.settings.os != "Macos":
+                    self.requires("sdl/2.28.5")
 
     def configure(self):
         self.options["imgui"].shared = False
         self.options["cairo"].shared = False
         self.options["cairo"].with_fontconfig = False
         self.options["cairo"].with_glib = False
-        self.options["glew"].shared = False
-        self.options["glfw"].shared = False
+
+        if self.settings.os != "Emscripten":
+            self.options["glew"].shared = False
+            self.options["glfw"].shared = False
 
         if self.settings.os == "Linux":
             self.options["sdl"].alsa = False
@@ -31,10 +35,14 @@ class ImGuiExample(ConanFile):
             self.options["sdl"].vulkan = False
 
     def generate(self):
-        copy(self, "*glfw*", os.path.join(self.dependencies["imgui"].package_folder,
-             "res", "bindings"), os.path.join(self.source_folder, "bindings"))
-        copy(self, "*opengl3*", os.path.join(self.dependencies["imgui"].package_folder,
-             "res", "bindings"), os.path.join(self.source_folder, "bindings"))
+        src = os.path.join(self.dependencies["imgui"].package_folder, "res", "bindings")
+        dest = os.path.join(self.source_folder, "bindings")
+
+        copy(self, "*opengl3*", src, dest)
+        if self.settings.os == "Emscripten":
+            copy(self, "*sdl*", src, dest)
+        else:
+            copy(self, "*glfw*", src, dest)
 
     def layout(self):
         cmake_layout(self)
