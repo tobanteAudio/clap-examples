@@ -11,6 +11,11 @@
 #include <cstdlib>
 #include <cstring>
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 static clap_param_info const param_info[GainPlugin::NUM_PARAMS] = {
     {0, CLAP_PARAM_REQUIRES_PROCESS, nullptr, "Volume", "",  -60.0,  12.0, 0.0},
     {1, CLAP_PARAM_REQUIRES_PROCESS, nullptr,    "Pan", "", -100.0, 100.0, 0.0}
@@ -81,7 +86,8 @@ auto GainPlugin::process(clap_process const* ctx) -> clap_process_status
                 ctx->audio_inputs[0].data32,
                 ctx->audio_outputs[0].data32
             );
-        } else if ((ctx->audio_inputs[0].data64 != nullptr) && (ctx->audio_outputs[0].data64 != nullptr)) {
+        } else if ((ctx->audio_inputs[0].data64 != nullptr)
+                   && (ctx->audio_outputs[0].data64 != nullptr)) {
             s = processInternal(
                 ctx,
                 2,
@@ -248,3 +254,7 @@ static auto GainPluginDescriptor = clap_plugin_descriptor_t{
 auto getGainPluginDescriptor() -> clap_plugin_descriptor* { return &GainPluginDescriptor; }
 
 auto createGainPlugin(clap_host const* host) -> AudioPlugin* { return new GainPlugin(host); }
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif

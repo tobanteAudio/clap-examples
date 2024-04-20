@@ -1,56 +1,33 @@
-from conans import ConanFile, CMake
+import os
+
+from conan import ConanFile
+from conan.tools.cmake import cmake_layout
+from conan.tools.files import copy
 
 
-class ClapExamples(ConanFile):
-    name = "clap-examples"
-    url = "https://github.com/tobanteAudio/clap-examples"
-    description = "CLAP Audio-Plugin examples"
-    license = "BSL-1.0"
-
+class ImGuiExample(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake_find_package_multi", "markdown"
+    generators = "CMakeDeps", "CMakeToolchain"
 
     def requirements(self):
-        self.requires("imgui/1.89.9-docking")
-        self.requires("cairo/1.17.6")
-
-        if self.settings.os != "Emscripten":
-            self.requires("glfw/3.3.8")
-            self.requires("glew/2.2.0")
-            if self.settings.os != "Macos":
-                self.requires("sdl/2.28.3")
+        self.requires("cairo/1.18.0")
+        self.requires("imgui/1.89.7-docking")
+        self.requires("glew/2.2.0")
+        self.requires("glfw/3.4")
 
     def configure(self):
         self.options["imgui"].shared = False
         self.options["cairo"].shared = False
         self.options["cairo"].with_fontconfig = False
         self.options["cairo"].with_glib = False
+        self.options["glew"].shared = False
+        self.options["glfw"].shared = False
 
-        if self.settings.os != "Emscripten":
-            self.options["glfw"].shared = False
-            self.options["glew"].shared = False
+    def generate(self):
+        copy(self, "*glfw*", os.path.join(self.dependencies["imgui"].package_folder,
+             "res", "bindings"), os.path.join(self.source_folder, "bindings"))
+        copy(self, "*opengl3*", os.path.join(self.dependencies["imgui"].package_folder,
+             "res", "bindings"), os.path.join(self.source_folder, "bindings"))
 
-        if self.settings.os == "Linux":
-            self.options["sdl"].alsa = False
-            self.options["sdl"].pulse = False
-            self.options["sdl"].vulkan = False
-
-    def imports(self):
-        src = "res/bindings"
-        dest = "bindings"
-
-        self.copy("imgui_impl_opengl3.h", dst=dest, src=src)
-        self.copy("imgui_impl_opengl3.cpp", dst=dest, src=src)
-        self.copy("imgui_impl_opengl3_loader.h", dst=dest, src=src)
-
-        if self.settings.os == "Emscripten":
-            self.copy("imgui_impl_sdl.h", dst=dest, src=src)
-            self.copy("imgui_impl_sdl.cpp", dst=dest, src=src)
-        else:
-            self.copy("imgui_impl_glfw.h", dst=dest, src=src)
-            self.copy("imgui_impl_glfw.cpp", dst=dest, src=src)
-
-    def build(self):
-        cmake = CMake(self)
-        cmake.configure()
-        cmake.build()
+    def layout(self):
+        cmake_layout(self)

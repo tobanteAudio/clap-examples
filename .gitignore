@@ -7,3 +7,5 @@
 /build_*
 /build-*
 /cmake-build-*
+/bindings
+/CMakeUserPresets.json

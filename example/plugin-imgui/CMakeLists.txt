@@ -19,19 +19,19 @@ target_sources(plugin-imgui
         src/imgui_base.cpp
         src/imgui_win32.cpp
 
-        ${CMAKE_BINARY_DIR}/bindings/imgui_impl_glfw.h
-        ${CMAKE_BINARY_DIR}/bindings/imgui_impl_glfw.cpp
+        ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_glfw.h
+        ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_glfw.cpp
 
-        ${CMAKE_BINARY_DIR}/bindings/imgui_impl_opengl3.h
-        ${CMAKE_BINARY_DIR}/bindings/imgui_impl_opengl3.cpp
+        ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.h
+        ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.cpp
 )
 
 if(APPLE)
     target_sources(plugin-imgui PRIVATE src/imgui_mac.mm)
 endif()
 
-target_include_directories(plugin-imgui PRIVATE ${CMAKE_BINARY_DIR})
-target_link_libraries(plugin-imgui PRIVATE clap-core imgui::imgui GLEW::glew_s glfw::glfw)
+target_include_directories(plugin-imgui PRIVATE ${CMAKE_SOURCE_DIR})
+target_link_libraries(plugin-imgui PRIVATE clap-core imgui::imgui GLEW::glew_s glfw)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_options(plugin-imgui PRIVATE /EXPORT:clap_entry)

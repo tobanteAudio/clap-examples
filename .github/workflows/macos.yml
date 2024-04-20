@@ -29,12 +29,16 @@ jobs:
 
       - name: Install conan
         run: |
-          pip3 install "conan==1.61.0"
-          conan config init
-          conan config set general.revisions_enabled=1
+          pip3 install --upgrade conan
+          conan profile detect -f
 
       - name: CMake config
-        run: cmake -S. -Bbuild -G Ninja -D CMAKE_BUILD_TYPE=Release
+        run: >
+          cmake
+          -S .
+          -B build
+          -G "Ninja Multi-Config"
+          -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
 
       - name: CMake build
         run: cmake --build build --config Release

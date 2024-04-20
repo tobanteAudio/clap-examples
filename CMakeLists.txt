@@ -27,10 +27,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
-if(NOT EMSCRIPTEN)
-    include(${CMAKE_SOURCE_DIR}/cmake/ta_conan.cmake)
-endif()
-
 include(FetchContent)
 FetchContent_Declare(clap GIT_REPOSITORY "https://github.com/free-audio/clap" GIT_TAG "1.1.8")
 FetchContent_MakeAvailable(clap)

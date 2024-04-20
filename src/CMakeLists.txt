@@ -7,7 +7,7 @@ find_package(glfw3 REQUIRED)
 add_library(ta-ui "ta/ui.cpp" "ta/ui.hpp")
 add_library(ta::ui ALIAS ta-ui)
 target_include_directories(ta-ui PUBLIC ${PROJECT_SOURCE_DIR})
-target_link_libraries(ta-ui PUBLIC glfw::glfw cairo::cairo)
+target_link_libraries(ta-ui PUBLIC glfw cairo::cairo)
 target_sources(ta-ui
     PRIVATE
         "ta/ui/geometry/point_2d.hpp"

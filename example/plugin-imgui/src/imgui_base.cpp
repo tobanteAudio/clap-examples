@@ -7,6 +7,11 @@
 #include "imgui_internal.h"  // so we can get the viewport associated with an ImGui window
 #include <GLFW/glfw3.h>
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 // always in screen coordinates
 void getNativeWindowPosition(void* display, void* window, int& x, int& y, int& w, int& h);
 void setNativeParent(void* display, void* window, GLFWwindow* glfw_win);
@@ -217,3 +222,7 @@ auto AudioPlugin::destroyUI(bool is_plugin_destroy) -> bool
 void timerCallback(clap_plugin const* /*plugin*/, unsigned int /*timer_id*/) { imguiTimerCallback(); }
 
 auto guiTimerSupport = clap_plugin_timer_support_t{timerCallback};
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
