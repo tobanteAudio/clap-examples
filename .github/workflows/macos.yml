@@ -24,13 +24,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install ninja
-        run: brew install ninja
+      - name: Install dependencies
+        run: brew install ninja conan
 
-      - name: Install conan
-        run: |
-          pip3 install --upgrade conan
-          conan profile detect -f
+      - name: Setup conan
+        run: conan profile detect -f
 
       - name: CMake config
         run: >
