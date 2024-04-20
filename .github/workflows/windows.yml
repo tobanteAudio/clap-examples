@@ -10,6 +10,9 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+env:
+  CMAKE_GENERATOR: Ninja
+
 jobs:
   msvc:
     name: MSVC
@@ -28,17 +31,15 @@ jobs:
           pip3 install --upgrade conan
           conan profile detect -f
 
-      - name: Set up Visual Studio shell
-        uses: egor-tensin/vs-shell@v2
-        with:
-          arch: x64
+      - name: Install clang
+        uses: egor-tensin/setup-clang@v1
 
       - name: CMake config
         run: >
           cmake
           -S .
           -B build
-          -G "Visual Studio 17 2022"
+          -G "Ninja Multi-Config"
           -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
 
       - name: CMake build
