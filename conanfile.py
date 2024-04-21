@@ -24,6 +24,7 @@ class ImGuiExample(ConanFile):
         self.options["cairo"].shared = False
         self.options["cairo"].with_fontconfig = False
         self.options["cairo"].with_glib = False
+        self.options["cairo"].with_png = False
 
         if self.settings.os != "Emscripten":
             self.options["glew"].shared = False
