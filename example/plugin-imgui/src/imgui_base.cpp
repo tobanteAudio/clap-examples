@@ -2,8 +2,8 @@
 // plugin implementations should not need to touch this file.
 
 #include "audio_plugin.hpp"
-#include "bindings/imgui_impl_glfw.h"
-#include "bindings/imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"  // so we can get the viewport associated with an ImGui window
 #include <GLFW/glfw3.h>
 

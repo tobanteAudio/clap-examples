@@ -5,3 +5,4 @@
 [![macOS](https://github.com/tobanteAudio/clap-examples/actions/workflows/macos.yml/badge.svg)](https://github.com/tobanteAudio/clap-examples/actions/workflows/macos.yml)
 [![Windows](https://github.com/tobanteAudio/clap-examples/actions/workflows/windows.yml/badge.svg)](https://github.com/tobanteAudio/clap-examples/actions/workflows/windows.yml)
 [![Linux](https://github.com/tobanteAudio/clap-examples/actions/workflows/linux.yml/badge.svg)](https://github.com/tobanteAudio/clap-examples/actions/workflows/linux.yml)
+[![Emscripten](https://github.com/tobanteAudio/clap-examples/actions/workflows/emscripten.yml/badge.svg)](https://github.com/tobanteAudio/clap-examples/actions/workflows/emscripten.yml)

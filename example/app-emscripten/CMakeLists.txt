@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 3.21)
 project(app-sdl2-imgui-emscripten)
 
-find_package(imgui REQUIRED)
-
 add_executable(app-sdl2-imgui-emscripten
     main.cpp
 
-    ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_sdl.h
-    ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_sdl.cpp
+    ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_sdl2.h
+    ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_sdl2.cpp
     ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_opengl3.h
     ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_opengl3.cpp
 )
