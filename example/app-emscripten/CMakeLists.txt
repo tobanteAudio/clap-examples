@@ -6,16 +6,14 @@ find_package(imgui REQUIRED)
 add_executable(app-sdl2-imgui-emscripten
     main.cpp
 
-    ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_sdl.h
-    ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_sdl.cpp
-    ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.h
-    ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.cpp
+    ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_sdl.h
+    ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_sdl.cpp
+    ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_opengl3.h
+    ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_opengl3.cpp
 )
 
 set_target_properties(app-sdl2-imgui-emscripten PROPERTIES SUFFIX ".html")
-target_include_directories(app-sdl2-imgui-emscripten PRIVATE ${CMAKE_SOURCE_DIR})
-target_compile_definitions(app-sdl2-imgui-emscripten PRIVATE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
-target_link_libraries(app-sdl2-imgui-emscripten PRIVATE imgui::imgui)
+target_link_libraries(app-sdl2-imgui-emscripten PRIVATE ta::imgui)
 
 target_compile_options(app-sdl2-imgui-emscripten
     PRIVATE

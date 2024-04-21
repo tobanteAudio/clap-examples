@@ -31,6 +31,19 @@ include(FetchContent)
 FetchContent_Declare(clap GIT_REPOSITORY "https://github.com/free-audio/clap" GIT_TAG "1.1.8")
 FetchContent_MakeAvailable(clap)
 
+add_library(ta-imgui)
+add_library(ta::imgui ALIAS ta-imgui)
+target_include_directories(ta-imgui PUBLIC external/imgui external/imgui/backends)
+target_compile_definitions(ta-imgui PUBLIC IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+target_sources(ta-imgui
+    PRIVATE
+        external/imgui/imgui.cpp
+        external/imgui/imgui_demo.cpp
+        external/imgui/imgui_draw.cpp
+        external/imgui/imgui_tables.cpp
+        external/imgui/imgui_widgets.cpp
+)
+
 if(EMSCRIPTEN)
     add_subdirectory(example/app-emscripten)
 else()

@@ -2,3 +2,7 @@
 	path = external/cmake-conan
 	url = https://github.com/conan-io/cmake-conan.git
 	branch = develop2
+[submodule "external/imgui"]
+	path = external/imgui
+	url = https://github.com/ocornut/imgui
+	branch = docking

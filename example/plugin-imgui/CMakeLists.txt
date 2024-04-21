@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 project(plugin-imgui)
 
-find_package(imgui CONFIG)
 find_package(glfw3 CONFIG)
 find_package(glew CONFIG)
 
@@ -19,11 +18,11 @@ target_sources(plugin-imgui
         src/imgui_base.cpp
         src/imgui_win32.cpp
 
-        ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_glfw.h
-        ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_glfw.cpp
+        ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_glfw.h
+        ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_glfw.cpp
 
-        ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.h
-        ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.cpp
+        ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_opengl3.h
+        ${CMAKE_SOURCE_DIR}/external/imgui/backends/imgui_impl_opengl3.cpp
 )
 
 if(APPLE)
@@ -31,7 +30,7 @@ if(APPLE)
 endif()
 
 target_include_directories(plugin-imgui PRIVATE ${CMAKE_SOURCE_DIR})
-target_link_libraries(plugin-imgui PRIVATE clap-core imgui::imgui GLEW::glew_s glfw)
+target_link_libraries(plugin-imgui PRIVATE clap-core ta::imgui GLEW::glew_s glfw)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_options(plugin-imgui PRIVATE /EXPORT:clap_entry)

@@ -11,7 +11,7 @@ class ImGuiExample(ConanFile):
 
     def requirements(self):
         self.requires("cairo/1.18.0")
-        self.requires("imgui/1.89.7-docking")
+        # self.requires("imgui/1.89.7-docking")
 
         if self.settings.os != "Emscripten":
             self.requires("glew/2.2.0")
@@ -20,7 +20,7 @@ class ImGuiExample(ConanFile):
                     self.requires("sdl/2.28.5")
 
     def configure(self):
-        self.options["imgui"].shared = False
+        # self.options["imgui"].shared = False
         self.options["cairo"].shared = False
         self.options["cairo"].with_fontconfig = False
         self.options["cairo"].with_glib = False
@@ -40,14 +40,15 @@ class ImGuiExample(ConanFile):
 
 
     def generate(self):
-        src = os.path.join(self.dependencies["imgui"].package_folder, "res", "bindings")
-        dest = os.path.join(self.source_folder, "bindings")
+        pass
+        # src = os.path.join(self.dependencies["imgui"].package_folder, "res", "bindings")
+        # dest = os.path.join(self.source_folder, "bindings")
 
-        copy(self, "*opengl3*", src, dest)
-        if self.settings.os == "Emscripten":
-            copy(self, "*sdl*", src, dest)
-        else:
-            copy(self, "*glfw*", src, dest)
+        # copy(self, "*opengl3*", src, dest)
+        # if self.settings.os == "Emscripten":
+        #     copy(self, "*sdl*", src, dest)
+        # else:
+        #     copy(self, "*glfw*", src, dest)
 
     def layout(self):
         cmake_layout(self)
