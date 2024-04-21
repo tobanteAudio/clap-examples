@@ -37,4 +37,4 @@ jobs:
         run: emcmake cmake -S . -B build -G Ninja -D CMAKE_BUILD_TYPE=Release
 
       - name: Build & Test
-        run: cmake --build cmake-build-emscripten
+        run: cmake --build build
