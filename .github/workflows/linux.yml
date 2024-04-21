@@ -14,9 +14,17 @@ env:
   CMAKE_GENERATOR: Ninja
 
 jobs:
-  clang:
-    name: Clang
+  build:
+    name: Linux ${{ matrix.compiler.name }}
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        compiler:
+          [
+            { name: "GCC", cc: "gcc", cxx: "g++" },
+            { name: "Clang", cc: "clang-18", cxx: "clang++-18" },
+          ]
+      fail-fast: false
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -29,6 +37,7 @@ jobs:
           sudo apt install -y ninja-build cmake mesa-utils freeglut3-dev
 
       - name: Install LLVM
+        if: matrix.compiler.name == 'Clang'
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
@@ -46,8 +55,8 @@ jobs:
           -B build
           -G Ninja
           -D CMAKE_BUILD_TYPE=Release
-          -D CMAKE_C_COMPILER="clang-18"
-          -D CMAKE_CXX_COMPILER="clang++-18"
+          -D CMAKE_C_COMPILER="${{ matrix.compiler.cc }}"
+          -D CMAKE_CXX_COMPILER="${{ matrix.compiler.cxx }}"
           -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
           -D CONAN_INSTALL_ARGS="--build=missing;-c tools.system.package_manager:mode=install;-c tools.system.package_manager:sudo=True"
 
