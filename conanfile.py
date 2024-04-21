@@ -34,6 +34,10 @@ class ImGuiExample(ConanFile):
             self.options["sdl"].pulse = False
             self.options["sdl"].vulkan = False
 
+        if self.settings.os == "Windows":
+            self.options["sdl"].iconv = False
+
+
     def generate(self):
         src = os.path.join(self.dependencies["imgui"].package_folder, "res", "bindings")
         dest = os.path.join(self.source_folder, "bindings")
