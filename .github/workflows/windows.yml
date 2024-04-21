@@ -14,8 +14,8 @@ env:
   CMAKE_GENERATOR: Ninja
 
 jobs:
-  msvc:
-    name: MSVC
+  build:
+    name: Clang
     runs-on: windows-2022
     steps:
       - name: Check out code
