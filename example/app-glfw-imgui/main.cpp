@@ -2,10 +2,10 @@
 #include <iostream>
 #include <vector>
 
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #include "file_manager.h"
 #include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "opengl_shader.h"
 #include <GL/glew.h>  // Initialize with glewInit()
 
